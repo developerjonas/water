@@ -67,5 +67,10 @@ class Scheme extends Model
         return $this->hasMany(Maintenance::class);
     }
 
+    public function donors()
+{
+    return $this->belongsToMany(Donor::class);
+}
+
 
 }

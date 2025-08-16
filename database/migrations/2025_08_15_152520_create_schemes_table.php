@@ -12,10 +12,9 @@ return new class extends Migration {
     {
         Schema::create('schemes', function (Blueprint $table) {
             $table->id();
-            $table->string('district'); // just a string, no FK
-            $table->string('mun');      // just a string, no FK
+            $table->string('district');
+            $table->string('mun');
             $table->integer('ward_no');
-            $table->string('donor');    // just a string, no FK
             $table->string('scheme_code')->unique();
             $table->string('scheme_name');
             $table->enum('sector', ['Water Supply', 'MUS']);
@@ -38,8 +37,6 @@ return new class extends Migration {
             $table->timestamps();
         });
     }
-
-
 
     /**
      * Reverse the migrations.
