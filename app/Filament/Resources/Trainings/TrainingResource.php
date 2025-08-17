@@ -17,6 +17,8 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Form;
+
 
 use UnitEnum;
 
@@ -34,9 +36,11 @@ class TrainingResource extends Resource
 
 
     public static function form(Schema $schema): Schema
-    {
-        return TrainingForm::configure($schema);
-    }
+{
+    return $schema->schema(
+        TrainingForm::schema() // returns array of components
+    );
+}
 
     public static function infolist(Schema $schema): Schema
     {
