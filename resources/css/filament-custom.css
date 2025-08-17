@@ -1,0 +1,26 @@
+/* filament-theme.css */
+.filament-sidebar {
+    background-color: #87ceeb; /* light sky blue */
+}
+
+.filament-sidebar a {
+    color: #ffffff;
+}
+
+.filament-sidebar .is-active {
+    background-color: #00bfff; /* deep sky blue */
+}
+
+.filament-header {
+    background-color: #00bfff;
+    color: #fff;
+}
+
+.filament-button-primary {
+    background-color: #1e90ff;
+    border-color: #1e90ff;
+}
+
+.filament-button-primary:hover {
+    background-color: #00bfff;
+}

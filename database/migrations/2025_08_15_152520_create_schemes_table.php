@@ -12,6 +12,7 @@ return new class extends Migration {
     {
         Schema::create('schemes', function (Blueprint $table) {
             $table->id();
+            $table->string('province'); // New province column
             $table->string('district');
             $table->string('mun');
             $table->integer('ward_no');

@@ -14,10 +14,10 @@ class Scheme extends Model
      * The attributes that are mass assignable.
      */
     protected $fillable = [
+        'province', // add province if not already present
         'district',
         'mun',
         'ward_no',
-        'donor',
         'scheme_code',
         'scheme_name',
         'sector',
@@ -38,39 +38,33 @@ class Scheme extends Model
         'justification_for_delay',
     ];
 
-    public function beneficiaries()
+    protected static function booted()
     {
-        return $this->hasMany(Beneficiary::class);
+        // This is where we generate scheme_code automatically
+        static::creating(function ($scheme) {
+            $scheme->scheme_code = self::generateSchemeCode($scheme);
+        });
     }
 
-    public function waterPoints()
+    protected static function generateSchemeCode($scheme)
     {
-        return $this->hasMany(WaterPoint::class);
-    }
-    public function ucInfos()
-    {
-        return $this->hasMany(UserCommitteeInfo::class);
+        $year = now()->year;
+
+        // Count existing schemes with the same name
+        $count = self::where('scheme_name', $scheme->scheme_name)->count() + 1;
+
+        return strtoupper("{$scheme->province}_{$scheme->district}_{$year}_{$scheme->scheme_name}_{$count}");
     }
 
-    public function publicAudits()
-    {
-        return $this->hasMany(PublicAudit::class);
-    }
-
-    public function hhSanitations()
-    {
-        return $this->hasMany(HouseholdSanitation::class);
-    }
-
-    public function maintenances()
-    {
-        return $this->hasMany(Maintenance::class);
-    }
-
+    // Relationships
+    public function beneficiaries() { return $this->hasMany(Beneficiary::class); }
+    public function waterPoints() { return $this->hasMany(WaterPoint::class); }
+    public function ucInfos() { return $this->hasMany(UserCommitteeInfo::class); }
+    public function publicAudits() { return $this->hasMany(PublicAudit::class); }
+    public function hhSanitations() { return $this->hasMany(HouseholdSanitation::class); }
+    public function maintenances() { return $this->hasMany(Maintenance::class); }
     public function donors()
 {
-    return $this->belongsToMany(Donor::class);
+    return $this->belongsToMany(Donor::class, 'pivot_donor_scheme'); // specify table name
 }
-
-
 }

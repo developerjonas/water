@@ -10,7 +10,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('donor_scheme', function (Blueprint $table) {
+        Schema::create('pivot_donor_scheme', function (Blueprint $table) {
             $table->id();
             $table->foreignId('scheme_id')->constrained()->cascadeOnDelete();
             $table->foreignId('donor_id')->constrained()->cascadeOnDelete();
@@ -24,6 +24,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('donor_scheme');
+        Schema::dropIfExists('pivot_donor_scheme');
     }
 };
