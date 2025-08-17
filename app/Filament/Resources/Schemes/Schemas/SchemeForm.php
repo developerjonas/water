@@ -21,15 +21,28 @@ class SchemeForm
         ];
 
         $districts = [
-            'KAL' => [
+            'KAR' => [
                 'SUR' => 'Surkhet',
                 'DAI' => 'Dailekh',
-                // add all province 6 districts
+                'JUM' => 'Jumla',
+                'DOL' => 'Dolpa',
+                'HUM' => 'Humla',
+                'SAL' => 'Salyan',
+                'JAJ' => 'Jajarkot',
+                'RUK_W' => 'Rukum West',
+                'KAL' => 'Kalikot',
+                'MUG' => 'Mugu',
             ],
-            'SAG' => [
+            'SUD' => [
                 'BHA' => 'Bajhang',
                 'KAI' => 'Kailali',
-                // add all province 7 districts
+                'KAN' => 'Kanchanpur',
+                'DOT' => 'Doti',
+                'DDL' => 'Dadeldhura',
+                'BAI' => 'Baitadi',
+                'BAJ' => 'Bajura',
+                'DAR' => 'Darchula',
+                'AAC' => 'Achham',
             ],
         ];
 
@@ -53,7 +66,8 @@ class SchemeForm
                     ->label('Province')
                     ->options($provinces)
                     ->reactive() // needed to trigger other dropdowns
-                    ->required(),
+                    ->required()
+                    ->searchable(),
 
                 Select::make('district')
                     ->label('District')
@@ -62,7 +76,8 @@ class SchemeForm
                         return $province ? $districts[$province] ?? [] : [];
                     })
                     ->reactive()
-                    ->required(),
+                    ->required()
+                    ->searchable(),
 
                 Select::make('mun')
                     ->label('Municipality / Rural Municipality')
@@ -70,7 +85,8 @@ class SchemeForm
                         $district = $get('district');
                         return $district ? $municipalities[$district] ?? [] : [];
                     })
-                    ->required(),
+                    ->required()
+                    ->searchable(),
 
                 TextInput::make('ward_no')
                     ->required()
@@ -86,8 +102,8 @@ class SchemeForm
 
                 Select::make('sector')
                     ->options([
-                        'Water Supply' => 'Water supply',
-                        'MUS' => 'M u s'
+                        'WS' => 'Water Supply',
+                        'SAN' => 'Sanitation'
                     ])
                     ->required(),
 

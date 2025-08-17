@@ -17,6 +17,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use UnitEnum;
 
 class DonorResource extends Resource
 {
@@ -28,7 +29,7 @@ class DonorResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
-
+    protected static string | UnitEnum | null $navigationGroup = 'Financial Stuffs';
 
     public static function form(Schema $schema): Schema
     {
