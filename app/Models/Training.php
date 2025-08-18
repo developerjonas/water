@@ -42,4 +42,9 @@ class Training extends Model
     {
         return $this->belongsTo(Scheme::class);
     }
+
+    public function participants()
+    {
+        return $this->hasMany(TrainingParticipant::class, 'training_code', 'code');
+    }
 }
