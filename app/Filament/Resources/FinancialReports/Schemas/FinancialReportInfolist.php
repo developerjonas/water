@@ -11,16 +11,22 @@ class FinancialReportInfolist
     {
         return $schema
             ->components([
-                TextEntry::make('scheme_id')
+                TextEntry::make('scheme_code'),
+                TextEntry::make('helvetas_estimated_cash')
                     ->numeric(),
-                TextEntry::make('district'),
-                TextEntry::make('palika'),
-                TextEntry::make('sector'),
-                TextEntry::make('sub_schemes')
+                TextEntry::make('helvetas_estimated_kd')
+                    ->numeric(),
+                TextEntry::make('rms_estimated')
+                    ->numeric(),
+                TextEntry::make('users_estimated')
+                    ->numeric(),
+                TextEntry::make('others_estimated')
                     ->numeric(),
                 TextEntry::make('estimated_total')
                     ->numeric(),
-                TextEntry::make('helvetas_actual')
+                TextEntry::make('helvetas_actual_cash')
+                    ->numeric(),
+                TextEntry::make('helvetas_actual_kd')
                     ->numeric(),
                 TextEntry::make('rms_actual')
                     ->numeric(),
@@ -28,7 +34,7 @@ class FinancialReportInfolist
                     ->numeric(),
                 TextEntry::make('others_actual')
                     ->numeric(),
-                TextEntry::make('actual_expenditure_total')
+                TextEntry::make('actual_total')
                     ->numeric(),
                 TextEntry::make('created_at')
                     ->dateTime(),

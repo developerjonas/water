@@ -11,17 +11,23 @@ class FinancialReportForm
     {
         return $schema
             ->components([
-                TextInput::make('scheme_id')
-                    ->required()
+                TextInput::make('scheme_code')
+                    ->required(),
+                TextInput::make('helvetas_estimated_cash')
                     ->numeric(),
-                TextInput::make('district'),
-                TextInput::make('palika'),
-                TextInput::make('sector'),
-                TextInput::make('sub_schemes')
+                TextInput::make('helvetas_estimated_kd')
+                    ->numeric(),
+                TextInput::make('rms_estimated')
+                    ->numeric(),
+                TextInput::make('users_estimated')
+                    ->numeric(),
+                TextInput::make('others_estimated')
                     ->numeric(),
                 TextInput::make('estimated_total')
                     ->numeric(),
-                TextInput::make('helvetas_actual')
+                TextInput::make('helvetas_actual_cash')
+                    ->numeric(),
+                TextInput::make('helvetas_actual_kd')
                     ->numeric(),
                 TextInput::make('rms_actual')
                     ->numeric(),
@@ -29,7 +35,7 @@ class FinancialReportForm
                     ->numeric(),
                 TextInput::make('others_actual')
                     ->numeric(),
-                TextInput::make('actual_expenditure_total')
+                TextInput::make('actual_total')
                     ->numeric(),
             ]);
     }

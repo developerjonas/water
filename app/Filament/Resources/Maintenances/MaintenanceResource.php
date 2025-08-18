@@ -15,6 +15,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class MaintenanceResource extends Resource
 {
@@ -23,6 +24,9 @@ class MaintenanceResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'maintenance_data';
+
+        protected static string | UnitEnum | null $navigationGroup = 'Financial Stuffs';
+
 
     public static function form(Schema $schema): Schema
     {

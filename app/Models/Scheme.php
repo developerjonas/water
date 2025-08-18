@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-
 class Scheme extends Model
 {
     use HasFactory, SoftDeletes;
@@ -89,4 +88,16 @@ class Scheme extends Model
     {
         return $this->belongsToMany(Donor::class, 'pivot_donor_scheme'); // specify table name
     }
+
+    public function installmentMonitorings()
+    {
+        return $this->hasMany(InstallmentMonitoring::class);
+    }
+
+    public function structureInfo()
+    {
+        return $this->hasOne(StructureInfo::class);
+    }
+
+
 }

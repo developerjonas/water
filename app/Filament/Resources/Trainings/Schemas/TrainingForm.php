@@ -73,41 +73,85 @@ class TrainingForm
 
                 Step::make('Training Details')
                     ->description('Provide the training information.')
+
                     ->schema([
                         Section::make('Training Info')
                             ->schema([
-                                Grid::make(2)->schema([
-                                    TextInput::make('training_type')->required()->columnSpanFull(),
-                                    TextInput::make('training_name')->required()->columnSpanFull(),
-                                    DatePicker::make('training_start_date')->columnSpanFull(),
-                                    DatePicker::make('training_end_date')->columnSpanFull(),
-                                    TextInput::make('training_days')->numeric()->columnSpanFull(),
-                                    TextInput::make('training_place')->columnSpanFull(),
-                                    TextInput::make('facilitator_name')->columnSpanFull(),
-                                    TextInput::make('num_participating_schools')->numeric()->columnSpanFull(),
-                                    TextInput::make('teacher_count')->numeric()->columnSpanFull(),
-                                    TextInput::make('child_club_count')->numeric()->columnSpanFull(),
-                                    TextInput::make('school_mgmt_committee_count')->numeric()->columnSpanFull(),
-                                    TextInput::make('dalit_male')->numeric()->columnSpanFull(),
-                                    TextInput::make('dalit_female')->numeric()->columnSpanFull(),
-                                    TextInput::make('dalit_total')->numeric()->columnSpanFull(),
-                                    TextInput::make('janjati_male')->numeric()->columnSpanFull(),
+                                Grid::make(3)->schema([
+                                    TextInput::make('training_type')
+                                        ->required()
+                                        ->columnSpan(1),
+                                    TextInput::make('training_name')
+                                        ->required()
+                                        ->columnSpan(1),
+                                    DatePicker::make('training_start_date')
+                                        ->columnSpan(1),
+                                    DatePicker::make('training_end_date')
+                                        ->columnSpanFull(),
+                                    TextInput::make('training_days')
+                                        ->numeric()
+                                        ->columnSpanFull(),
+                                    TextInput::make('training_place')
+                                        ->columnSpanFull(),
+                                    TextInput::make('facilitator_name')
+                                        ->columnSpanFull(),
+                                    TextInput::make('num_participating_schools')
+                                        ->numeric()
+                                        ->columnSpanFull(),
+                                    TextInput::make('teacher_count')
+                                        ->numeric()
+                                        ->columnSpanFull(),
+                                    TextInput::make('child_club_count')
+                                        ->numeric()
+                                        ->columnSpanFull(),
+                                    TextInput::make('school_mgmt_committee_count')
+                                        ->numeric()
+                                        ->columnSpanFull(),
+                                    TextInput::make('dalit_male')
+                                        ->numeric()
+                                        ->columnSpanFull(),
+                                    TextInput::make('dalit_female')
+                                        ->numeric()
+                                        ->columnSpanFull(),
+                                    TextInput::make('dalit_total')
+                                        ->numeric()
+                                        ->columnSpanFull(),
+                                    TextInput::make('janjati_male')
+                                        ->numeric()
+                                        ->columnSpanFull(),
                                     TextInput::make('janjati_female')
                                         ->numeric()
                                         ->columnSpanFull(),
-                                    TextInput::make('janjati_total')->numeric()->columnSpanFull(),
-                                    TextInput::make('other_male')->numeric()->columnSpanFull(),
-                                    TextInput::make('other_female')->numeric()->columnSpanFull(),
-                                    TextInput::make('other_total')->numeric()->columnSpanFull(),
-                                    TextInput::make('male_total')->numeric()->columnSpanFull(),
-                                    TextInput::make('female_total')->numeric()->columnSpanFull(),
-                                    TextInput::make('total')->numeric()->columnSpanFull(),
-                                    TextInput::make('num_schemes_participants')->numeric()->columnSpanFull(),
-                                    Textarea::make('other')->columnSpanFull(),
+                                    TextInput::make('janjati_total')
+                                        ->numeric()
+                                        ->columnSpanFull(),
+                                    TextInput::make('other_male')
+                                        ->numeric()
+                                        ->columnSpanFull(),
+                                    TextInput::make('other_female')
+                                        ->numeric()
+                                        ->columnSpanFull(),
+                                    TextInput::make('other_total')
+                                        ->numeric()
+                                        ->columnSpanFull(),
+                                    TextInput::make('male_total')
+                                        ->numeric()
+                                        ->columnSpanFull(),
+                                    TextInput::make('female_total')
+                                        ->numeric()
+                                        ->columnSpanFull(),
+                                    TextInput::make('total')
+                                        ->numeric()
+                                        ->columnSpanFull(),
+                                    TextInput::make('num_schemes_participants')
+                                        ->numeric()
+                                        ->columnSpanFull(),
+                                    Textarea::make('other')
+                                        ->columnSpanFull(),
                                 ]),
                             ]),
                     ]),
-            ])->columnSpanFull(), // ← make wizard full width
+            ])->columnSpanFull(),
         ];
     }
 }
