@@ -20,7 +20,12 @@ class AppServiceProvider extends ServiceProvider
      * Bootstrap any application services.
      */
     public function boot(): void
-{
-    //
-}
+    {
+        // Filament::serving(function () {
+        //     Filament::registerRenderHook(
+        //         'filament.brand.start',
+        //         fn() => view('filament.components.brand')
+        //     );
+        // });
+    }
 }

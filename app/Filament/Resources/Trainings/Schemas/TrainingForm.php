@@ -8,22 +8,16 @@ use Filament\Schemas\Components\Wizard\Step;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Utilities\Get;
-
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\HasMany;
-                    use Filament\Forms\Components\Repeater;
-
-use Closure;
-
+use Filament\Forms\Components\Repeater;
 
 class TrainingForm
 {
     public static function schema(): array
     {
-
         $trainingTypes = [
             'Village Maintenance Workers (VMW)',
             'Mason Training',
@@ -105,14 +99,10 @@ class TrainingForm
 
                 Step::make('Training Details')
                     ->description('Provide the training information.')
-
                     ->schema([
                         Section::make('Training Info')
                             ->schema([
                                 Grid::make(3)->schema([
-                                    // Polished training names
-
-                                    // Replace existing training_name field with this:
                                     Select::make('training_type')
                                         ->label('Training Type')
                                         ->options($trainingTypes)
@@ -123,7 +113,6 @@ class TrainingForm
                                                 $set('other_training', null);
                                             }
                                         }),
-
                                     TextInput::make('training_name')
                                         ->label('Specify Other Training')
                                         ->columnSpanFull(),
@@ -186,43 +175,41 @@ class TrainingForm
                             ]),
                     ]),
 
-Step::make('Training Participants')
-    ->description('Add participants for this training.')
-    ->schema([
-        Repeater::make('participants')
-            ->label('Participants')
-            ->relationship('participants') // links to your Training->participants() relation
-            ->createItemButtonLabel('Add Participant')
-            ->schema([
-                TextInput::make('full_name')
-                    ->label('Full Name')
-                    ->required(),
-                TextInput::make('address')
-                    ->label('Address')
-                    ->required(),
-                TextInput::make('phone')
-                    ->label('Phone')
-                    ->tel(),
-                TextInput::make('school_name')
-                    ->label('School Name')
-                    ->required(),
-                TextInput::make('teacher')
-                    ->label('Teacher'),
-                TextInput::make('child_club')
-                    ->label('Child Club'),
-                TextInput::make('school_management_committee')
-                    ->label('School Management Committee'),
-                TextInput::make('number_of_schemes')
-                    ->label('Number of Schemes')
-                    ->numeric(),
-                TextInput::make('event_name')
-                    ->label('Name of Event'),
-            ])
-            ->columns(2),
-    ]),
-
+                Step::make('Training Participants')
+                    ->description('Add participants for this training.')
+                    ->schema([
+                        Repeater::make('participants')
+                            ->label('Participants')
+                            ->relationship('participants') // links to your Training->participants() relation
+                            ->createItemButtonLabel('Add Participant')
+                            ->schema([
+                                TextInput::make('full_name')
+                                    ->label('Full Name')
+                                    ->required(),
+                                TextInput::make('address')
+                                    ->label('Address')
+                                    ->required(),
+                                TextInput::make('phone')
+                                    ->label('Phone')
+                                    ->tel(),
+                                TextInput::make('school_name')
+                                    ->label('School Name')
+                                    ->required(),
+                                TextInput::make('teacher')
+                                    ->label('Teacher'),
+                                TextInput::make('child_club')
+                                    ->label('Child Club'),
+                                TextInput::make('school_management_committee')
+                                    ->label('School Management Committee'),
+                                TextInput::make('number_of_schemes')
+                                    ->label('Number of Schemes')
+                                    ->numeric(),
+                                TextInput::make('event_name')
+                                    ->label('Name of Event'),
+                            ])
+                            ->columns(2),
+                    ]),
             ])->columnSpanFull(),
         ];
     }
 }
-

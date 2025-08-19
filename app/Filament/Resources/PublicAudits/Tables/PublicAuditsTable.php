@@ -15,42 +15,44 @@ class PublicAuditsTable
     {
         return $table
             ->columns([
-                TextColumn::make('scheme_id')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('district')
+                TextColumn::make('scheme_code')
                     ->searchable(),
-                TextColumn::make('palika')
-                    ->searchable(),
-                TextColumn::make('donor')
-                    ->searchable(),
-                TextColumn::make('scheme_start_year')
-                    ->searchable(),
-                TextColumn::make('scheme_name')
-                    ->searchable(),
-                TextColumn::make('audit_name')
-                    ->searchable(),
-                TextColumn::make('audit_date')
-                    ->date()
-                    ->sortable(),
-                TextColumn::make('df')
+                TextColumn::make('audit_type'),
+                TextColumn::make('dalit_female')
                     ->numeric()
-                    ->sortable(),
-                TextColumn::make('dm')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('dalit_male')
                     ->numeric()
-                    ->sortable(),
-                TextColumn::make('jf')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('janjati_female')
                     ->numeric()
-                    ->sortable(),
-                TextColumn::make('jm')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('janjati_male')
                     ->numeric()
-                    ->sortable(),
-                TextColumn::make('of')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('other_female')
                     ->numeric()
-                    ->sortable(),
-                TextColumn::make('om')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('other_male')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('total')
+                    ->numeric()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

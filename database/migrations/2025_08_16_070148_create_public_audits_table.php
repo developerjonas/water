@@ -14,25 +14,23 @@ return new class extends Migration
         Schema::create('public_audits', function (Blueprint $table) {
             $table->id();
 
-            // Link to Scheme
-            $table->foreignId('scheme_id')->constrained('schemes')->onDelete('cascade');
+            // Link to Scheme via scheme_code
+            $table->string('scheme_code');
+            $table->foreign('scheme_code')->references('scheme_code')->on('schemes')->onDelete('cascade');
 
-            $table->string('district')->nullable();
-            $table->string('palika')->nullable();
-            $table->string('donor')->nullable();
-            $table->string('scheme_start_year')->nullable();
-            $table->string('scheme_name')->nullable();
-
-            $table->string('audit_name')->nullable(); // e.g., Public Audit - I
-            $table->date('audit_date')->nullable();
+            // Audit type
+            $table->enum('audit_type', ['Public Audit - I', 'Public Audit - II', 'Public Audit - III'])->nullable();
 
             // Participant counts
-            $table->integer('df')->nullable(); // Female participants (District)
-            $table->integer('dm')->nullable(); // Male participants (District)
-            $table->integer('jf')->nullable(); // Female participants (Junior)
-            $table->integer('jm')->nullable(); // Male participants (Junior)
-            $table->integer('of')->nullable(); // Female participants (Others)
-            $table->integer('om')->nullable(); // Male participants (Others)
+            $table->integer('dalit_female')->default(0);
+            $table->integer('dalit_male')->default(0);
+            $table->integer('janjati_female')->default(0);
+            $table->integer('janjati_male')->default(0);
+            $table->integer('other_female')->default(0);
+            $table->integer('other_male')->default(0);
+
+            // Total participants
+            $table->integer('total')->virtualAs('dalit_female + dalit_male + janjati_female + janjati_male + other_female + other_male');
 
             $table->timestamps();
         });
