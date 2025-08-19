@@ -15,6 +15,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use App\Filament\Resources\Users\Pages\UserSettings;
 
 class UserResource extends Resource
 {
@@ -53,6 +54,7 @@ class UserResource extends Resource
             'create' => CreateUser::route('/create'),
             'view' => ViewUser::route('/{record}'),
             'edit' => EditUser::route('/{record}/edit'),
+            'settings' => UserSettings::route('/{record}/settings'),
         ];
     }
 }

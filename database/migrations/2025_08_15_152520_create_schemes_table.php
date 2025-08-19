@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->integer('ward_no');
             $table->string('scheme_code')->unique();
             $table->string('scheme_name');
-            $table->enum('sector', ['Water Supply', 'MUS']);
+            $table->string('sector', 50)->nullable()->change();
             $table->enum('scheme_technology', ['Gravity', 'Solar Lift'])->nullable();
             $table->enum('scheme_type', ['New', 'Rehab']);
             $table->year('scheme_start_year');
