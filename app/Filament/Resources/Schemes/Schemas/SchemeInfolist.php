@@ -12,26 +12,21 @@ class SchemeInfolist
     {
         return $schema
             ->components([
+                TextEntry::make('province'),
                 TextEntry::make('district'),
                 TextEntry::make('mun'),
                 TextEntry::make('ward_no')
                     ->numeric(),
-                TextEntry::make('donor'),
                 TextEntry::make('scheme_code'),
                 TextEntry::make('scheme_name'),
+                TextEntry::make('scheme_name_np'),
                 TextEntry::make('sector'),
                 TextEntry::make('scheme_technology'),
                 TextEntry::make('scheme_type'),
+                TextEntry::make('scheme_construction_type'),
                 TextEntry::make('scheme_start_year'),
-                IconEntry::make('source_registration_status')
-                    ->boolean(),
-                TextEntry::make('no_subscheme')
-                    ->numeric(),
-                TextEntry::make('completed_year'),
                 TextEntry::make('completion_date')
                     ->date(),
-                IconEntry::make('source_conservation')
-                    ->boolean(),
                 TextEntry::make('agreement_signed_date')
                     ->date(),
                 TextEntry::make('schedule_end_date')
@@ -42,6 +37,12 @@ class SchemeInfolist
                     ->date(),
                 TextEntry::make('actual_completed_date')
                     ->date(),
+                IconEntry::make('source_registration_status')
+                    ->boolean(),
+                IconEntry::make('source_conservation')
+                    ->boolean(),
+                IconEntry::make('no_subscheme')
+                    ->boolean(),
                 TextEntry::make('progress_status'),
                 TextEntry::make('deleted_at')
                     ->dateTime(),

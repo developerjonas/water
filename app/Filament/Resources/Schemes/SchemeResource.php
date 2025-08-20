@@ -18,24 +18,13 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-use UnitEnum;
-
 class SchemeResource extends Resource
 {
     protected static ?string $model = Scheme::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::CircleStack;
 
-    protected static ?string $recordTitleAttribute = 'Scheme';
-
-    protected static ?int $navigationSort = 1;
-
-
-    protected static string | UnitEnum | null $navigationGroup = 'Scheme Stuffs';
-
-
-
-
+    protected static ?string $recordTitleAttribute = 'scheme_data';
 
     public static function form(Schema $schema): Schema
     {

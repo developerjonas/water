@@ -19,6 +19,8 @@ class SchemesTable
     {
         return $table
             ->columns([
+                TextColumn::make('province')
+                    ->searchable(),
                 TextColumn::make('district')
                     ->searchable(),
                 TextColumn::make('mun')
@@ -26,57 +28,47 @@ class SchemesTable
                 TextColumn::make('ward_no')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('donor')
-                    ->searchable(),
                 TextColumn::make('scheme_code')
                     ->searchable(),
                 TextColumn::make('scheme_name')
                     ->searchable(),
+                TextColumn::make('scheme_name_np')
+                    ->searchable(),
                 TextColumn::make('sector')
-                ->toggleable(isToggledHiddenByDefault: true),
+                    ->searchable(),
                 TextColumn::make('scheme_technology')
-                ->toggleable(isToggledHiddenByDefault: true),
+                    ->searchable(),
                 TextColumn::make('scheme_type')
-                ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('scheme_start_year')
-                ->toggleable(isToggledHiddenByDefault: true),
-                IconColumn::make('source_registration_status')
-                    ->boolean()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('no_subscheme')
-                    ->numeric()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('completed_year')
-                ->toggleable(isToggledHiddenByDefault: true),
+                    ->searchable(),
+                TextColumn::make('scheme_construction_type')
+                    ->searchable(),
+                TextColumn::make('scheme_start_year'),
                 TextColumn::make('completion_date')
                     ->date()
                     ->sortable(),
-                IconColumn::make('source_conservation')
-                    ->boolean()
-                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('agreement_signed_date')
                     ->date()
-                    ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
                 TextColumn::make('schedule_end_date')
                     ->date()
-                    ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
                 TextColumn::make('started_date')
                     ->date()
-                    ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
                 TextColumn::make('planned_completion_date')
                     ->date()
-                    ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
                 TextColumn::make('actual_completed_date')
                     ->date()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
+                IconColumn::make('source_registration_status')
+                    ->boolean(),
+                IconColumn::make('source_conservation')
+                    ->boolean(),
+                IconColumn::make('no_subscheme')
+                    ->boolean(),
                 TextColumn::make('progress_status')
-                ->toggleable(isToggledHiddenByDefault: true),
+                    ->searchable(),
                 TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()
