@@ -7,9 +7,13 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
 
+
+
 class UserSettings extends EditRecord
 {
     protected static string $resource = UserResource::class;
+
+    
 
     protected function getHeaderActions(): array
     {

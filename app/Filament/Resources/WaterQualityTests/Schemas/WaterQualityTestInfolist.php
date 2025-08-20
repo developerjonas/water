@@ -1,21 +1,18 @@
 <?php
 
-namespace App\Filament\Resources\WaterQualities\Schemas;
+namespace App\Filament\Resources\WaterQualityTests\Schemas;
 
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
-class WaterQualityInfolist
+class WaterQualityTestInfolist
 {
     public static function configure(Schema $schema): Schema
     {
         return $schema
             ->components([
-                TextEntry::make('scheme_id')
-                    ->numeric(),
-                TextEntry::make('district'),
-                TextEntry::make('r_m_palika'),
-                TextEntry::make('tested_point'),
+                TextEntry::make('scheme_code'),
+                TextEntry::make('water_quality_tested_point_name'),
                 TextEntry::make('e_coli')
                     ->numeric(),
                 TextEntry::make('coliform')
@@ -27,12 +24,8 @@ class WaterQualityInfolist
                 TextEntry::make('turbidity')
                     ->numeric(),
                 TextEntry::make('e_coli_risk_category'),
-                TextEntry::make('e_coli_percentage')
-                    ->numeric(),
                 TextEntry::make('e_coli_risk_zone'),
                 TextEntry::make('coliform_risk_category'),
-                TextEntry::make('coliform_percentage')
-                    ->numeric(),
                 TextEntry::make('coliform_risk_zone'),
                 TextEntry::make('created_at')
                     ->dateTime(),

@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Filament\Resources\WaterQualities\Pages;
+namespace App\Filament\Resources\WaterQualityTests\Pages;
 
-use App\Filament\Resources\WaterQualities\WaterQualityResource;
+use App\Filament\Resources\WaterQualityTests\WaterQualityTestResource;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
 
-class EditWaterQuality extends EditRecord
+class EditWaterQualityTest extends EditRecord
 {
-    protected static string $resource = WaterQualityResource::class;
+    protected static string $resource = WaterQualityTestResource::class;
 
     protected function getHeaderActions(): array
     {

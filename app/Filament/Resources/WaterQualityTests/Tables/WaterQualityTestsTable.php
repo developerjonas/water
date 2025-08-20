@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\WaterQualities\Tables;
+namespace App\Filament\Resources\WaterQualityTests\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -12,20 +12,15 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 
-class WaterQualitiesTable
+class WaterQualityTestsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('scheme_id')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('district')
+                TextColumn::make('scheme_code')
                     ->searchable(),
-                TextColumn::make('r_m_palika')
-                    ->searchable(),
-                TextColumn::make('tested_point')
+                TextColumn::make('water_quality_tested_point_name')
                     ->searchable(),
                 TextColumn::make('e_coli')
                     ->numeric()
@@ -44,16 +39,10 @@ class WaterQualitiesTable
                     ->sortable(),
                 TextColumn::make('e_coli_risk_category')
                     ->searchable(),
-                TextColumn::make('e_coli_percentage')
-                    ->numeric()
-                    ->sortable(),
                 TextColumn::make('e_coli_risk_zone')
                     ->searchable(),
                 TextColumn::make('coliform_risk_category')
                     ->searchable(),
-                TextColumn::make('coliform_percentage')
-                    ->numeric()
-                    ->sortable(),
                 TextColumn::make('coliform_risk_zone')
                     ->searchable(),
                 TextColumn::make('created_at')
