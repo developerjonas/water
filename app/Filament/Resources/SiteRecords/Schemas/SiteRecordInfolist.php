@@ -68,7 +68,7 @@ class SiteRecordInfolist
         foreach ($files as $file) {
             // Only render if file is string
             if (is_string($file)) {
-                $html .= '<img src="' . Storage::disk('public')->url($file) . '" class="w-full h-32 object-cover rounded" />';
+                $html .= '<img src="' . Storage::url($file) . '" class="w-full h-32 object-cover rounded" />';
             }
         }
         $html .= '</div>';
