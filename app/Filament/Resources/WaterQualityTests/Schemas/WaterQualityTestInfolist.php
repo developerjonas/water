@@ -12,8 +12,8 @@ class WaterQualityTestInfolist
         return $schema
             ->components([
                 TextEntry::make('scheme_code'),
-                TextEntry::make('water_quality_tested_point_name'),
-                TextEntry::make('e_coli')
+                TextEntry::make('tested_point'),
+                TextEntry::make('ecoli')
                     ->numeric(),
                 TextEntry::make('coliform')
                     ->numeric(),
@@ -23,15 +23,9 @@ class WaterQualityTestInfolist
                     ->numeric(),
                 TextEntry::make('turbidity')
                     ->numeric(),
-                TextEntry::make('e_coli_risk_category'),
-                TextEntry::make('e_coli_risk_zone'),
-                TextEntry::make('coliform_risk_category'),
-                TextEntry::make('coliform_risk_zone'),
                 TextEntry::make('created_at')
                     ->dateTime(),
                 TextEntry::make('updated_at')
-                    ->dateTime(),
-                TextEntry::make('deleted_at')
                     ->dateTime(),
             ]);
     }

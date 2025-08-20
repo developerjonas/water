@@ -2,67 +2,62 @@
 
 namespace App\Filament\Resources\WaterQualityTests\Schemas;
 
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
+use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Wizard;
 use Filament\Schemas\Components\Wizard\Step;
-use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Grid;
-use Filament\Forms\Components\TextInput;
+use App\Models\Scheme;
 
 class WaterQualityTestForm
 {
-    public static function schema(): array
+    public static function configure(Schema $schema): Schema
     {
-        return [
+        return $schema->components([
             Wizard::make([
-                Step::make('Basic Info')
-                    ->description('Enter basic scheme and test point details.')
+                Step::make('Scheme Info')
                     ->schema([
-                        Section::make('Scheme Information')
-                            ->schema([
-                                Grid::make(2)->schema([
-                                    TextInput::make('scheme_code')
-                                        ->label('Scheme Code')
-                                        ->required(),
-                                    TextInput::make('water_quality_tested_point_name')
-                                        ->label('Water Quality Tested Point Name')
-                                        ->required(),
-                                ]),
-                            ]),
+                        Select::make('scheme_code')
+                            ->label('Scheme')
+                            ->options(Scheme::all()->pluck('scheme_name', 'scheme_code'))
+                            ->searchable()
+                            ->required(),
+                        TextInput::make('tested_point')
+                            ->label('Tested Point')
+                            ->required(),
                     ]),
-
-                Step::make('Water Quality Details')
-                    ->description('Enter water quality test results.')
+                Step::make('Measurements')
                     ->schema([
-                        Section::make('Quality Parameters')
-                            ->schema([
-                                Grid::make(3)->schema([
-                                    TextInput::make('e_coli')
-                                        ->label('E. Coli')
-                                        ->numeric(),
-                                    TextInput::make('coliform')
-                                        ->label('Coliform')
-                                        ->numeric(),
-                                    TextInput::make('ph')
-                                        ->label('pH')
-                                        ->numeric(),
-                                    TextInput::make('frc')
-                                        ->label('FRC')
-                                        ->numeric(),
-                                    TextInput::make('turbidity')
-                                        ->label('Turbidity')
-                                        ->numeric(),
-                                    TextInput::make('e_coli_risk_category')
-                                        ->label('E. Coli Risk Category'),
-                                    TextInput::make('e_coli_risk_zone')
-                                        ->label('E. Coli Risk Zone'),
-                                    TextInput::make('coliform_risk_category')
-                                        ->label('Coliform Risk Category'),
-                                    TextInput::make('coliform_risk_zone')
-                                        ->label('Coliform Risk Zone'),
-                                ]),
-                            ]),
+                        TextInput::make('ecoli')
+                            ->label('E.coli (CFU/100ml)')
+                            ->numeric()
+                            ->default(0),
+                        TextInput::make('coliform')
+                            ->label('Coliform (CFU/100ml)')
+                            ->numeric()
+                            ->default(0),
+                        TextInput::make('ph')
+                            ->label('pH')
+                            ->numeric()
+                            ->default(7.0),
+                        TextInput::make('frc')
+                            ->label('FRC (mg/L)')
+                            ->numeric()
+                            ->default(0),
+                        TextInput::make('turbidity')
+                            ->label('Turbidity (NTU)')
+                            ->numeric()
+                            ->default(0),
                     ]),
-            ])->columnSpanFull(),
-        ];
+                Step::make('Remarks')
+                    ->schema([
+                        Textarea::make('remarks')
+                            ->label('Remarks')
+                            ->columnSpanFull(),
+                    ]),
+            ]),
+        ]);
     }
 }

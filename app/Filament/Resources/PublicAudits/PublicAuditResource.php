@@ -20,7 +20,7 @@ class PublicAuditResource extends Resource
 {
     protected static ?string $model = PublicAudit::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::DocumentChartBar;
 
     protected static ?string $recordTitleAttribute = 'public_audit_data';
 

@@ -4,34 +4,53 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class WaterQualityTest extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $table = 'water_quality_tests';
 
-    // Mass-assignable attributes
     protected $fillable = [
         'scheme_code',
-        'water_quality_tested_point_name',
-        'e_coli',
+        'tested_point',
+        'ecoli',
         'coliform',
         'ph',
         'frc',
         'turbidity',
-        'e_coli_risk_category',
-        'e_coli_risk_zone',
-        'coliform_risk_category',
-        'coliform_risk_zone',
+        'remarks',
     ];
 
     /**
-     * Relationship: Each Water Quality Test belongs to a Scheme
+     * Relation: belongs to a scheme
      */
     public function scheme()
     {
         return $this->belongsTo(Scheme::class, 'scheme_code', 'scheme_code');
+    }
+
+    /**
+     * Compute E.coli risk category dynamically
+     */
+    public function getEcoliRiskAttribute()
+    {
+        if ($this->ecoli === null) return null;
+        if ($this->ecoli === 0) return 'No Risk';
+        if ($this->ecoli <= 10) return 'Low Risk';
+        if ($this->ecoli <= 100) return 'Risk';
+        return 'High Risk';
+    }
+
+    /**
+     * Compute Coliform risk category dynamically
+     */
+    public function getColiformRiskAttribute()
+    {
+        if ($this->coliform === null) return null;
+        if ($this->coliform === 0) return 'No Risk';
+        if ($this->coliform <= 10) return 'Low Risk';
+        if ($this->coliform <= 100) return 'Risk';
+        return 'High Risk';
     }
 }

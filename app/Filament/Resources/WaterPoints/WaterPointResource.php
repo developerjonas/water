@@ -21,12 +21,9 @@ class WaterPointResource extends Resource
 {
     protected static ?string $model = WaterPoint::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::Beaker;
 
     protected static ?string $recordTitleAttribute = 'water_point_data';
-
-        protected static string | UnitEnum | null $navigationGroup = 'Water Stuffs';
-
 
     public static function form(Schema $schema): Schema
     {

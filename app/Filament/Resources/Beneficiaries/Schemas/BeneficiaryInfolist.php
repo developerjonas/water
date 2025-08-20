@@ -11,30 +11,38 @@ class BeneficiaryInfolist
     {
         return $schema
             ->components([
-                TextEntry::make('district'),
-                TextEntry::make('palika'),
-                TextEntry::make('scheme_id')
+                TextEntry::make('scheme_code'),
+                TextEntry::make('dalit_hh_poor')
                     ->numeric(),
-                TextEntry::make('sector'),
-                TextEntry::make('sub_schemes')
+                TextEntry::make('dalit_hh_nonpoor')
                     ->numeric(),
-                TextEntry::make('total_female')
+                TextEntry::make('aj_hh_poor')
                     ->numeric(),
-                TextEntry::make('total_male')
+                TextEntry::make('aj_hh_nonpoor')
                     ->numeric(),
-                TextEntry::make('total_beneficiaries')
+                TextEntry::make('other_hh_poor')
                     ->numeric(),
-                TextEntry::make('schools')
+                TextEntry::make('other_hh_nonpoor')
                     ->numeric(),
-                TextEntry::make('taps_provided')
+                TextEntry::make('dalit_female')
                     ->numeric(),
-                TextEntry::make('boys_students')
+                TextEntry::make('dalit_male')
                     ->numeric(),
-                TextEntry::make('girls_students')
+                TextEntry::make('aj_female')
                     ->numeric(),
-                TextEntry::make('teachers')
+                TextEntry::make('aj_male')
                     ->numeric(),
-                TextEntry::make('total_population')
+                TextEntry::make('others_female')
+                    ->numeric(),
+                TextEntry::make('others_male')
+                    ->numeric(),
+                TextEntry::make('base_population')
+                    ->numeric(),
+                TextEntry::make('boys_student')
+                    ->numeric(),
+                TextEntry::make('girls_student')
+                    ->numeric(),
+                TextEntry::make('teachers_staff')
                     ->numeric(),
                 TextEntry::make('created_at')
                     ->dateTime(),

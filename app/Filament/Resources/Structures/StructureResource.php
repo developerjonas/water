@@ -20,7 +20,7 @@ class StructureResource extends Resource
 {
     protected static ?string $model = Structure::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::BuildingLibrary;
 
     protected static ?string $recordTitleAttribute = 'structure_data';
 

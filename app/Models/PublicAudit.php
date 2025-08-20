@@ -11,34 +11,36 @@ class PublicAudit extends Model
 
     protected $table = 'public_audits';
 
-    // Allow mass assignment for these fields
     protected $fillable = [
         'scheme_code',
         'audit_type',
-        'dalit_female',
-        'dalit_male',
-        'janjati_female',
-        'janjati_male',
-        'other_female',
-        'other_male',
+        'audit_date',
+        'participant_counts',
+        'audit_documents',
     ];
 
-    // Computed total, optional if you don't use the DB virtual column
-    protected $appends = ['computed_total'];
+    protected $casts = [
+        'participant_counts' => 'array', // JSON cast for flexible participant data
+        'audit_documents' => 'array',     // JSON cast for multiple scanned files
+        'audit_date' => 'date',           // Carbon instance for date handling
+    ];
 
+    /**
+     * Optional: relationship to Scheme
+     */
     public function scheme()
     {
         return $this->belongsTo(Scheme::class, 'scheme_code', 'scheme_code');
     }
 
-    // Optional accessor if your DB doesn't support virtual columns
-    public function getComputedTotalAttribute()
+    /**
+     * Helper: get total participants
+     */
+    public function getTotalParticipantsAttribute(): int
     {
-        return $this->dalit_female 
-             + $this->dalit_male 
-             + $this->janjati_female 
-             + $this->janjati_male 
-             + $this->other_female 
-             + $this->other_male;
+        if (is_array($this->participant_counts)) {
+            return array_sum($this->participant_counts);
+        }
+        return 0;
     }
 }

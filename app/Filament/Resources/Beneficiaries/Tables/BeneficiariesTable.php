@@ -15,43 +15,54 @@ class BeneficiariesTable
     {
         return $table
             ->columns([
-                TextColumn::make('district')
+                TextColumn::make('scheme_code')
                     ->searchable(),
-                TextColumn::make('palika')
-                    ->searchable(),
-                TextColumn::make('scheme_id')
+                TextColumn::make('dalit_hh_poor')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('sector')
-                    ->searchable(),
-                TextColumn::make('sub_schemes')
+                TextColumn::make('dalit_hh_nonpoor')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('total_female')
+                TextColumn::make('aj_hh_poor')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('total_male')
+                TextColumn::make('aj_hh_nonpoor')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('total_beneficiaries')
+                TextColumn::make('other_hh_poor')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('schools')
+                TextColumn::make('other_hh_nonpoor')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('taps_provided')
+                TextColumn::make('dalit_female')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('boys_students')
+                TextColumn::make('dalit_male')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('girls_students')
+                TextColumn::make('aj_female')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('teachers')
+                TextColumn::make('aj_male')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('total_population')
+                TextColumn::make('others_female')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('others_male')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('base_population')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('boys_student')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('girls_student')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('teachers_staff')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('created_at')
