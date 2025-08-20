@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Filament\Resources\PhotoBanks\Pages;
+namespace App\Filament\Resources\SiteRecords\Pages;
 
-use App\Filament\Resources\PhotoBanks\PhotoBankResource;
+use App\Filament\Resources\SiteRecords\SiteRecordResource;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
 
-class EditPhotoBank extends EditRecord
+class EditSiteRecord extends EditRecord
 {
-    protected static string $resource = PhotoBankResource::class;
+    protected static string $resource = SiteRecordResource::class;
 
     protected function getHeaderActions(): array
     {
