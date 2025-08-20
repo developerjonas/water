@@ -26,7 +26,8 @@ class SiteRecord extends Model
     ];
 
     protected $casts = [
-        'photos' => 'array', // cast JSON to array automatically
+        'photos' => 'array',
+        'plaque_photo' => 'array',
         'latitude' => 'decimal:7',
         'longitude' => 'decimal:7',
     ];

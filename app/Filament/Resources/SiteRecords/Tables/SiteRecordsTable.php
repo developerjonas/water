@@ -7,6 +7,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Table;
 
 class SiteRecordsTable
@@ -17,26 +18,17 @@ class SiteRecordsTable
             ->columns([
                 TextColumn::make('scheme_code')
                     ->searchable(),
-                TextColumn::make('scheme_name')
-                    ->searchable(),
                 TextColumn::make('water_system_name')
                     ->searchable(),
-                TextColumn::make('location_type')
-                    ->searchable(),
-                TextColumn::make('water_point_name')
-                    ->searchable(),
-                TextColumn::make('source_details')
-                    ->searchable(),
-                TextColumn::make('hardware_details')
-                    ->searchable(),
-                TextColumn::make('plaque_photo')
-                    ->searchable(),
+
                 TextColumn::make('latitude')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->default('—'),
                 TextColumn::make('longitude')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->default('—'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
