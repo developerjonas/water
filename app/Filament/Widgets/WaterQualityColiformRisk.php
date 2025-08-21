@@ -11,9 +11,6 @@ class WaterQualityColiformRisk extends ChartWidget
     protected ?string $heading = 'Coliform Risk';
     protected ?string $pollingInterval = null;
 
-        protected int | string | array $columnSpan = 1; // 1 = small, 2 = medium, 3 = large, or 'full'
-
-
     // Dropdown state
     public ?string $selectedProvince = null;
     public ?string $selectedDistrict = null;
@@ -111,10 +108,14 @@ class WaterQualityColiformRisk extends ChartWidget
 
         foreach ($data as $row) {
             $val = $row->coliform; // note: using coliform
-            if ($val === 0) $counts['Zero']++;
-            elseif ($val >= 1 && $val <= 10) $counts['Low risk']++;
-            elseif ($val >= 11 && $val <= 100) $counts['Risk']++;
-            else $counts['High risk']++;
+            if ($val === 0)
+                $counts['Zero']++;
+            elseif ($val >= 1 && $val <= 10)
+                $counts['Low risk']++;
+            elseif ($val >= 11 && $val <= 100)
+                $counts['Risk']++;
+            else
+                $counts['High risk']++;
         }
 
         return [
