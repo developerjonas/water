@@ -9,6 +9,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Wizard;
+use App\Models\Donor;
 
 class SchemeForm
 {
@@ -69,6 +70,8 @@ class SchemeForm
             'DAR' => ['Darchula' => 'Darchula Municipality', 'Api' => 'Api Rural Municipality'],
             'AAC' => ['Mangalsen' => 'Mangalsen Municipality', 'Kamalbazar' => 'Kamalbazar Municipality'],
         ];
+        $donorOptions = Donor::pluck('name', 'id')->toArray();
+
 
         return $schema
             ->components([
@@ -84,13 +87,13 @@ class SchemeForm
                                 ->searchable(),
                             Select::make('district')
                                 ->label('District')
-                                ->options(fn ($get) => $get('province') ? $districts[$get('province')] ?? [] : [])
+                                ->options(fn($get) => $get('province') ? $districts[$get('province')] ?? [] : [])
                                 ->reactive()
                                 ->required()
                                 ->searchable(),
                             Select::make('mun')
                                 ->label('Municipality / Rural Municipality')
-                                ->options(fn ($get) => $get('district') ? $municipalities[$get('district')] ?? [] : [])
+                                ->options(fn($get) => $get('district') ? $municipalities[$get('district')] ?? [] : [])
                                 ->required()
                                 ->searchable(),
                             TextInput::make('ward_no')
@@ -162,6 +165,16 @@ class SchemeForm
                                 ->label('Planned Completion Date'),
                             DatePicker::make('actual_completed_date')
                                 ->label('Actual Completion Date'),
+                        ]),
+
+                    Wizard\Step::make('Contributors')
+                        ->schema([
+                            Select::make('collaborator')
+                                ->label('Select Donor(s)')
+                                ->options($donorOptions)
+                                ->multiple()
+                                ->searchable()
+                                ->required(),
                         ]),
 
                     // Step 5: Status Flags

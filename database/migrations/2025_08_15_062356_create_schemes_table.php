@@ -29,6 +29,11 @@ return new class extends Migration {
             $table->string('scheme_name_np')->nullable()->comment('Scheme name in Nepali');
 
             // -------------------
+            // Collaborator
+            // -------------------
+            $table->json('collaborator')->nullable()->comment('Collaborator or partner organization');
+
+            // -------------------
             // Type & Classification
             // -------------------
             $table->string('sector')->nullable()->comment('Sector: WS / SAN / etc.');

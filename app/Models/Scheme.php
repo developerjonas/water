@@ -6,41 +6,45 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+// Correct imports based on your existing models
+use App\Models\Beneficiary;
+use App\Models\WaterPoint;
+use App\Models\UserCommittee;
+use App\Models\PublicAudit;
+use App\Models\SanitationMetric;
+use App\Models\Maintenance;
+use App\Models\InstallmentMonitoring;
+use App\Models\StructureInfo;
+use App\Models\Structure;
+use App\Models\Donor;
+
 class Scheme extends Model
 {
     use HasFactory, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
-     * Keep aligned with the migration columns for consistency.
      */
     protected $fillable = [
-        // -------------------
         // Location / Address
-        // -------------------
         'province',
         'district',
         'mun',
         'ward_no',
 
-        // -------------------
         // Identification
-        // -------------------
         'scheme_code',
         'scheme_name',
         'scheme_name_np',
+        'collaborator', // New column for collaborator/partner organization
 
-        // -------------------
         // Type & Classification
-        // -------------------
         'sector',
         'scheme_technology',
         'scheme_type',
         'scheme_construction_type',
 
-        // -------------------
         // Timing & Dates
-        // -------------------
         'scheme_start_year',
         'completion_date',
         'agreement_signed_date',
@@ -49,9 +53,7 @@ class Scheme extends Model
         'planned_completion_date',
         'actual_completed_date',
 
-        // -------------------
         // Status Flags
-        // -------------------
         'source_registration_status',
         'source_conservation',
         'no_subscheme',
@@ -59,47 +61,55 @@ class Scheme extends Model
         'justification_for_delay',
     ];
 
-    /**
-     * Automatically generate a unique scheme_code on creation.
-     */
-    protected static function booted()
+    protected $casts = [
+    'collaborator' => 'array', // <-- this will automatically handle array <-> JSON conversion
+    'source_registration_status' => 'boolean',
+    'source_conservation' => 'boolean',
+    'no_subscheme' => 'boolean',
+];
+
+
+    // -------------------
+    // Booted model events
+    // -------------------
+
+    protected static function booted(): void
     {
-        static::creating(function ($scheme) {
+        static::creating(function (Scheme $scheme) {
             $scheme->scheme_code = self::generateSchemeCode($scheme);
         });
+
+        static::saved(function (Scheme $scheme) {
+            if (isset($scheme->collaborator) && is_array($scheme->collaborator)) {
+                // Sync the donor IDs with the pivot table
+                $scheme->donors()->sync($scheme->collaborator);
+            }
+        });
     }
+
+
 
     /**
      * Generates a unique scheme code based on location, year, and scheme name.
      */
-    protected static function generateSchemeCode($scheme)
+    protected static function generateSchemeCode(Scheme $scheme): string
     {
         $year = now()->year;
-
-        // Count existing schemes with the same name for uniqueness
         $count = self::where('scheme_name', $scheme->scheme_name)->count() + 1;
+        $schemeNameFormatted = str_replace(' ', '_', $scheme->scheme_name);
 
-        // Replace spaces with underscores in scheme name
-        $schemeName = str_replace(' ', '_', $scheme->scheme_name);
-
-        return strtoupper("{$scheme->province}_{$scheme->district}_{$year}_{$schemeName}_{$count}");
+        return strtoupper("{$scheme->province}_{$scheme->district}_{$year}_{$schemeNameFormatted}_{$count}");
     }
 
     // -------------------
     // Relationships
     // -------------------
 
-    /**
-     * Many-to-many relationship with donors via pivot table.
-     */
     public function donors()
     {
         return $this->belongsToMany(Donor::class, 'pivot_donor_scheme');
     }
 
-    /**
-     * One-to-many relationships
-     */
     public function beneficiaries()
     {
         return $this->hasMany(Beneficiary::class);
@@ -110,9 +120,9 @@ class Scheme extends Model
         return $this->hasMany(WaterPoint::class);
     }
 
-    public function ucInfos()
+    public function userCommittees()
     {
-        return $this->hasMany(UserCommitteeInfo::class);
+        return $this->hasMany(UserCommittee::class);
     }
 
     public function publicAudits()
@@ -120,9 +130,9 @@ class Scheme extends Model
         return $this->hasMany(PublicAudit::class);
     }
 
-    public function hhSanitations()
+    public function sanitationMetrics()
     {
-        return $this->hasMany(HouseholdSanitation::class);
+        return $this->hasMany(SanitationMetric::class);
     }
 
     public function maintenances()
@@ -135,11 +145,13 @@ class Scheme extends Model
         return $this->hasMany(InstallmentMonitoring::class);
     }
 
-    /**
-     * One-to-one relationship for structure info
-     */
     public function structureInfo()
     {
         return $this->hasOne(StructureInfo::class);
+    }
+
+    public function structure()
+    {
+        return $this->hasOne(Structure::class);
     }
 }
