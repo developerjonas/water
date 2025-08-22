@@ -24,6 +24,9 @@ class WaterQualityTestResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'water_quality_data';
 
+    protected static ?int $navigationSort = 8;
+    protected static ?string $navigationLabel = "Water Quality Tests";
+
     public static function form(Schema $schema): Schema
     {
         return WaterQualityTestForm::configure($schema);

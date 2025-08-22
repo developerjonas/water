@@ -24,6 +24,12 @@ class UserCommitteeResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'user_committee_data';
 
+    protected static ?string $navigationLabel = "WUSC";
+
+
+    protected static ?int $navigationSort = 6;
+
+
     public static function form(Schema $schema): Schema
     {
         return UserCommitteeForm::configure($schema);

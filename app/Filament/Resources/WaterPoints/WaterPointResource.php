@@ -25,6 +25,10 @@ class WaterPointResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'water_point_data';
 
+        protected static ?int $navigationSort = 7;
+        protected static ?string $navigationLabel = "Water Point List (WPL)";
+
+
     public static function form(Schema $schema): Schema
     {
         return WaterPointForm::configure($schema);

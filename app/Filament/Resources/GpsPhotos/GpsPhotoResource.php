@@ -24,6 +24,9 @@ class GpsPhotoResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'gps_and_photos';
 
+    protected static ?int $navigationSort = 9;
+    protected static ?string $navigationLabel = "Photo & GPS";
+
     public static function form(Schema $schema): Schema
     {
         return GpsPhotoForm::configure($schema);

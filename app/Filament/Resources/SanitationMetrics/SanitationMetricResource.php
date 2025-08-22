@@ -24,6 +24,9 @@ class SanitationMetricResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'sanitation_data';
 
+        protected static ?int $navigationSort = 7;
+
+
     public static function form(Schema $schema): Schema
     {
         return SanitationMetricForm::configure($schema);

@@ -24,6 +24,10 @@ class StructureResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'structure_data';
 
+    protected static ?int $navigationSort = 2;
+
+
+
     public static function form(Schema $schema): Schema
     {
         return StructureForm::configure($schema);
