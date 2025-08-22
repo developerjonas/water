@@ -8,6 +8,9 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Actions\Action;
+use App\Actions\Pdf\PdfExporter;
+
 
 class WaterQualityTestsTable
 {
@@ -49,6 +52,16 @@ class WaterQualityTestsTable
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
+                Action::make('download_pdf')
+                    ->label('Download PDF')
+                    ->icon('heroicon-o-arrow-down')
+                    ->action(function ($record) {
+                        return (new PdfExporter('pdf.water_quality'))
+                            ->setData(['data' => $record])
+                            ->setFilename('water-quality-' . $record->id . '.pdf')
+                            ->download();
+                    })
+                    ->color('primary'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

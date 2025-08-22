@@ -12,6 +12,12 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Filament\Actions\Action;
+use Filament\Actions\BulkAction;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Response;
+
+
 
 class SchemesTable
 {
@@ -27,7 +33,8 @@ class SchemesTable
                     ->searchable(),
                 TextColumn::make('ward_no')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('scheme_code')
                     ->searchable(),
                 TextColumn::make('scheme_name')
@@ -35,40 +42,55 @@ class SchemesTable
                 TextColumn::make('scheme_name_np')
                     ->searchable(),
                 TextColumn::make('sector')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('scheme_technology')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('scheme_type')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('scheme_construction_type')
-                    ->searchable(),
-                TextColumn::make('scheme_start_year'),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('scheme_start_year')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('completion_date')
                     ->date()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('agreement_signed_date')
                     ->date()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('schedule_end_date')
                     ->date()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('started_date')
                     ->date()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('planned_completion_date')
                     ->date()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('actual_completed_date')
                     ->date()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 IconColumn::make('source_registration_status')
-                    ->boolean(),
+                    ->boolean()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 IconColumn::make('source_conservation')
-                    ->boolean(),
+                    ->boolean()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 IconColumn::make('no_subscheme')
-                    ->boolean(),
+                    ->boolean()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('progress_status')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()
@@ -88,12 +110,71 @@ class SchemesTable
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
+                Action::make('download_pdf')
+                    ->label('Download PDF')
+                    ->icon('heroicon-o-document-arrow-down')
+                    ->action(function ($record) {
+                        $pdf = Pdf::loadView('pdf.scheme', ['scheme' => $record])
+                            ->setPaper('A4', 'portrait'); // You can use 'landscape' if needed
+            
+                        return response()->streamDownload(function () use ($pdf) {
+                            echo $pdf->output();
+                        }, 'scheme-' . $record->scheme_code . '.pdf');
+                    }),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                     ForceDeleteBulkAction::make(),
                     RestoreBulkAction::make(),
+                    BulkAction::make('download_csv')
+                        ->label('Download CSV')
+                        ->icon('heroicon-o-arrow-down-tray')
+                        ->action(function ($records) {
+                            // Convert to array
+                            $data = $records->map(function ($record) {
+                                return [
+                                    'Scheme Code' => $record->scheme_code,
+                                    'Scheme Name (EN)' => $record->scheme_name,
+                                    'Scheme Name (NP)' => $record->scheme_name_np,
+                                    'Province' => $record->province,
+                                    'District' => $record->district,
+                                    'Municipality' => $record->mun,
+                                    'Ward No.' => $record->ward_no,
+                                    'Sector' => $record->sector,
+                                    'Technology' => $record->scheme_technology,
+                                    'Scheme Type' => $record->scheme_type,
+                                    'Construction Type' => $record->scheme_construction_type,
+                                    'Start Year' => $record->scheme_start_year,
+                                    'Agreement Signed' => $record->agreement_signed_date,
+                                    'Started Date' => $record->started_date,
+                                    'Planned Completion' => $record->planned_completion_date,
+                                    'Actual Completed' => $record->actual_completed_date,
+                                    'Progress Status' => $record->progress_status,
+                                    'Source Registered' => $record->source_registration_status ? 'Yes' : 'No',
+                                    'Source Conservation' => $record->source_conservation ? 'Yes' : 'No',
+                                    'No Subscheme' => $record->no_subscheme ? 'Yes' : 'No',
+                                ];
+                            });
+
+                            // Generate CSV content
+                            $handle = fopen('php://temp', 'r+');
+                            fputcsv($handle, array_keys($data->first())); // headers
+                            foreach ($data as $row) {
+                                fputcsv($handle, $row);
+                            }
+                            rewind($handle);
+                            $csv = stream_get_contents($handle);
+                            fclose($handle);
+
+                            // Return download response
+                            return Response::streamDownload(function () use ($csv) {
+                                echo $csv;
+                            }, 'schemes-export-' . now()->format('Y-m-d-His') . '.csv');
+                        })
+                        ->requiresConfirmation()
+                        ->color('success'),
+
                 ]),
             ]);
     }
