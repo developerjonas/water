@@ -62,11 +62,11 @@ class Scheme extends Model
     ];
 
     protected $casts = [
-    'collaborator' => 'array', // <-- this will automatically handle array <-> JSON conversion
-    'source_registration_status' => 'boolean',
-    'source_conservation' => 'boolean',
-    'no_subscheme' => 'boolean',
-];
+        'collaborator' => 'array', // <-- this will automatically handle array <-> JSON conversion
+        'source_registration_status' => 'boolean',
+        'source_conservation' => 'boolean',
+        'no_subscheme' => 'boolean',
+    ];
 
 
     // -------------------
@@ -154,4 +154,10 @@ class Scheme extends Model
     {
         return $this->hasOne(Structure::class);
     }
+
+    public function subsidies()
+    {
+        return $this->hasMany(Subsidy::class);
+    }
+
 }
