@@ -2,14 +2,18 @@
 
 namespace App\Filament\Resources\Structures\Schemas;
 
-use App\Models\Scheme;
+// use App\Models\Scheme;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Wizard;
-
+use App\Models\Scheme;
+use App\Models\Province;
+use App\Models\District;
+use App\Models\Municipality;
+use App\Models\Donor;
 class StructureForm
 {
     public static function configure(Schema $schema): Schema
@@ -17,19 +21,74 @@ class StructureForm
         return $schema
             ->components([
                 Wizard::make([
+
                     // Step 1: Scheme Reference
-                    Wizard\Step::make('Scheme Reference')
+                    // Step 1: Scheme & Formation
+                    Wizard\Step::make('Scheme & Formation')
                         ->schema([
+                            Select::make('province')
+                                ->label('Province')
+                                ->options(Province::pluck('name', 'id'))
+                                ->reactive()
+                                ->required()
+                                ->afterStateUpdated(fn($state, callable $set) => $set('district', null)),
+
+                            Select::make('district')
+                                ->label('District')
+                                ->options(function (callable $get) {
+                                    $provinceId = $get('province');
+                                    return $provinceId ? District::where('province_id', $provinceId)->pluck('name', 'id') : [];
+                                })
+                                ->reactive()
+                                ->afterStateUpdated(fn($state, callable $set) => $set('municipality', null))
+                                ->required(),
+
+                            Select::make('municipality')
+                                ->label('Municipality')
+                                ->options(function (callable $get) {
+                                    $districtId = $get('district');
+                                    return $districtId ? Municipality::where('district_id', $districtId)->pluck('name', 'id') : [];
+                                })
+                                ->reactive()
+                                ->required(),
+
+                            Select::make('donor')
+                                ->label('Donor')
+                                ->options(Donor::pluck('name', 'id'))
+                                ->nullable()
+                                ->reactive(),
+
                             Select::make('scheme_code')
                                 ->label('Scheme Code')
-                                ->options(Scheme::all()->pluck('scheme_name', 'scheme_code')->toArray())
+                                ->options(function (callable $get) {
+                                    $province = $get('province');
+                                    $district = $get('district');
+                                    $mun = $get('municipality');
+                                    $donor = $get('donor');
+
+                                    $query = Scheme::query();
+
+                                    if ($province) $query->where('province', $province);
+                                    if ($district) $query->where('district', $district);
+                                    if ($mun) $query->where('mun', $mun);
+                                    if ($donor) $query->whereJsonContains('collaborator', $donor);
+
+                                    return $query->pluck('scheme_code', 'scheme_code');
+                                })
+                                ->required()
                                 ->searchable()
-                                ->required(),
+                                ->placeholder('Select Scheme Code')
+                                ->helperText('Select the related scheme for this UC'),
                         ]),
 
-                    // Step 2: Intakes & RVTs
+                    // Step 2: Intakes & RVTs (Planned / Constructed / Remaining)
                     Wizard\Step::make('Intakes & RVTs')
                         ->schema([
+                            TextInput::make('intakes_planned')
+                                ->label('Intakes Planned')
+                                ->numeric()
+                                ->default(0)
+                                ->required(),
                             TextInput::make('intakes_constructed')
                                 ->label('Intakes Constructed')
                                 ->numeric()
@@ -37,6 +96,12 @@ class StructureForm
                                 ->required(),
                             TextInput::make('intakes_remaining')
                                 ->label('Intakes Remaining')
+                                ->numeric()
+                                ->default(0)
+                                ->required(),
+
+                            TextInput::make('rvts_planned')
+                                ->label('RVTs Planned')
                                 ->numeric()
                                 ->default(0)
                                 ->required(),
@@ -50,11 +115,16 @@ class StructureForm
                                 ->numeric()
                                 ->default(0)
                                 ->required(),
-                        ]),
+                        ])->columns(3),
 
-                    // Step 3: CC/DC/BPT/IC/Valvebox & Other Structures
+                    // Step 3: Structures (Planned / Constructed / Remaining)
                     Wizard\Step::make('Structures')
                         ->schema([
+                            TextInput::make('cc_dc_bpt_planned')
+                                ->label('CC/DC/BPT/IC/Valvebox Planned')
+                                ->numeric()
+                                ->default(0)
+                                ->required(),
                             TextInput::make('cc_dc_bpt_constructed')
                                 ->label('CC/DC/BPT/IC/Valvebox Constructed')
                                 ->numeric()
@@ -65,53 +135,86 @@ class StructureForm
                                 ->numeric()
                                 ->default(0)
                                 ->required(),
+
+                            TextInput::make('other_structures_planned')
+                                ->label('Other Structures Planned')
+                                ->numeric()
+                                ->default(0)
+                                ->required(),
                             TextInput::make('other_structures_constructed')
-                                ->label('Other Structures (FRC/Custom) Constructed')
+                                ->label('Other Structures Constructed')
                                 ->numeric()
                                 ->default(0)
                                 ->required(),
                             TextInput::make('other_structures_remaining')
-                                ->label('Other Structures (FRC/Custom) Remaining')
+                                ->label('Other Structures Remaining')
                                 ->numeric()
                                 ->default(0)
                                 ->required(),
-                        ]),
+                        ])->columns(3),
 
-                    // Step 4: Taps
+                    // Step 4: Taps (Planned / Constructed / Remaining)
                     Wizard\Step::make('Taps')
                         ->schema([
-                            TextInput::make('public_taps')
-                                ->label('Public Taps')
+                            TextInput::make('public_taps_planned')
+                                ->label('Public Taps Planned')
                                 ->numeric()
                                 ->default(0)
                                 ->required(),
-                            TextInput::make('school_taps')
-                                ->label('School Taps')
+                            TextInput::make('public_taps_constructed')
+                                ->label('Public Taps Constructed')
                                 ->numeric()
                                 ->default(0)
                                 ->required(),
-                            TextInput::make('private_taps')
-                                ->label('Private Taps')
+                            TextInput::make('public_taps_remaining')
+                                ->label('Public Taps Remaining')
                                 ->numeric()
                                 ->default(0)
                                 ->required(),
-                            TextInput::make('taps_constructed_progress')
-                                ->label('Taps Constructed Progress')
-                                ->numeric()
-                                ->default(0)
-                                ->required(),
-                            TextInput::make('taps_remaining')
-                                ->label('Taps Remaining')
-                                ->numeric()
-                                ->default(0)
-                                ->required(),
-                        ]),
 
-                    // Step 5: Lines
+                            TextInput::make('school_taps_planned')
+                                ->label('School Taps Planned')
+                                ->numeric()
+                                ->default(0)
+                                ->required(),
+                            TextInput::make('school_taps_constructed')
+                                ->label('School Taps Constructed')
+                                ->numeric()
+                                ->default(0)
+                                ->required(),
+                            TextInput::make('school_taps_remaining')
+                                ->label('School Taps Remaining')
+                                ->numeric()
+                                ->default(0)
+                                ->required(),
+
+                            TextInput::make('private_taps_planned')
+                                ->label('Private Taps Planned')
+                                ->numeric()
+                                ->default(0)
+                                ->required(),
+                            TextInput::make('private_taps_constructed')
+                                ->label('Private Taps Constructed')
+                                ->numeric()
+                                ->default(0)
+                                ->required(),
+                            TextInput::make('private_taps_remaining')
+                                ->label('Private Taps Remaining')
+                                ->numeric()
+                                ->default(0)
+                                ->required(),
+                        ])->columns(3),
+
+                    // Step 5: Lines (Planned / Constructed / Remaining)
                     Wizard\Step::make('Lines')
                         ->schema([
-                            TextInput::make('transmission_line_progress')
-                                ->label('Transmission Line Progress')
+                            TextInput::make('transmission_line_planned')
+                                ->label('Transmission Line Planned')
+                                ->numeric()
+                                ->default(0)
+                                ->required(),
+                            TextInput::make('transmission_line_constructed')
+                                ->label('Transmission Line Constructed')
                                 ->numeric()
                                 ->default(0)
                                 ->required(),
@@ -120,8 +223,14 @@ class StructureForm
                                 ->numeric()
                                 ->default(0)
                                 ->required(),
-                            TextInput::make('distribution_line_progress')
-                                ->label('Distribution Line Progress')
+
+                            TextInput::make('distribution_line_planned')
+                                ->label('Distribution Line Planned')
+                                ->numeric()
+                                ->default(0)
+                                ->required(),
+                            TextInput::make('distribution_line_constructed')
+                                ->label('Distribution Line Constructed')
                                 ->numeric()
                                 ->default(0)
                                 ->required(),
@@ -130,8 +239,14 @@ class StructureForm
                                 ->numeric()
                                 ->default(0)
                                 ->required(),
-                            TextInput::make('private_line_progress')
-                                ->label('Private Line Progress')
+
+                            TextInput::make('private_line_planned')
+                                ->label('Private Line Planned')
+                                ->numeric()
+                                ->default(0)
+                                ->required(),
+                            TextInput::make('private_line_constructed')
+                                ->label('Private Line Constructed')
                                 ->numeric()
                                 ->default(0)
                                 ->required(),
@@ -140,30 +255,17 @@ class StructureForm
                                 ->numeric()
                                 ->default(0)
                                 ->required(),
-                        ]),
+                        ])->columns(3),
 
                     // Step 6: Status & Remarks
                     Wizard\Step::make('Status & Remarks')
                         ->schema([
-                            Toggle::make('mb_submitted_to_municipality')
-                                ->label('MB Submitted to Municipality')
-                                ->required(),
-                            Toggle::make('municipality_contribution_transferred')
-                                ->label('Municipality Contribution Transferred')
-                                ->required(),
-                            Toggle::make('public_hearing_done')
-                                ->label('Public Hearing Done')
-                                ->required(),
-                            Toggle::make('public_review_done')
-                                ->label('Public Review Done')
-                                ->required(),
-                            Toggle::make('final_public_audit_done')
-                                ->label('Final Public Audit Done')
-                                ->required(),
+                            
                             Textarea::make('remarks')
                                 ->label('Remarks for Municipality Contributions')
                                 ->columnSpanFull(),
                         ]),
+
                 ])->columnSpanFull(),
             ]);
     }

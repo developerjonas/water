@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Subsidies\Schemas;
 
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Icetalker\FilamentTableRepeater\Forms\Components\TableRepeater;
 use Filament\Schemas\Schema;
@@ -65,6 +66,21 @@ class SubsidyForm
                         ->searchable()->unique(table: 'subsidies', column: 'scheme_code'),
                     TextInput::make('helvetas_cash')->label('Helvetas Cash')->numeric()->required()->default(0),
                     TextInput::make('helvetas_kind')->label('Helvetas Kind')->numeric()->required()->default(0),
+                    Toggle::make('mb_submitted_to_municipality')
+                                ->label('MB Submitted to Municipality')
+                                ->required(),
+                            Toggle::make('municipality_contribution_transferred')
+                                ->label('Municipality Contribution Transferred')
+                                ->required(),
+                            Toggle::make('public_hearing_done')
+                                ->label('Public Hearing Done')
+                                ->required(),
+                            Toggle::make('public_review_done')
+                                ->label('Public Review Done')
+                                ->required(),
+                            Toggle::make('final_public_audit_done')
+                                ->label('Final Public Audit Done')
+                                ->required(),
                 ]),
                 TableRepeater::make('items')
                     ->relationship('items') // link to SubsidyItem
