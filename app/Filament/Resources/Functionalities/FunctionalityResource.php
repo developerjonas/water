@@ -24,7 +24,7 @@ class FunctionalityResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'functionality_datas';
 
-    protected static ?int $navigationSort = 99;
+    protected static ?int $navigationSort = 11;
 
 
     public static function form(Schema $schema): Schema

@@ -20,7 +20,7 @@ class SubsidyResource extends Resource
 {
     protected static ?string $model = Subsidy::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::DocumentCurrencyDollar;
 
     protected static ?string $recordTitleAttribute = 'subsidy_details';
 
