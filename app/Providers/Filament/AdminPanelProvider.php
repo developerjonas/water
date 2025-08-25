@@ -36,7 +36,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             // ->topNavigation()
             ->sidebarCollapsibleOnDesktop()
-                    ->collapsibleNavigationGroups(false)
+            ->collapsibleNavigationGroups(false)
 
             ->userMenuItems([
                 Action::make('settings')

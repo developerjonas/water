@@ -11,6 +11,14 @@ class WaterQualityEcoliRisk extends ChartWidget
     protected ?string $heading = 'E.coli Risk';
     protected ?string $pollingInterval = null;
 
+protected int|string|array $columnSpan = [
+    'sm' => 1,
+    'md' => 1, // 1 of 3 columns → fits nicely
+    'xl' => 1, // 1 of 4 columns → fits nicely
+];
+
+
+
     // Dropdown state
     public ?string $selectedProvince = null;
     public ?string $selectedDistrict = null;
