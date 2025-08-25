@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\GpsPhotos\Schemas;
 
-use App\Models\Scheme;
+// use App\Models\Scheme;
 use Filament\Schemas\Components\Wizard;
 use Filament\Schemas\Components\Wizard\Step;
 use Filament\Schemas\Components\Section;
@@ -12,6 +12,11 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\FileUpload;
 use Filament\Schemas\Schema;
 
+use App\Models\Scheme;
+use App\Models\Province;
+use App\Models\District;
+use App\Models\Municipality;
+use App\Models\Donor;
 class GpsPhotoForm
 {
     public static function configure(Schema $schema): Schema
