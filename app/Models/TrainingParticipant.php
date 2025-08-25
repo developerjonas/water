@@ -26,6 +26,6 @@ class TrainingParticipant extends Model
     // Optional: relation to Training if you have Training model
     public function training()
     {
-        return $this->belongsTo(Training::class, 'training_code', 'code');
+        return $this->belongsTo(Training::class, 'training_code', 'id');
     }
 }

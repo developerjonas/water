@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\WaterPoints\Schemas;
 
 use App\Models\Scheme;
+use App\Models\SchemeSubSystem;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Select;
@@ -27,7 +28,9 @@ class WaterPointForm
                                         ->label('Scheme Name')
                                         ->required()
                                         ->searchable()
-                                        ->options(fn() => Scheme::orderBy('scheme_name')->pluck('scheme_name', 'scheme_code')->toArray()),
+                                        ->options(fn() => Scheme::orderBy('scheme_name')
+                                            ->pluck('scheme_name', 'scheme_code')
+                                            ->toArray()),
                                 ]),
                         ]),
 
@@ -36,11 +39,19 @@ class WaterPointForm
                             Section::make('Basic Details')
                                 ->schema([
                                     Grid::make(2)->schema([
-                                        TextInput::make('district')->required()->columnSpan(1),
-                                        TextInput::make('municipality')->columnSpan(1),
-                                        TextInput::make('ward_no')->numeric()->columnSpan(1),
-                                        TextInput::make('water_system_name')->required()->columnSpan(1),
-                                        TextInput::make('sub_system')->columnSpan(1),
+                                        Select::make('water_system_name')
+                                            ->label('Water System Name')
+                                            ->required()
+                                            ->searchable()
+                                            ->options(function ($get) {
+                                                $schemeCode = $get('scheme_code');
+                                                if (!$schemeCode) return [];
+                                                return SchemeSubSystem::where('scheme_code', $schemeCode)
+                                                    ->where('is_active', true)
+                                                    ->orderBy('sequence')
+                                                    ->pluck('name', 'name')
+                                                    ->toArray();
+                                            }),
                                         TextInput::make('community_name')->columnSpan(1),
                                         TextInput::make('location_type')->columnSpan(1),
                                         TextInput::make('water_point_name')->columnSpan(1),

@@ -15,16 +15,13 @@ return new class extends Migration
             $table->string('scheme_code');
             $table->foreign('scheme_code')->references('scheme_code')->on('schemes')->onDelete('cascade');
 
-            $table->string('district')->nullable();
-            $table->string('municipality')->nullable(); // Palika
-            $table->integer('ward_no')->nullable();
-            $table->string('water_system_name')->nullable();
-            $table->string('sub_system')->nullable();
+            // Water system & point info
+            $table->string('water_system_name')->nullable(); // Dropdown populated from scheme_sub_systems
             $table->string('community_name')->nullable();
             $table->string('location_type')->nullable();
             $table->string('water_point_name')->nullable();
 
-            // Population and user stats
+            // Population & users
             $table->integer('hh')->default(0);
             $table->integer('taps')->default(0);
             $table->integer('population')->default(0);
@@ -37,6 +34,9 @@ return new class extends Migration
             $table->integer('health_centers')->default(0);
             $table->integer('healthposts')->default(0);
 
+            // Other info
+            $table->text('source_details')->nullable();
+            $table->text('hardware_details')->nullable();
             $table->text('remarks')->nullable();
             $table->decimal('latitude', 10, 7)->nullable();
             $table->decimal('longitude', 10, 7)->nullable();

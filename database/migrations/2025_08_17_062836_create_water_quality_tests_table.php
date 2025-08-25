@@ -9,8 +9,9 @@ return new class extends Migration {
     {
         Schema::create('water_quality_tests', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('water_point_id')->constrained('water_points')->onDelete('cascade');
+
             $table->string('scheme_code'); // FK to schemes
-            $table->string('tested_point'); // e.g., school, BSS2
             $table->integer('ecoli')->nullable();
             $table->integer('coliform')->nullable();
             $table->float('ph')->nullable();

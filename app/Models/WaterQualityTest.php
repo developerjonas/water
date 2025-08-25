@@ -13,6 +13,7 @@ class WaterQualityTest extends Model
 
     protected $fillable = [
         'scheme_code',
+        'water_point_id',
         'tested_point',
         'ecoli',
         'coliform',
@@ -53,4 +54,10 @@ class WaterQualityTest extends Model
         if ($this->coliform <= 100) return 'Risk';
         return 'High Risk';
     }
+
+    public function waterPoint()
+    {
+        return $this->belongsTo(WaterPoint::class);
+    }
+
 }

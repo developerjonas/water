@@ -19,7 +19,6 @@ return new class extends Migration {
             $table->string('child_club')->nullable();
             $table->string('school_management_committee')->nullable();
             
-            $table->integer('number_of_schemes')->default(0);
             $table->string('event_name')->nullable();
 
             $table->timestamps();

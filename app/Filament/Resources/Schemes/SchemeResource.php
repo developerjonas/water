@@ -17,7 +17,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-
+use UnitEnum;
 class SchemeResource extends Resource
 {
     protected static ?string $model = Scheme::class;
@@ -47,7 +47,6 @@ class SchemeResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
         ];
     }
 

@@ -10,68 +10,17 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Wizard;
 use App\Models\Donor;
+use App\Models\Province;
+use App\Models\District;
+use App\Models\Municipality;
 
 class SchemeForm
 {
     public static function configure(Schema $schema): Schema
     {
-        // Provinces
-        $provinces = [
-            'KAR' => 'Karnali (6)',
-            'SUD' => 'Sudurpashchim (7)',
-        ];
+        $provinces = Province::where('is_active', true)->pluck('name', 'id')->toArray();
 
-        // Districts
-        $districts = [
-            'KAR' => [
-                'SUR' => 'Surkhet',
-                'DAI' => 'Dailekh',
-                'JUM' => 'Jumla',
-                'DOL' => 'Dolpa',
-                'HUM' => 'Humla',
-                'SAL' => 'Salyan',
-                'JAJ' => 'Jajarkot',
-                'RUK_W' => 'Rukum West',
-                'KAL' => 'Kalikot',
-                'MUG' => 'Mugu',
-            ],
-            'SUD' => [
-                'BHA' => 'Bajhang',
-                'KAI' => 'Kailali',
-                'KAN' => 'Kanchanpur',
-                'DOT' => 'Doti',
-                'DDL' => 'Dadeldhura',
-                'BAI' => 'Baitadi',
-                'BAJ' => 'Bajura',
-                'DAR' => 'Darchula',
-                'AAC' => 'Achham',
-            ],
-        ];
-
-        // Municipalities / Rural Municipalities
-        $municipalities = [
-            'SUR' => ['Birendranagar' => 'Birendranagar Municipality', 'Gurbhakot' => 'Gurbhakot Municipality', 'Bheriganga' => 'Bheriganga Municipality'],
-            'DAI' => ['ChamundaBindrasaini' => 'Chamunda Bindrasaini Municipality', 'Dullu' => 'Dullu Municipality', 'Narayan' => 'Narayan Municipality'],
-            'JUM' => ['Chandannath' => 'Chandannath Municipality', 'Guthichaur' => 'Guthichaur Rural Municipality', 'Hima' => 'Hima Rural Municipality'],
-            'DOL' => ['ThuliBheri' => 'Thuli Bheri Municipality', 'Dolpa' => 'Dolpa Rural Municipality'],
-            'HUM' => ['Simkot' => 'Simkot Municipality', 'Namkha' => 'Namkha Rural Municipality'],
-            'SAL' => ['Salyan' => 'Salyan Municipality', 'Bagchaur' => 'Bagchaur Rural Municipality'],
-            'JAJ' => ['Chhedagad' => 'Chhedagad Municipality', 'Kandel' => 'Kandel Rural Municipality'],
-            'RUK_W' => ['Music' => 'Musikot Municipality', 'Rukum' => 'Rukum Rural Municipality'],
-            'KAL' => ['Kalikot' => 'Kalikot Municipality', 'Palata' => 'Palata Rural Municipality'],
-            'MUG' => ['Mugu' => 'Mugu Municipality', 'Soru' => 'Soru Rural Municipality'],
-            'BHA' => ['Bajhang' => 'Bajhang Municipality', 'JayaPrithvi' => 'Jaya Prithvi Rural Municipality'],
-            'KAI' => ['Dhangadhi' => 'Dhangadhi Municipality', 'Lamkichuha' => 'Lamkichuha Municipality'],
-            'KAN' => ['Mahakali' => 'Mahakali Municipality', 'Panchadewal' => 'Panchadewal Rural Municipality'],
-            'DOT' => ['Doti' => 'Doti Municipality', 'Shikhar' => 'Shikhar Rural Municipality'],
-            'DDL' => ['Dadeldhura' => 'Dadeldhura Municipality', 'Alital' => 'Alital Rural Municipality'],
-            'BAI' => ['Baitadi' => 'Baitadi Municipality', 'Melauli' => 'Melauli Rural Municipality'],
-            'BAJ' => ['Bajura' => 'Bajura Municipality', 'Budhiganga' => 'Budhiganga Rural Municipality'],
-            'DAR' => ['Darchula' => 'Darchula Municipality', 'Api' => 'Api Rural Municipality'],
-            'AAC' => ['Mangalsen' => 'Mangalsen Municipality', 'Kamalbazar' => 'Kamalbazar Municipality'],
-        ];
         $donorOptions = Donor::pluck('name', 'id')->toArray();
-
 
         return $schema
             ->components([
@@ -85,17 +34,34 @@ class SchemeForm
                                 ->reactive()
                                 ->required()
                                 ->searchable(),
+
                             Select::make('district')
                                 ->label('District')
-                                ->options(fn($get) => $get('province') ? $districts[$get('province')] ?? [] : [])
+                                ->options(
+                                    fn($get) => $get('province')
+                                    ? District::where('province_id', $get('province'))
+                                        ->where('is_active', true)
+                                        ->pluck('name', 'id')
+                                        ->toArray()
+                                    : []
+                                )
                                 ->reactive()
                                 ->required()
                                 ->searchable(),
+
                             Select::make('mun')
                                 ->label('Municipality / Rural Municipality')
-                                ->options(fn($get) => $get('district') ? $municipalities[$get('district')] ?? [] : [])
+                                ->options(
+                                    fn($get) => $get('district')
+                                    ? Municipality::where('district_id', $get('district'))
+                                        ->where('is_active', true)
+                                        ->pluck('name', 'id')
+                                        ->toArray()
+                                    : []
+                                )
                                 ->required()
                                 ->searchable(),
+
                             TextInput::make('ward_no')
                                 ->label('Ward Number')
                                 ->numeric()
@@ -123,16 +89,20 @@ class SchemeForm
                                 ])
                                 ->searchable()
                                 ->nullable(),
-                            TextInput::make('scheme_technology')
-                                ->label('Technology')
+                            Select::make('scheme_technology')
+                                ->label('Scheme Technology')
+                                ->options([
+                                    'WS' => 'Gravity',
+                                    'SAN' => 'Solar Lift',
+                                ])
+                                ->searchable()
                                 ->nullable(),
+
                             Select::make('scheme_type')
                                 ->label('Scheme Type')
                                 ->options([
                                     'DWS' => 'DWS',
                                     'MUS' => 'MUS',
-                                    'New' => 'New',
-                                    'Rehab' => 'Rehab',
                                 ])
                                 ->default('DWS')
                                 ->required(),
@@ -152,21 +122,37 @@ class SchemeForm
                             TextInput::make('scheme_start_year')
                                 ->label('Start Year')
                                 ->numeric()
-                                ->required(),
-                            DatePicker::make('completion_date')
-                                ->label('Expected Completion Date'),
-                            DatePicker::make('agreement_signed_date')
-                                ->label('Agreement Signed Date'),
-                            DatePicker::make('schedule_end_date')
-                                ->label('Scheduled End Date'),
-                            DatePicker::make('started_date')
-                                ->label('Start Date of Construction'),
-                            DatePicker::make('planned_completion_date')
-                                ->label('Planned Completion Date'),
-                            DatePicker::make('actual_completed_date')
-                                ->label('Actual Completion Date'),
-                        ]),
+                                ->required()
+                                ->columnSpan(2),
 
+                            DatePicker::make('completion_date')
+                                ->label('Expected Completion Date')
+                                ->columnSpan(1),
+
+                            DatePicker::make('planned_completion_date')
+                                ->label('Planned Completion Date')
+                                ->columnSpan(1),
+
+                            DatePicker::make('schedule_end_date')
+                                ->label('Scheduled End Date')
+                                ->columnSpan(1),
+
+                            DatePicker::make('started_date')
+                                ->label('Start Date of Construction')
+                                ->columnSpan(1),
+
+                            DatePicker::make('agreement_signed_date')
+                                ->label('Agreement Signed Date')
+                                ->columnSpan(1),
+
+                            DatePicker::make('actual_completed_date')
+                                ->label('Actual Completion Date')
+                                ->columnSpan(1),
+                        ])
+                        ->columns(2), // 2 columns grid layout
+
+
+                    // Step 5: Contributors
                     Wizard\Step::make('Contributors')
                         ->schema([
                             Select::make('collaborator')
@@ -177,7 +163,7 @@ class SchemeForm
                                 ->required(),
                         ]),
 
-                    // Step 5: Status Flags
+                    // Step 6: Status Flags
                     Wizard\Step::make('Status')
                         ->schema([
                             Toggle::make('source_registration_status')
@@ -189,9 +175,15 @@ class SchemeForm
                             Toggle::make('no_subscheme')
                                 ->label('No Subscheme')
                                 ->required(),
-                            TextInput::make('progress_status')
-                                ->label('Progress Status')
-                                ->nullable(),
+                            Select::make('progress_status')
+                                ->label('Construction Type')
+                                ->options([
+                                    'Completed' => 'Completed',
+                                    'Ongoing' => 'Ongoing',
+                                    'Dropout' => 'Dropout',
+                                ])
+                                ->default('New')
+                                ->required(),
                             Textarea::make('justification_for_delay')
                                 ->label('Justification for Delay')
                                 ->columnSpanFull(),

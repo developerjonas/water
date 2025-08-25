@@ -13,44 +13,29 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Repeater;
+use App\Models\TrainingType;
 
 class TrainingForm
 {
     public static function schema(): array
     {
-        $trainingTypes = [
-            'Village Maintenance Workers (VMW)',
-            'Mason Training',
-            'Refresher Training for Village Maintenance Workers (VMW)',
-            'Workshop on Operation and Maintenance of Water Supply Schemes',
-            'Municipal-Level Review Workshop on Total Sanitation and Hygiene',
-            'Workshop with WASH Entrepreneurs',
-            'FCHVs Training',
-            'Orientation on Sanitation and Hygiene in Schools of Drinking Water Scheme Coverage Areas',
-            'Orientation for WASH in Schools',
-            'Sanitation and Hygiene Days Celebration in Schools of Drinking Water Scheme Coverage Areas',
-            'Training on Climate Change and 3R Techniques',
-            'Orientation Regarding Proper Use and Maintenance of Water Filters',
-            'One-Day Orientation on Repair and Maintenance Work Plan of Drinking Water Schemes',
-            'Review and Coordination Meeting with Service Providers, Municipalities, and Stakeholders',
-            'Training/Seminar for Preparation of Water Use Master Plan and WASH Plan',
-            'Water Safety Plan (WSP) Training',
-            'Training on WUMP/WASH Plan Approach for Local Organizations',
-            'Procurement Training for User Committees',
-            'Ward-Level Review Program on Sanitation and Hygiene',
-            'Collaboration with Local Stakeholders to Celebrate Sanitation Week',
-            'Support to Celebrate Different Days',
-            'Public Hearing',
-            'Public Review',
-            'Final Public Audit',
-            'Management Training I',
-            'Management Training II',
-            'Accounting Management Training',
-            'Maintenance, Cleaning, and Hygiene Promotion Training (WASH Trigger)',
-            'Conduct Village Hygiene Literacy Class',
-            'One-Day Orientation Seminar on Efficient Use of Water and Micro-Irrigation Management',
-            'Other',
-        ];
+
+        // For the training type (level)
+        $trainingLevels = TrainingType::query()
+            ->where('is_active', true)
+            ->distinct('level')
+            ->pluck('level', 'level')
+            ->filter() // removes null levels if any
+            ->toArray();
+
+        // For the training name (specific trainings)
+        $trainingNames = TrainingType::query()
+            ->where('is_active', true)
+            ->orderBy('name')
+            ->pluck('name', 'id')
+            ->toArray();
+
+
 
         return [
             Wizard::make([
@@ -104,18 +89,30 @@ class TrainingForm
                             ->schema([
                                 Grid::make(3)->schema([
                                     Select::make('training_type')
-                                        ->label('Training Type')
-                                        ->options($trainingTypes)
+                                        ->label('Training Level')
+                                        ->options($trainingLevels)
                                         ->searchable()
                                         ->reactive()
                                         ->afterStateUpdated(function ($state, $set) {
-                                            if ($state !== 'Other') {
-                                                $set('other_training', null);
+                                            if (!$state) {
+                                                $set('training_name', null);
                                             }
                                         }),
-                                    TextInput::make('training_name')
-                                        ->label('Specify Other Training')
-                                        ->columnSpanFull(),
+
+                                    Select::make('training_name')
+                                        ->label('Training Name')
+                                        ->options(function (Get $get) {
+                                            $level = $get('training_type'); // filter by level dynamically
+                                            return TrainingType::query()
+                                                ->where('is_active', true)
+                                                ->when($level, fn($q) => $q->where('level', $level))
+                                                ->orderBy('name')
+                                                ->pluck('name', 'id')
+                                                ->toArray();
+                                        })
+                                        ->searchable()
+                                        ->required()
+                                        ->reactive(),
                                     DatePicker::make('training_start_date')
                                         ->columnSpan(1),
                                     DatePicker::make('training_end_date')
@@ -201,9 +198,6 @@ class TrainingForm
                                     ->label('Child Club'),
                                 TextInput::make('school_management_committee')
                                     ->label('School Management Committee'),
-                                TextInput::make('number_of_schemes')
-                                    ->label('Number of Schemes')
-                                    ->numeric(),
                                 TextInput::make('event_name')
                                     ->label('Name of Event'),
                             ])

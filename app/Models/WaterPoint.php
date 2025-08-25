@@ -10,7 +10,7 @@ class WaterPoint extends Model
     use HasFactory;
 
     protected $fillable = [
-        'scheme_id', 'district', 'palika', 'water_system_name', 'location_type',
+        'scheme_code', 'water_point_id','district', 'palika', 'water_system_name', 'location_type',
         'water_point_name', 'source_details', 'hardware_details',
         'latitude', 'longitude', 'photo_url'
     ];
@@ -18,5 +18,10 @@ class WaterPoint extends Model
     public function scheme()
     {
         return $this->belongsTo(Scheme::class);
+    }
+
+    public function qualityTests()
+    {
+        return $this->hasMany(WaterQualityTest::class);
     }
 }

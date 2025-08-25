@@ -160,4 +160,12 @@ class Scheme extends Model
         return $this->hasMany(Subsidy::class);
     }
 
+    // Scheme.php
+public function subSystems()
+{
+    return $this->hasMany(SchemeSubSystem::class, 'scheme_code', 'scheme_code');
+}
+
+
+
 }
