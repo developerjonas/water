@@ -27,7 +27,7 @@ class UserCommitteeResource extends Resource
     protected static ?string $navigationLabel = "WUSC";
 
 
-    protected static ?int $navigationSort = 6;
+    protected static ?int $navigationSort = 5;
 
 
     public static function form(Schema $schema): Schema

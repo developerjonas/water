@@ -24,7 +24,7 @@ class BeneficiaryResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'beneficiary_data';
 
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 4;
 
 
     public static function form(Schema $schema): Schema

@@ -28,7 +28,7 @@ class TrainingResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'training_data';
 
-    protected static ?int $navigationSort = 4;
+    protected static ?int $navigationSort = 6;
 
     public static function form(Schema $schema): Schema
     {

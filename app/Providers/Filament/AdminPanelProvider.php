@@ -36,6 +36,8 @@ class AdminPanelProvider extends PanelProvider
             ])
             // ->topNavigation()
             ->sidebarCollapsibleOnDesktop()
+                    ->collapsibleNavigationGroups(false)
+
             ->userMenuItems([
                 Action::make('settings')
                     // ->url(fn(): string => Settings::getUrl())

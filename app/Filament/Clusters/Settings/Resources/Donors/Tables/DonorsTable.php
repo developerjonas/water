@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\Donors\Tables;
+namespace App\Filament\Clusters\Settings\Resources\Donors\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -19,51 +19,23 @@ class DonorsTable
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->label('Donor Name')
-                    ->searchable()
-                    ->sortable(),
-
-                TextColumn::make('contact_person')
-                    ->label('Contact Person(s)')
-                    ->formatStateUsing(function ($state) {
-                        if (blank($state)) {
-                            return 'N/A';
-                        }
-                        if (is_string($state) && str_starts_with($state, '[')) {
-                            $contacts = json_decode($state, true);
-                            return implode(', ', $contacts ?: []);
-                        }
-                        return $state;
-                    })
                     ->searchable(),
-
                 TextColumn::make('email')
-                    ->label('Email Address')
+                    ->label('Email address')
                     ->searchable(),
-
                 TextColumn::make('phone')
-                    ->label('Phone Number')
                     ->searchable(),
-
                 TextColumn::make('address')
-                    ->label('Address')
                     ->searchable(),
-
                 TextColumn::make('deleted_at')
-                    ->label('Deleted At')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true)
-                    ->formatStateUsing(fn($state) => $state ?: 'Active'),
-
-                TextColumn::make('created_at')
-                    ->label('Created At')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-
+                TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
-                    ->label('Updated At')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

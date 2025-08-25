@@ -26,8 +26,8 @@ class SchemeResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'scheme_data';
 
-protected static ?int $navigationSort = 1;
-protected static ?string $navigationLabel = "Scheme Info";
+    protected static ?int $navigationSort = 1;
+    protected static ?string $navigationLabel = "Scheme Info";
 
     public static function form(Schema $schema): Schema
     {
