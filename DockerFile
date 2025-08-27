@@ -1,10 +1,13 @@
-# Use PHP 8.2 FPM
+# Base image
 FROM php:8.2-fpm
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     git unzip curl libzip-dev zip npm libpng-dev libjpeg-dev libfreetype6-dev libonig-dev \
-    && docker-php-ext-install pdo_mysql zip intl gd
+    libicu-dev pkg-config
+
+# Install PHP extensions
+RUN docker-php-ext-install pdo_mysql zip intl gd
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
@@ -32,5 +35,5 @@ RUN php artisan config:cache
 # Expose port
 EXPOSE 8000
 
-# Start Laravel server
+# Start Laravel
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
