@@ -1,17 +1,18 @@
-# Base image
+# Base PHP image
 FROM php:8.3-fpm
+
+# Set working directory
+WORKDIR /var/www/html
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     git unzip curl libzip-dev zip npm libpng-dev libjpeg-dev libfreetype6-dev libonig-dev \
     libicu-dev pkg-config libpq-dev \
-    && docker-php-ext-install pdo_mysql pdo_pgsql zip intl gd
+    && docker-php-ext-install pdo_mysql pdo_pgsql zip intl gd \
+    && apt-get clean
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-
-# Set working directory
-WORKDIR /var/www/html
 
 # Copy project files
 COPY . .
@@ -19,18 +20,29 @@ COPY . .
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Install Node dependencies and build frontend
-RUN npm install
+# Install Node dependencies
+RUN npm ci
+
+# Build frontend assets (for production)
 RUN npm run build
 
-# Clear and cache Laravel config (skip database-dependent commands at build time)
+# Clear Laravel caches
 RUN php artisan config:clear || true
 RUN php artisan route:clear || true
 RUN php artisan view:clear || true
 RUN php artisan cache:clear || true
 
-# Expose port 8080 for Sevalla
-EXPOSE 8080
+# Expose ports for PHP and Vite (dev server)
+EXPOSE 8080 5173
 
-# Start Laravel on 0.0.0.0:8080
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8080"]
+# Entry point: can run in dev or prod
+# DEV: php artisan serve + vite dev
+# PROD: only php artisan serve (after npm run build)
+CMD ["sh", "-c", "\
+    if [ \"$APP_ENV\" = 'production' ]; then \
+        php artisan serve --host=0.0.0.0 --port=8080; \
+    else \
+        php artisan serve --host=0.0.0.0 --port=8080 & \
+        npm run dev -- --host; \
+    fi \
+"]
