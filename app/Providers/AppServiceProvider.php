@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Filament\Facades\Filament;
+use Illuminate\Support\Facades\URL;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -27,5 +28,10 @@ class AppServiceProvider extends ServiceProvider
         //         fn() => view('filament.components.brand')
         //     );
         // });
+
+        if ($this->app->environment('production')) {
+            URL::forceScheme('https');
+        }
     }
+
 }
