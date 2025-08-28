@@ -20,7 +20,7 @@ class FunctionalityResource extends Resource
 {
     protected static ?string $model = Functionality::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::AdjustmentsVertical;
 
     protected static ?string $recordTitleAttribute = 'functionality_datas';
 
