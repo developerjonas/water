@@ -1,5 +1,5 @@
-# Base PHP image
-FROM php:8.3-fpm
+# Base PHP + Apache image
+FROM php:8.3-apache
 
 # Set working directory
 WORKDIR /var/www/html
@@ -9,31 +9,39 @@ RUN apt-get update && apt-get install -y \
     git unzip curl libzip-dev zip npm libpng-dev libjpeg-dev libfreetype6-dev libonig-dev \
     libicu-dev pkg-config libpq-dev \
     && docker-php-ext-install pdo_mysql pdo_pgsql zip intl gd \
-    && apt-get clean
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install Composer
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+# Enable Apache mod_rewrite for Laravel routing
+RUN a2enmod rewrite
+
+# Set Apache document root to Laravel public folder
+ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf \
+    && sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
 # Copy application files
 COPY . .
 
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Install Node dependencies
-RUN npm ci
-
-# Build production frontend assets
-RUN npm run build
+# Install Node dependencies and build frontend assets
+RUN npm ci && npm run build
 
 # Cache Laravel config, routes, views
-RUN php artisan config:cache || true
-RUN php artisan route:cache || true
-RUN php artisan view:cache || true
-RUN php artisan cache:clear || true
+RUN php artisan config:cache \
+    && php artisan route:cache \
+    && php artisan view:cache \
+    && php artisan cache:clear
 
-# Expose port for Laravel
-EXPOSE 8080
+# Set proper permissions for storage and bootstrap/cache
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Entrypoint: Serve Laravel in production
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8080"]
+# Expose port 80 for Apache
+EXPOSE 80
+
+# Start Apache in foreground
+CMD ["apache2-foreground"]
