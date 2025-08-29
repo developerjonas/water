@@ -148,14 +148,8 @@ class SchemeForm
                                 ->label('Actual Completion Date')
                                 ->columnSpan(1),
 
-
-
-
-
-
                         ])
                         ->columns(2), // 2 columns grid layout
-
 
                     // Step 5: Contributors
                     Wizard\Step::make('Contributors')
