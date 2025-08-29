@@ -18,7 +18,7 @@ class SchemeForm
 {
     public static function configure(Schema $schema): Schema
     {
-        $provinces = Province::where('is_active', true)->pluck('name', 'id')->toArray();
+        $provinces = Province::where('is_active', true)->pluck('name', 'province_code')->toArray();
 
         $donorOptions = Donor::pluck('name', 'id')->toArray();
 
@@ -39,9 +39,9 @@ class SchemeForm
                                 ->label('District')
                                 ->options(
                                     fn($get) => $get('province')
-                                    ? District::where('province_id', $get('province'))
+                                    ? District::where('province_code', $get('province'))
                                         ->where('is_active', true)
-                                        ->pluck('name', 'id')
+                                        ->pluck('name', 'district_code')
                                         ->toArray()
                                     : []
                                 )
@@ -53,9 +53,9 @@ class SchemeForm
                                 ->label('Municipality / Rural Municipality')
                                 ->options(
                                     fn($get) => $get('district')
-                                    ? Municipality::where('district_id', $get('district'))
+                                    ? Municipality::where('district_code', $get('district'))
                                         ->where('is_active', true)
-                                        ->pluck('name', 'id')
+                                        ->pluck('name', 'municipality_code')
                                         ->toArray()
                                     : []
                                 )
@@ -125,21 +125,32 @@ class SchemeForm
                                 ->required()
                                 ->columnSpan(2),
 
+                            DatePicker::make('agreement_signed_date')
+                                ->label('Agreement Signed Date')
+                                ->columnSpan(1),
+                            DatePicker::make('agreement_end_date')
+                                ->label('Agreement End Date')
+                                ->columnSpan(1),
+
+                            DatePicker::make('started_date')
+                                ->label('Start Date of Construction')
+                                ->columnSpan(1),
+
                             DatePicker::make('planned_completion_date')
                                 ->label('Planned Completion Date')
+                                ->columnSpan(1),
+
+                            DatePicker::make('appendment_date')
+                                ->label('Appendment Date')
                                 ->columnSpan(1),
 
                             DatePicker::make('actual_completed_date')
                                 ->label('Actual Completion Date')
                                 ->columnSpan(1),
-                                
-                            DatePicker::make('started_date')
-                                ->label('Start Date of Construction')
-                                ->columnSpan(1),
 
-                            DatePicker::make('agreement_signed_date')
-                                ->label('Agreement Signed Date')
-                                ->columnSpan(1),
+
+
+
 
 
                         ])
