@@ -23,9 +23,8 @@ class SubsidyResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::DocumentCurrencyDollar;
 
     protected static ?string $recordTitleAttribute = 'subsidy_details';
-
-        protected static ?int $navigationSort = 2;
-    protected static ?string $navigationLabel = "Scheme Budget";
+    protected static ?int $navigationSort = 2;
+    protected static ?string $navigationLabel = "Scheme Subsidy";
 
     public static function form(Schema $schema): Schema
     {

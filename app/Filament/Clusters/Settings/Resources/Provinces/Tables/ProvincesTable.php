@@ -16,7 +16,7 @@ class ProvincesTable
     {
         return $table
             ->columns([
-                TextColumn::make('code')
+                TextColumn::make('province_code')
                     ->searchable(),
                 TextColumn::make('name')
                     ->searchable(),

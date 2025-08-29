@@ -9,7 +9,7 @@ class Municipality extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['district_id', 'code', 'name', 'is_active'];
+    protected $fillable = ['district_code', 'code', 'name', 'is_active'];
 
     public function district()
     {

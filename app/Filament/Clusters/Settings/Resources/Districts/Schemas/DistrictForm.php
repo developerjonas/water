@@ -12,13 +12,12 @@ class DistrictForm
     {
         return $schema
             ->components([
-                TextInput::make('province_id')
-                    ->required()
-                    ->numeric(),
-                TextInput::make('code')
-                    ->required(),
+                TextInput::make('province_code')
+                    ->required()->readOnly(),
+                TextInput::make('district_code')
+                    ->required()->readOnly(),
                 TextInput::make('name')
-                    ->required(),
+                    ->required()->readOnly(),
                 Toggle::make('is_active')
                     ->required(),
             ]);

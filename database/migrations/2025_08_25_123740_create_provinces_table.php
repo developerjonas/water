@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('provinces', function (Blueprint $table) {
             $table->id();
-            $table->string('code', 10)->unique(); // e.g. KAR
+            $table->string('province_code', 10)->unique(); // e.g. KAR
             $table->string('name'); // e.g. Karnali
             $table->boolean('is_active')->default(false); // Active or not
             $table->timestamps();

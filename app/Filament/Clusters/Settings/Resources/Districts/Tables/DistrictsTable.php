@@ -16,10 +16,10 @@ class DistrictsTable
     {
         return $table
             ->columns([
-                TextColumn::make('province_id')
+                TextColumn::make('province_code')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('code')
+                TextColumn::make('district_code')
                     ->searchable(),
                 TextColumn::make('name')
                     ->searchable(),

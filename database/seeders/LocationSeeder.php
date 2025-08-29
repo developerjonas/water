@@ -66,15 +66,15 @@ class LocationSeeder extends Seeder
 
         foreach ($provinces as $pCode => $pName) {
             $province = Province::create([
-                'code' => $pCode,
+                'province_code' => $pCode,
                 'name' => $pName,
                 'is_active' => false,
             ]);
 
             foreach ($districts[$pCode] as $dCode => $dName) {
                 $district = District::create([
-                    'province_id' => $province->id,
-                    'code' => $dCode,
+                    'province_code' => $province->province_code, // link via code
+                    'district_code' => $dCode,
                     'name' => $dName,
                     'is_active' => false,
                 ]);
@@ -82,8 +82,8 @@ class LocationSeeder extends Seeder
                 if (isset($municipalities[$dCode])) {
                     foreach ($municipalities[$dCode] as $mCode => $mName) {
                         Municipality::create([
-                            'district_id' => $district->id,
-                            'code' => $mCode,
+                            'district_code' => $district->district_code, // link via code
+                            'municipality_code' => $mCode,
                             'name' => $mName,
                             'is_active' => false,
                         ]);

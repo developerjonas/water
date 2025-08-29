@@ -12,12 +12,11 @@ class MunicipalityForm
     {
         return $schema
             ->components([
-                TextInput::make('district_id')
-                    ->required()
-                    ->numeric(),
-                TextInput::make('code'),
+                TextInput::make('district_code')
+                    ->required()->readOnly(),
+                TextInput::make('municipality_code')->readOnly(),
                 TextInput::make('name')
-                    ->required(),
+                    ->required()->readOnly(),
                 Toggle::make('is_active')
                     ->required(),
             ]);

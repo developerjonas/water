@@ -58,9 +58,7 @@ class MunicipalityResource extends Resource
     {
         return [
             'index' => ListMunicipalities::route('/'),
-            'create' => CreateMunicipality::route('/create'),
             'view' => ViewMunicipality::route('/{record}'),
-            'edit' => EditMunicipality::route('/{record}/edit'),
         ];
     }
 }

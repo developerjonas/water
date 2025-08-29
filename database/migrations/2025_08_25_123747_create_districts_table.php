@@ -11,13 +11,20 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('districts', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('province_id')->constrained()->cascadeOnDelete();
-            $table->string('code', 10)->unique(); // e.g. SUR
-            $table->string('name'); // e.g. Surkhet
-            $table->boolean('is_active')->default(false); // Active or not
+            $table->id(); // keep primary key for districts
+            $table->string('province_code', 10); // FK to provinces.code
+            $table->string('district_code', 10)->unique(); // district code
+            $table->string('name'); // district name
+            $table->boolean('is_active')->default(false); // active flag
             $table->timestamps();
+
+            // Foreign key constraint to provinces.code
+            $table->foreign('province_code')
+                ->references('province_code')
+                ->on('provinces')
+                ->cascadeOnDelete();
         });
+
     }
 
     /**

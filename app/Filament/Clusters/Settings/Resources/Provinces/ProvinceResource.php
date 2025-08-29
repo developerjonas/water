@@ -59,9 +59,7 @@ class ProvinceResource extends Resource
     {
         return [
             'index' => ListProvinces::route('/'),
-            'create' => CreateProvince::route('/create'),
             'view' => ViewProvince::route('/{record}'),
-            'edit' => EditProvince::route('/{record}/edit'),
         ];
     }
 }

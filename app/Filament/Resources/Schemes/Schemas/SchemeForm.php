@@ -125,18 +125,14 @@ class SchemeForm
                                 ->required()
                                 ->columnSpan(2),
 
-                            DatePicker::make('completion_date')
-                                ->label('Expected Completion Date')
-                                ->columnSpan(1),
-
                             DatePicker::make('planned_completion_date')
                                 ->label('Planned Completion Date')
                                 ->columnSpan(1),
 
-                            DatePicker::make('schedule_end_date')
-                                ->label('Scheduled End Date')
+                            DatePicker::make('actual_completed_date')
+                                ->label('Actual Completion Date')
                                 ->columnSpan(1),
-
+                                
                             DatePicker::make('started_date')
                                 ->label('Start Date of Construction')
                                 ->columnSpan(1),
@@ -145,9 +141,7 @@ class SchemeForm
                                 ->label('Agreement Signed Date')
                                 ->columnSpan(1),
 
-                            DatePicker::make('actual_completed_date')
-                                ->label('Actual Completion Date')
-                                ->columnSpan(1),
+
                         ])
                         ->columns(2), // 2 columns grid layout
 

@@ -17,6 +17,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use UnitEnum;
+use Illuminate\Database\Eloquent\Model; // <-- important!
 
 class DistrictResource extends Resource
 {
@@ -24,7 +25,7 @@ class DistrictResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-        protected static string | UnitEnum | null $navigationGroup = 'Location';
+    protected static string|UnitEnum|null $navigationGroup = 'Location';
 
     protected static bool $navigationGroupCollapsible = false; // NON-collapsible
 
@@ -47,6 +48,21 @@ class DistrictResource extends Resource
         return DistrictsTable::configure($table);
     }
 
+    public static function canCreate(): bool
+    {
+        return false; // disable creating new provinces
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return false; // disable deletion
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return true; // allow editing, but we’ll restrict fields
+    }
+
     public static function getRelations(): array
     {
         return [
@@ -58,9 +74,7 @@ class DistrictResource extends Resource
     {
         return [
             'index' => ListDistricts::route('/'),
-            'create' => CreateDistrict::route('/create'),
             'view' => ViewDistrict::route('/{record}'),
-            'edit' => EditDistrict::route('/{record}/edit'),
         ];
     }
 }

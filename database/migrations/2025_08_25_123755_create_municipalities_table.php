@@ -11,13 +11,20 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('municipalities', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('district_id')->constrained()->cascadeOnDelete();
-            $table->string('code', 50)->nullable(); // optional unique code
-            $table->string('name'); // e.g. Birendranagar
-            $table->boolean('is_active')->default(false); // Active or not
+            $table->id(); // internal PK
+            $table->string('district_code', 10); // FK to districts.code
+            $table->string('municipality_code', 50)->nullable(); // optional municipality code
+            $table->string('name'); // municipality name
+            $table->boolean('is_active')->default(false); // active flag
             $table->timestamps();
+
+            // Foreign key constraint
+            $table->foreign('district_code')
+                ->references('district_code')
+                ->on('districts')
+                ->cascadeOnDelete();
         });
+
     }
 
     /**
