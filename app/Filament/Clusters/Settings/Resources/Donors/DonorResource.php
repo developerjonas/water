@@ -55,9 +55,6 @@ class DonorResource extends Resource
     {
         return [
             'index' => ListDonors::route('/'),
-            'create' => CreateDonor::route('/create'),
-            'view' => ViewDonor::route('/{record}'),
-            'edit' => EditDonor::route('/{record}/edit'),
         ];
     }
 

@@ -22,7 +22,7 @@ class SchemeSelector
         return [
             Select::make('province')
                 ->label('Province')
-                ->options(Province::pluck('name', 'id'))
+                ->options(Province::pluck('name', 'province_code'))
                 ->reactive()
                 ->afterStateUpdated(fn($state, callable $set) => $set('district', null)),
 
@@ -30,7 +30,7 @@ class SchemeSelector
                 ->label('District')
                 ->options(function (callable $get) {
                     $provinceId = $get('province');
-                    return $provinceId ? District::where('province_id', $provinceId)->pluck('name', 'id') : [];
+                    return $provinceId ? District::where('province_code', $provinceId)->pluck('name', 'district_code') : [];
                 })
                 ->reactive()
                 ->afterStateUpdated(fn($state, callable $set) => $set('municipality', null)),
@@ -39,7 +39,7 @@ class SchemeSelector
                 ->label('Municipality')
                 ->options(function (callable $get) {
                     $districtId = $get('district');
-                    return $districtId ? Municipality::where('district_id', $districtId)->pluck('name', 'id') : [];
+                    return $districtId ? Municipality::where('district_code', $districtId)->pluck('name', 'municipality_code') : [];
                 })
                 ->reactive(),
 
