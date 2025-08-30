@@ -10,30 +10,34 @@ class Monitoring extends Model
     use HasFactory;
 
     protected $fillable = [
-        'budget_id',
-        'file_path',
+        'monitoring_code',
+        'scheme_code',
+        'budget_code',
         'monitoring_date',
+        'monitored_by',
+        'status',
         'remarks',
+        'attachments',
     ];
 
     protected $casts = [
         'monitoring_date' => 'date',
+        'attachments' => 'array', // for multiple file uploads
     ];
 
-    public function budget()
-    {
-        return $this->belongsTo(Budget::class);
-    }
-
+    /**
+     * Relationship: Monitoring belongs to a Scheme.
+     */
     public function scheme()
     {
-        return $this->hasOneThrough(
-            Scheme::class,
-            Budget::class,
-            'id',           // Foreign key on Budget
-            'scheme_code',  // Foreign key on Scheme
-            'budget_id',    // Local key on BudgetMonitoring
-            'scheme_code'   // Local key on Budget
-        );
+        return $this->belongsTo(Scheme::class, 'scheme_code', 'scheme_code');
+    }
+
+    /**
+     * Relationship: Monitoring belongs to a Budget.
+     */
+    public function budget()
+    {
+        return $this->belongsTo(Budget::class, 'budget_code', 'budget_code');
     }
 }

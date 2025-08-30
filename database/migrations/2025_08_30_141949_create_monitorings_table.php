@@ -9,14 +9,24 @@ return new class extends Migration {
     {
         Schema::create('monitorings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('budget_id')
-                  ->constrained('budgets')
-                  ->cascadeOnDelete();
-            $table->string('file_path'); // uploaded file path
+
+            $table->string('scheme_code');
+
+            // Link to Budget using budget_code
+            $table->string('budget_code');
+            $table->foreign('budget_code')->references('budget_code')->on('budgets')->cascadeOnDelete();
+
+            // Monitoring fields
+            $table->string('monitoring_code')->unique();
             $table->date('monitoring_date');
+            $table->string('monitored_by')->nullable();
+            $table->string('status')->default('pending'); // pending, completed, follow-up
             $table->text('remarks')->nullable();
+            $table->json('attachments')->nullable();
+
             $table->timestamps();
         });
+
     }
 
     public function down(): void
