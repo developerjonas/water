@@ -28,4 +28,11 @@ class Partner extends Model
     {
         return $this->hasMany(PartnerStaff::class, 'partner_code', 'partner_code');
     }
+
+    public function narrativeReports()
+    {
+        return $this->hasMany(
+            PartnerNarrativeReport::class, 'partner_code', 'partner_code' 
+        );
+    }
 }

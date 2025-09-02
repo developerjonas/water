@@ -13,17 +13,20 @@ return new class extends Migration {
         Schema::create('donors', function (Blueprint $table) {
             $table->id();
 
-            $table->string('name');
-            $table->json('contact_person')->nullable(); // JSON array for multiple contacts
-            $table->string('email')->nullable()->unique();
-            $table->string('phone')->nullable()->unique();
-            $table->string('address')->nullable();
-            $table->text('remarks')->nullable();
+            $table->string('donor_code')->unique()->comment('Unique identifier for each donor');
+
+            $table->string('name')->comment('Donor name');
+            $table->json('contact_person')->nullable()->comment('JSON array for multiple contacts');
+            $table->string('email')->nullable()->unique()->comment('Primary email of donor');
+            $table->string('phone')->nullable()->unique()->comment('Primary phone number of donor');
+            $table->string('address')->nullable()->comment('Address of donor');
+            $table->text('remarks')->nullable()->comment('Additional notes or remarks');
 
             $table->softDeletes();
             $table->timestamps();
 
             // Indexes for faster search
+            $table->index('donor_code');
             $table->index('name');
             $table->index('email');
             $table->index('phone');

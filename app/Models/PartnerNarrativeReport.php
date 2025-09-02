@@ -10,7 +10,7 @@ class PartnerNarrativeReport extends Model
     use HasFactory;
 
     protected $fillable = [
-        'partner_id',
+        'partner_code',
         'reporting_period',
         'notes',
         'report_files', // store multiple file URLs as JSON
