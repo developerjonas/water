@@ -20,19 +20,11 @@ class PartnerNarrativeReport extends Model
         'report_files' => 'array', // automatically cast JSON to array
     ];
 
-    /**
-     * Partner relationship.
-     */
+
+    // PartnerNarrativeReport.php
     public function partner()
     {
-        return $this->belongsTo(Partner::class);
+        return $this->belongsTo(Partner::class, 'partner_code', 'partner_code');
     }
 
-    /**
-     * Accessor to get the first file URL easily.
-     */
-    public function getFirstReportFileAttribute()
-    {
-        return $this->report_files[0] ?? null;
-    }
 }

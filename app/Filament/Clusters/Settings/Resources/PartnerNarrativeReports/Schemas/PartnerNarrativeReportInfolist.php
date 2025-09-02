@@ -23,7 +23,7 @@ class PartnerNarrativeReportInfolist
                     ->formatStateUsing(fn ($state) => collect($state)->map(function ($file) {
                         return "<a href='".asset('storage/'.$file)."' target='_blank'>Download</a>";
                     })->implode(', '))
-                    ->html(),
+                  ,
 
                 TextEntry::make('created_at')
                     ->label('Created At')

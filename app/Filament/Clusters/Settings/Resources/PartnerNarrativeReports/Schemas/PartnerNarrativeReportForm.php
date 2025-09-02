@@ -13,7 +13,7 @@ class PartnerNarrativeReportForm
     {
         return $schema
             ->components([
-                Select::make('partner_id')
+                Select::make('partner_code')
                     ->label('Partner')
                     ->relationship('partner', 'name') // Assumes Partner model with 'name' field
                     ->searchable()

@@ -15,6 +15,7 @@ return new class extends Migration {
                 $table->string('partner_code')->unique();
 
             $table->string('name');
+            $table->string('email');
             $table->string('address')->nullable();
             $table->string('contact_number')->nullable();
             $table->string('contact_person')->nullable();
