@@ -10,18 +10,30 @@ class WaterPoint extends Model
     use HasFactory;
 
     protected $fillable = [
-        'scheme_code', 'water_point_id','district', 'palika', 'water_system_name', 'location_type',
-        'water_point_name', 'source_details', 'hardware_details',
-        'latitude', 'longitude', 'photo_url'
+        'scheme_code',           // Foreign key to schemes
+        'sub_system_name',       // Water Sub-System / Sub-Scheme Name
+        'water_point_name',      // Water Point Name
+        'location_type',         // Location type: community, school, health_center, public_institution, other
+        'woman',                 // Number of female users
+        'man',                   // Number of male users
+        'total_water_users',     // Calculated: woman + man
+        'tap_construction_status', // yes / no
+        'remarks',               // Optional remarks
     ];
 
+    /**
+     * Relationship: WaterPoint belongs to a Scheme
+     */
     public function scheme()
     {
-        return $this->belongsTo(Scheme::class);
+        return $this->belongsTo(Scheme::class, 'scheme_code', 'scheme_code');
     }
 
-    public function qualityTests()
+    /**
+     * Automatically calculate total water users
+     */
+    public function setTotalWaterUsersAttribute($value)
     {
-        return $this->hasMany(WaterQualityTest::class);
+        $this->attributes['total_water_users'] = $this->woman + $this->man;
     }
 }

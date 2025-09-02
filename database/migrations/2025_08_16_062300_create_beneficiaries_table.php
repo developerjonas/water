@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
 
             // Foreign key to schemes table using scheme_code
-            $table->string('scheme_code')->comment('Foreign key to schemes.scheme_code');
+            $table->string('scheme_code');
 
             // Household Beneficiaries
             $table->integer('dalit_hh_poor')->default(0);
@@ -24,16 +24,21 @@ return new class extends Migration {
             $table->integer('other_hh_poor')->default(0);
             $table->integer('other_hh_nonpoor')->default(0);
 
-            // Individual Beneficiaries
-            $table->integer('dalit_female')->default(0);
+            // Individual Beneficiaries - Male
             $table->integer('dalit_male')->default(0);
-            $table->integer('aj_female')->default(0);
             $table->integer('aj_male')->default(0);
-            $table->integer('others_female')->default(0);
             $table->integer('others_male')->default(0);
 
-            // School Beneficiaries
+            // Individual Beneficiaries - Female
+            $table->integer('dalit_female')->default(0);
+            $table->integer('aj_female')->default(0);
+            $table->integer('others_female')->default(0);
+
+            // Other population
             $table->integer('base_population')->default(0);
+
+            // School Beneficiaries
+            $table->integer('total_schools')->default(0);
             $table->integer('boys_student')->default(0);
             $table->integer('girls_student')->default(0);
             $table->integer('teachers_staff')->default(0);
@@ -41,7 +46,7 @@ return new class extends Migration {
             // Timestamps
             $table->timestamps();
 
-            // Index for fast lookups
+            // Indexes for fast lookups
             $table->index('scheme_code');
 
             // Foreign key constraint

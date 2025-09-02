@@ -19,64 +19,69 @@ return new class extends Migration {
             $table->string('scheme_code')->comment('Foreign key to schemes.scheme_code');
 
             // -------------------
-            // Intakes
+            // Intakes & RVTs
             // -------------------
+            $table->integer('intakes_planned')->default(0);
             $table->integer('intakes_constructed')->default(0);
             $table->integer('intakes_remaining')->default(0);
 
-            // -------------------
-            // RVTs
-            // -------------------
+            $table->integer('rvts_planned')->default(0);
             $table->integer('rvts_constructed')->default(0);
             $table->integer('rvts_remaining')->default(0);
 
             // -------------------
-            // CC/DC/BPT/IC/Valvebox
+            // Structures
             // -------------------
+            $table->integer('cc_dc_bpt_planned')->default(0);
             $table->integer('cc_dc_bpt_constructed')->default(0);
             $table->integer('cc_dc_bpt_remaining')->default(0);
 
-            // -------------------
-            // Other Structures (FRC/Custom)
-            // -------------------
+            $table->integer('other_structures_planned')->default(0);
             $table->integer('other_structures_constructed')->default(0);
             $table->integer('other_structures_remaining')->default(0);
 
             // -------------------
             // Taps
             // -------------------
-            $table->integer('public_taps')->default(0);
-            $table->integer('school_taps')->default(0);
-            $table->integer('private_taps')->default(0);
-            $table->integer('taps_constructed_progress')->default(0);
-            $table->integer('taps_remaining')->default(0);
+            $table->integer('public_taps_planned')->default(0);
+            $table->integer('public_taps_constructed')->default(0);
+            $table->integer('public_taps_remaining')->default(0);
+
+            $table->integer('school_taps_planned')->default(0);
+            $table->integer('school_taps_constructed')->default(0);
+            $table->integer('school_taps_remaining')->default(0);
+
+            $table->integer('private_taps_planned')->default(0);
+            $table->integer('private_taps_constructed')->default(0);
+            $table->integer('private_taps_remaining')->default(0);
 
             // -------------------
             // Lines
             // -------------------
-            $table->integer('transmission_line_progress')->default(0);
+            $table->integer('transmission_line_planned')->default(0);
+            $table->integer('transmission_line_constructed')->default(0);
             $table->integer('transmission_line_remaining')->default(0);
-            $table->integer('distribution_line_progress')->default(0);
+
+            $table->integer('distribution_line_planned')->default(0);
+            $table->integer('distribution_line_constructed')->default(0);
             $table->integer('distribution_line_remaining')->default(0);
-            $table->integer('private_line_progress')->default(0);
+
+            $table->integer('private_line_planned')->default(0);
+            $table->integer('private_line_constructed')->default(0);
             $table->integer('private_line_remaining')->default(0);
 
             // -------------------
-            // Status flags
+            // Remarks
             // -------------------
-            $table->boolean('mb_submitted_to_municipality')->default(false);
-            $table->boolean('municipality_contribution_transferred')->default(false);
-            $table->boolean('public_hearing_done')->default(false);
-            $table->boolean('public_review_done')->default(false);
-            $table->boolean('final_public_audit_done')->default(false);
             $table->text('remarks')->nullable();
 
             $table->timestamps();
 
             // -------------------
-            // Indexes
+            // Indexes & FKs
             // -------------------
             $table->index('scheme_code');
+            $table->foreign('scheme_code')->references('scheme_code')->on('schemes')->onDelete('cascade');
         });
     }
 

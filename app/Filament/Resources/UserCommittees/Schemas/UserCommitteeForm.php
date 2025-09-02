@@ -9,6 +9,7 @@ use Filament\Forms\Components\Select;
 use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Wizard;
 use Filament\Schemas\Components\Wizard\Step;
+use Filament\Schemas\Components\Section;
 use App\Filament\Components\SchemeSelector;
 
 class UserCommitteeForm
@@ -19,12 +20,9 @@ class UserCommitteeForm
             ->components([
                 Wizard::make([
 
-                    // Step 1: Scheme & Formation
-                    Step::make('Scheme & Formation')
-                    ->schema(SchemeSelector::make()),
+                    Step::make('Scheme')->columns(3)->schema(SchemeSelector::make()),
 
-                    // Step 2: Formation
-                    Wizard\Step::make('Formation')
+                    Step::make('Formation')
                         ->schema([
                             TextInput::make('user_committee_name')
                                 ->label('User Committee Name')
@@ -38,54 +36,57 @@ class UserCommitteeForm
                             TextInput::make('user_committee_bank_account_name')
                                 ->label('UC Bank Account Name')
                                 ->placeholder('Enter WUSC bank account name'),
+
+                            TextInput::make('user_committee_bank_account_number')
+                                ->label('UC Bank Account Number')
+                                ->placeholder('Enter WUSC bank account number'),
                         ]),
 
-                    // Step 3: Key Positions
-                    Wizard\Step::make('Key Positions')
+                    Step::make('Key Positions')
+                        ->columns(2)
                         ->schema([
                             TextInput::make('chair_name')->label('Chair Name')->required(),
                             TextInput::make('chair_contact')->label('Chair Contact')->required(),
                             TextInput::make('vice_chair_name')->label('Vice-Chair Name'),
                             TextInput::make('vice_chair_contact')->label('Vice-Chair Contact'),
-
                             TextInput::make('secretary_name')->label('Secretary Name'),
                             TextInput::make('secretary_contact')->label('Secretary Contact'),
                             TextInput::make('deputy_secretary_name')->label('Deputy Secretary Name'),
                             TextInput::make('deputy_secretary_contact')->label('Deputy Secretary Contact'),
-
                             TextInput::make('treasurer_name')->label('Treasurer Name'),
                             TextInput::make('treasurer_contact')->label('Treasurer Contact'),
-                        ])->columns(2),
+                        ]),
 
-                    // Step 4: Dalit Members
-                    Wizard\Step::make('Dalit Members')
+                    Step::make('Members')
+                        ->columns(2)
                         ->schema([
-                            TextInput::make('dalit_female_key')->label('Dalit Female Key')->numeric()->default(0),
-                            TextInput::make('dalit_male_key')->label('Dalit Male Key')->numeric()->default(0),
-                            TextInput::make('dalit_female_member')->label('Dalit Female Member')->numeric()->default(0),
-                            TextInput::make('dalit_male_member')->label('Dalit Male Member')->numeric()->default(0),
-                        ])->columns(2),
 
-                    // Step 5: Janjati Members
-                    Wizard\Step::make('Janjati Members')
-                        ->schema([
-                            TextInput::make('janjati_female_key')->label('Janjati Female Key')->numeric()->default(0),
-                            TextInput::make('janjati_male_key')->label('Janjati Male Key')->numeric()->default(0),
-                            TextInput::make('janjati_female_member')->label('Janjati Female Member')->numeric()->default(0),
-                            TextInput::make('janjati_male_member')->label('Janjati Male Member')->numeric()->default(0),
-                        ])->columns(2),
+                            Section::make('Dalit Members')->columns(2)
+                                ->schema([
+                                    TextInput::make('dalit_female_key')->label('Dalit Female Key')->numeric()->default(0),
+                                    TextInput::make('dalit_male_key')->label('Dalit Male Key')->numeric()->default(0),
+                                    TextInput::make('dalit_female_member')->label('Dalit Female Member')->numeric()->default(0),
+                                    TextInput::make('dalit_male_member')->label('Dalit Male Member')->numeric()->default(0),
+                                ]),
 
-                    // Step 6: Other Members
-                    Wizard\Step::make('Other Members')
-                        ->schema([
-                            TextInput::make('others_female_key')->label('Other Female Key')->numeric()->default(0),
-                            TextInput::make('others_male_key')->label('Other Male Key')->numeric()->default(0),
-                            TextInput::make('others_female_member')->label('Other Female Member')->numeric()->default(0),
-                            TextInput::make('others_male_member')->label('Other Male Member')->numeric()->default(0),
-                        ])->columns(2),
+                            Section::make('Janjati Members')->columns(2)
+                                ->schema([
+                                    TextInput::make('janjati_female_key')->label('Janjati Female Key')->numeric()->default(0),
+                                    TextInput::make('janjati_male_key')->label('Janjati Male Key')->numeric()->default(0),
+                                    TextInput::make('janjati_female_member')->label('Janjati Female Member')->numeric()->default(0),
+                                    TextInput::make('janjati_male_member')->label('Janjati Male Member')->numeric()->default(0),
+                                ]),
 
-                    // Step 7: Registration & Contract
-                    Wizard\Step::make('Registration & Contract')
+                            Section::make('Other Members')->columns(2)
+                                ->schema([
+                                    TextInput::make('others_female_key')->label('Other Female Key')->numeric()->default(0),
+                                    TextInput::make('others_male_key')->label('Other Male Key')->numeric()->default(0),
+                                    TextInput::make('others_female_member')->label('Other Female Member')->numeric()->default(0),
+                                    TextInput::make('others_male_member')->label('Other Male Member')->numeric()->default(0),
+                                ]),
+                        ]),
+
+                    Step::make('Registration & Contract')
                         ->schema([
                             Select::make('registration_status')
                                 ->label('Registration Status')
@@ -97,6 +98,7 @@ class UserCommitteeForm
                                 ->required(),
 
                             TextInput::make('registration_number')->label('Registration Number'),
+
                             DatePicker::make('contract_date')->label('Contract Date')->placeholder('YYYY-MM-DD'),
                             DatePicker::make('contract_expiry_date')->label('Contract Expiry Date')->placeholder('YYYY-MM-DD'),
 

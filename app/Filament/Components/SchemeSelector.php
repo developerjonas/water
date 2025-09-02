@@ -24,41 +24,45 @@ class SchemeSelector
                 ->label('Province')
                 ->options(Province::where('is_active', 1)->pluck('name', 'province_code'))
                 ->reactive()
+                ->columnSpan(1)
                 ->afterStateUpdated(fn($state, callable $set) => $set('district', null)),
 
             Select::make('district')
                 ->label('District')
                 ->options(function (callable $get) {
                     $provinceId = $get('province');
-                    return $provinceId 
+                    return $provinceId
                         ? District::where('province_code', $provinceId)
                             ->where('is_active', 1)
-                            ->pluck('name', 'district_code') 
+                            ->pluck('name', 'district_code')
                         : [];
                 })
-                ->reactive()
+                ->reactive()->columnSpan(1)
+
                 ->afterStateUpdated(fn($state, callable $set) => $set('municipality', null)),
 
             Select::make('municipality')
                 ->label('Municipality')
                 ->options(function (callable $get) {
                     $districtId = $get('district');
-                    return $districtId 
+                    return $districtId
                         ? Municipality::where('district_code', $districtId)
                             ->where('is_active', 1)
-                            ->pluck('name', 'municipality_code') 
+                            ->pluck('name', 'municipality_code')
                         : [];
                 })
-                ->reactive(),
+                ->reactive()->columnSpan(1)
+            ,
 
             Select::make('donor')
                 ->label('Donor')
                 ->options(Donor::pluck('name', 'id'))
-                ->nullable()
+                ->nullable()->columnSpan(1)
+
                 ->reactive(),
 
             Select::make($schemeFieldName)
-                ->label('Scheme Code')
+                ->label('Scheme Name')
                 ->options(function (callable $get) {
                     $province = $get('province');
                     $district = $get('district');
@@ -67,17 +71,21 @@ class SchemeSelector
 
                     $query = Scheme::query();
 
-                    if ($province) $query->where('province', $province);
-                    if ($district) $query->where('district', $district);
-                    if ($mun) $query->where('mun', $mun);
-                    if ($donor) $query->whereJsonContains('collaborator', $donor);
+                    if ($province)
+                        $query->where('province', $province);
+                    if ($district)
+                        $query->where('district', $district);
+                    if ($mun)
+                        $query->where('mun', $mun);
+                    if ($donor)
+                        $query->whereJsonContains('collaborator', $donor);
 
-                    return $query->pluck('scheme_code', 'scheme_code');
+                    return $query->pluck('scheme_name', 'scheme_code');
                 })
                 ->required()
                 ->searchable()
-                ->placeholder('Select Scheme Code')
-                ->helperText('Select the related scheme'),
+                ->placeholder('Select Scheme Name')->columnSpan(2)
+            ,
         ];
     }
 }

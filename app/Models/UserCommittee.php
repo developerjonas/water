@@ -11,8 +11,6 @@ class UserCommittee extends Model
 
     protected $table = 'user_committees';
 
-    // Primary key is id (default), timestamps enabled by default
-
     protected $fillable = [
         'scheme_code',
         'date_of_formation',
@@ -42,7 +40,7 @@ class UserCommittee extends Model
         'janjati_female_member',
         'janjati_male_member',
 
-        // Others counts
+        // Other counts
         'others_female_key',
         'others_male_key',
         'others_female_member',
@@ -57,10 +55,36 @@ class UserCommittee extends Model
     ];
 
     /**
-     * Relations
+     * Relationship: Belongs to a Scheme via scheme_code
      */
     public function scheme()
     {
         return $this->belongsTo(Scheme::class, 'scheme_code', 'scheme_code');
+    }
+
+    /**
+     * Computed totals for reporting
+     */
+    public function getDalitTotalAttribute(): int
+    {
+        return $this->dalit_female_key + $this->dalit_male_key +
+               $this->dalit_female_member + $this->dalit_male_member;
+    }
+
+    public function getJanjatiTotalAttribute(): int
+    {
+        return $this->janjati_female_key + $this->janjati_male_key +
+               $this->janjati_female_member + $this->janjati_male_member;
+    }
+
+    public function getOthersTotalAttribute(): int
+    {
+        return $this->others_female_key + $this->others_male_key +
+               $this->others_female_member + $this->others_male_member;
+    }
+
+    public function getMembersTotalAttribute(): int
+    {
+        return $this->dalit_total + $this->janjati_total + $this->others_total;
     }
 }

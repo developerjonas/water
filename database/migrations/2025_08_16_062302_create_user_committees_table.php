@@ -10,8 +10,10 @@ return new class extends Migration {
         Schema::create('user_committees', function (Blueprint $table) {
             $table->id();
             $table->string('scheme_code'); // FK to schemes
+            $table->string('user_committee_name');
             $table->date('date_of_formation')->nullable();
             $table->string('user_committee_bank_account_name')->nullable();
+            $table->string('user_committee_bank_account_number')->nullable();
 
             // Key positions
             $table->string('chair_name')->nullable();
@@ -25,25 +27,25 @@ return new class extends Migration {
             $table->string('treasurer_name')->nullable();
             $table->string('treasurer_contact')->nullable();
 
-            // Dalit counts
+            // Dalit members
             $table->integer('dalit_female_key')->default(0);
             $table->integer('dalit_male_key')->default(0);
             $table->integer('dalit_female_member')->default(0);
             $table->integer('dalit_male_member')->default(0);
 
-            // Janjati counts
+            // Janjati members
             $table->integer('janjati_female_key')->default(0);
             $table->integer('janjati_male_key')->default(0);
             $table->integer('janjati_female_member')->default(0);
             $table->integer('janjati_male_member')->default(0);
 
-            // Others counts
+            // Other members
             $table->integer('others_female_key')->default(0);
             $table->integer('others_male_key')->default(0);
             $table->integer('others_female_member')->default(0);
             $table->integer('others_male_member')->default(0);
 
-            // Status & Contract
+            // Registration & Contract
             $table->string('wusc_registration_status')->nullable();
             $table->string('registration_number')->nullable();
             $table->date('contract_date')->nullable();
@@ -52,6 +54,7 @@ return new class extends Migration {
 
             $table->timestamps();
 
+            // Foreign key
             $table->foreign('scheme_code')->references('scheme_code')->on('schemes')->onDelete('cascade');
         });
     }

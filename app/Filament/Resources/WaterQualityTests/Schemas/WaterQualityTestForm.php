@@ -7,6 +7,8 @@ use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Wizard;
 use Filament\Schemas\Components\Wizard\Step;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Grid;
 use App\Filament\Components\SchemeSelector;
 
 class WaterQualityTestForm
@@ -15,41 +17,54 @@ class WaterQualityTestForm
     {
         return $schema->components([
             Wizard::make([
-                // Step 1: Scheme & Formation
-                Step::make('Scheme & Formation')
+                
+                Step::make('Scheme')->columns(3)
                     ->schema(SchemeSelector::make()),
 
-                Step::make('Measurements')
+                Step::make('Measurements')->columns(1)
                     ->schema([
-                        TextInput::make('ecoli')
-                            ->label('E.coli (CFU/100ml)')
-                            ->numeric()
-                            ->default(0),
-                        TextInput::make('coliform')
-                            ->label('Coliform (CFU/100ml)')
-                            ->numeric()
-                            ->default(0),
-                        TextInput::make('ph')
-                            ->label('pH')
-                            ->numeric()
-                            ->default(7.0),
-                        TextInput::make('frc')
-                            ->label('FRC (mg/L)')
-                            ->numeric()
-                            ->default(0),
-                        TextInput::make('turbidity')
-                            ->label('Turbidity (NTU)')
-                            ->numeric()
-                            ->default(0),
+                        Section::make('Microbiological Parameters')->columns(2)
+                            ->schema([
+                                TextInput::make('ecoli')
+                                    ->label('E.coli (CFU/100ml)')
+                                    ->numeric()
+                                    ->default(0)
+                                    ->required(),
+                                TextInput::make('coliform')
+                                    ->label('Coliform (CFU/100ml)')
+                                    ->numeric()
+                                    ->default(0)
+                                    ->required(),
+                            ]),
+
+                        Section::make('Chemical & Physical Parameters')->columns(2)
+                            ->schema([
+                                TextInput::make('ph')
+                                    ->label('pH')
+                                    ->numeric()
+                                    ->default(7.0)
+                                    ->required(),
+                                TextInput::make('frc')
+                                    ->label('FRC (mg/L)')
+                                    ->numeric()
+                                    ->default(0)
+                                    ->required(),
+                                TextInput::make('turbidity')
+                                    ->label('Turbidity (NTU)')
+                                    ->numeric()
+                                    ->default(0)
+                                    ->required(),
+                            ]),
                     ]),
 
-                Step::make('Remarks')
+                Step::make('Remarks')->columns(1)
                     ->schema([
                         Textarea::make('remarks')
-                            ->label('Remarks')
-                            ->columnSpanFull(),
+                            ->label('Remarks / Observations')
+                            ->columnSpanFull()
+                            ->placeholder('Optional notes about the water quality or testing conditions'),
                     ]),
-            ]),
+            ])->columnSpanFull(),
         ]);
     }
 }

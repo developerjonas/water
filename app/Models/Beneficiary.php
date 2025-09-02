@@ -19,25 +19,51 @@ class Beneficiary extends Model
      */
     protected $fillable = [
         'scheme_code',
-        // Household
+        // Household Beneficiaries
         'dalit_hh_poor',
         'dalit_hh_nonpoor',
         'aj_hh_poor',
         'aj_hh_nonpoor',
         'other_hh_poor',
         'other_hh_nonpoor',
-        // Individuals
-        'dalit_female',
+        // Individual Beneficiaries - Male
         'dalit_male',
-        'aj_female',
         'aj_male',
-        'others_female',
         'others_male',
-        // Schools
+        // Individual Beneficiaries - Female
+        'dalit_female',
+        'aj_female',
+        'others_female',
+        // Other Population
         'base_population',
+        // School Beneficiaries
+        'total_schools',
         'boys_student',
         'girls_student',
         'teachers_staff',
+    ];
+
+    /**
+     * The attributes that should be cast to native types.
+     */
+    protected $casts = [
+        'dalit_hh_poor' => 'integer',
+        'dalit_hh_nonpoor' => 'integer',
+        'aj_hh_poor' => 'integer',
+        'aj_hh_nonpoor' => 'integer',
+        'other_hh_poor' => 'integer',
+        'other_hh_nonpoor' => 'integer',
+        'dalit_male' => 'integer',
+        'aj_male' => 'integer',
+        'others_male' => 'integer',
+        'dalit_female' => 'integer',
+        'aj_female' => 'integer',
+        'others_female' => 'integer',
+        'base_population' => 'integer',
+        'total_schools' => 'integer',
+        'boys_student' => 'integer',
+        'girls_student' => 'integer',
+        'teachers_staff' => 'integer',
     ];
 
     /**
@@ -49,7 +75,7 @@ class Beneficiary extends Model
     }
 
     /**
-     * Computed properties for totals.
+     * Computed property: total households.
      */
     public function getHouseholdTotalAttribute(): int
     {
@@ -58,16 +84,28 @@ class Beneficiary extends Model
                $this->other_hh_poor + $this->other_hh_nonpoor;
     }
 
+    /**
+     * Computed property: total individuals.
+     */
     public function getIndividualTotalAttribute(): int
     {
-        return $this->dalit_female + $this->dalit_male +
-               $this->aj_female + $this->aj_male +
-               $this->others_female + $this->others_male;
+        return $this->dalit_male + $this->aj_male + $this->others_male +
+               $this->dalit_female + $this->aj_female + $this->others_female;
     }
 
+    /**
+     * Computed property: total school population.
+     */
+    public function getSchoolTotalAttribute(): int
+    {
+        return $this->boys_student + $this->girls_student + $this->teachers_staff;
+    }
+
+    /**
+     * Computed property: total beneficiaries.
+     */
     public function getTotalBeneficiariesAttribute(): int
     {
-        return $this->household_total + $this->individual_total +
-               $this->boys_student + $this->girls_student + $this->teachers_staff;
+        return $this->household_total + $this->individual_total + $this->school_total + $this->base_population;
     }
 }
