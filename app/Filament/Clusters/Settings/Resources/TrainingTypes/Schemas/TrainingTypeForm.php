@@ -11,21 +11,33 @@ class TrainingTypeForm
 {
     public static function configure(Schema $schema): Schema
     {
+        // Define levels for maintainability
+        $levels = [
+            'Province' => 'Province Level',
+            'Cluster' => 'Cluster Level',
+            'District' => 'District Level',
+            'Municipality' => 'Municipality Level',
+            'Ward' => 'Ward Level',
+            'Scheme' => 'Scheme Level',
+        ];
+
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->label('Training Name')
+                    ->placeholder('Enter training type name')
                     ->required(),
+
                 Select::make('level')
                     ->label('Training Level')
+                    ->placeholder('Select Level')
                     ->required()
-                    ->options([
-                        'Ward' => 'Ward Level',
-                        'Municipality' => 'Municipality Level',
-                        'Scheme' => 'Scheme Level',
-                    ])
-                    ->placeholder('Select Level'),
+                    ->options($levels),
+
                 Toggle::make('is_active')
-                    ->required(),
+                    ->label('Is Active')
+                    ->required()
+                    ->inline(false),
             ]);
     }
 }

@@ -1,31 +1,30 @@
 <?php
 
-namespace App\Filament\Clusters\Settings\Resources\Donors\Tables;
+namespace App\Filament\Clusters\Settings\Resources\PartnerStaff\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Actions\ForceDeleteBulkAction;
-use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use App\Models\Partner;
 
-class DonorsTable
+class PartnerStaffTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('donor_code')
-                    ->label('Donor Code')
-                    ->searchable()
-                    ->sortable()
-                    ->copyable(),
+                TextColumn::make('partner_code')
+                    ->label('Partner')
+                    ->formatStateUsing(fn ($state) => 
+                        Partner::where('partner_code', $state)->value('name') ?? $state
+                    )
+                    ->searchable(),
 
                 TextColumn::make('name')
-                    ->label('Donor Name')
+                    ->label('Staff Name')
                     ->searchable()
                     ->sortable(),
 
@@ -42,15 +41,9 @@ class DonorsTable
                     ->url(fn ($record) => 'tel:' . $record->phone, true)
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('address')
-                    ->label('Address')
+                TextColumn::make('position')
+                    ->label('Position')
                     ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-
-                TextColumn::make('deleted_at')
-                    ->label('Deleted At')
-                    ->dateTime()
-                    ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('created_at')
@@ -66,7 +59,7 @@ class DonorsTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                TrashedFilter::make(),
+                // Add filters like Partner or Position if needed
             ])
             ->recordActions([
                 ViewAction::make(),
@@ -75,8 +68,6 @@ class DonorsTable
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
-                    ForceDeleteBulkAction::make(),
-                    RestoreBulkAction::make(),
                 ]),
             ]);
     }

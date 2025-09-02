@@ -11,13 +11,32 @@ class PartnerInfolist
     {
         return $schema
             ->components([
-                TextEntry::make('name'),
-                TextEntry::make('address'),
-                TextEntry::make('contact_number'),
-                TextEntry::make('contact_person'),
+                TextEntry::make('partner_code')
+                    ->label('Partner Code'),
+
+                TextEntry::make('name')
+                    ->label('Partner Name'),
+
+                TextEntry::make('email')
+                    ->label('Email')
+                    ->url(fn ($state) => 'mailto:' . $state, true) // Makes it clickable
+                    ->copyable(), // Allows quick copy
+
+                TextEntry::make('address')
+                    ->label('Address'),
+
+                TextEntry::make('contact_number')
+                    ->label('Contact Number'),
+
+                TextEntry::make('contact_person')
+                    ->label('Contact Person'),
+
                 TextEntry::make('created_at')
+                    ->label('Created At')
                     ->dateTime(),
+
                 TextEntry::make('updated_at')
+                    ->label('Updated At')
                     ->dateTime(),
             ]);
     }

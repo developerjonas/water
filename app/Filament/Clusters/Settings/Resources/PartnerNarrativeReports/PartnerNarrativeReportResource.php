@@ -12,6 +12,7 @@ use App\Filament\Clusters\Settings\Resources\PartnerNarrativeReports\Tables\Part
 use App\Filament\Clusters\Settings\SettingsCluster;
 use App\Models\PartnerNarrativeReport;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -22,6 +23,9 @@ class PartnerNarrativeReportResource extends Resource
     protected static ?string $model = PartnerNarrativeReport::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+            protected static string | UnitEnum | null $navigationGroup = 'Partner';
+
 
     protected static ?string $cluster = SettingsCluster::class;
 

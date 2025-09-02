@@ -53,9 +53,6 @@ class HelpDocResource extends Resource
     {
         return [
             'index' => ListHelpDocs::route('/'),
-            'create' => CreateHelpDoc::route('/create'),
-            'view' => ViewHelpDoc::route('/{record}'),
-            'edit' => EditHelpDoc::route('/{record}/edit'),
         ];
     }
 }

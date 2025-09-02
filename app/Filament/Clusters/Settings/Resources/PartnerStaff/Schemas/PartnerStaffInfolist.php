@@ -1,21 +1,25 @@
 <?php
 
-namespace App\Filament\Clusters\Settings\Resources\Donors\Schemas;
+namespace App\Filament\Clusters\Settings\Resources\PartnerStaff\Schemas;
 
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
+use App\Models\Partner;
 
-class DonorInfolist
+class PartnerStaffInfolist
 {
     public static function configure(Schema $schema): Schema
     {
         return $schema
             ->components([
-                TextEntry::make('donor_code')
-                    ->label('Donor Code'),
+                TextEntry::make('partner_code')
+                    ->label('Partner')
+                    ->formatStateUsing(fn ($state) => 
+                        Partner::where('partner_code', $state)->value('name') ?? $state
+                    ), // Show partner name instead of raw code
 
                 TextEntry::make('name')
-                    ->label('Donor Name'),
+                    ->label('Staff Name'),
 
                 TextEntry::make('email')
                     ->label('Email Address')
@@ -24,15 +28,10 @@ class DonorInfolist
 
                 TextEntry::make('phone')
                     ->label('Phone Number')
-                    ->url(fn ($state) => 'tel:' . $state, true)
-                    ->copyable(),
+                    ->url(fn ($state) => 'tel:' . $state, true),
 
-                TextEntry::make('address')
-                    ->label('Address'),
-
-                TextEntry::make('deleted_at')
-                    ->label('Deleted At')
-                    ->dateTime(),
+                TextEntry::make('position')
+                    ->label('Position'),
 
                 TextEntry::make('created_at')
                     ->label('Created At')

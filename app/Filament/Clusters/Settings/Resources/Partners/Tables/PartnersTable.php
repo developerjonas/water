@@ -15,25 +15,53 @@ class PartnersTable
     {
         return $table
             ->columns([
+                TextColumn::make('partner_code')
+                    ->label('Code')
+                    ->sortable()
+                    ->searchable()
+                    ->copyable(), // Quick copy for reference codes
+
                 TextColumn::make('name')
+                    ->label('Partner Name')
+                    ->sortable()
                     ->searchable(),
+
+                TextColumn::make('email')
+                    ->label('Email')
+                    ->sortable()
+                    ->searchable()
+                    ->copyable(), // Easy to copy
+                    // ->url(fn ($record) => 'mailto:' . $record->email, true) // Optional clickable email link
+
                 TextColumn::make('address')
+                    ->label('Address')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
+
                 TextColumn::make('contact_number')
+                    ->label('Contact Number')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
+
                 TextColumn::make('contact_person')
+                    ->label('Contact Person')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
+
                 TextColumn::make('created_at')
+                    ->label('Created At')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('updated_at')
+                    ->label('Updated At')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                // Example: Filter by Partner Name or Created Date
             ])
             ->recordActions([
                 ViewAction::make(),

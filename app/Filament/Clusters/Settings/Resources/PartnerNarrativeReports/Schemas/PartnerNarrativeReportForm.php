@@ -2,8 +2,9 @@
 
 namespace App\Filament\Clusters\Settings\Resources\PartnerNarrativeReports\Schemas;
 
-use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\FileUpload;
 use Filament\Schemas\Schema;
 
 class PartnerNarrativeReportForm
@@ -12,14 +13,34 @@ class PartnerNarrativeReportForm
     {
         return $schema
             ->components([
-                TextInput::make('partner_id')
-                    ->required()
-                    ->numeric(),
-                TextInput::make('reporting_period')
+                Select::make('partner_id')
+                    ->label('Partner')
+                    ->relationship('partner', 'name') // Assumes Partner model with 'name' field
+                    ->searchable()
                     ->required(),
+
+                Select::make('reporting_period')
+                    ->label('Reporting Period')
+                    ->options([
+                        'Q1' => 'Quarter 1',
+                        'Q2' => 'Quarter 2',
+                        'Q3' => 'Quarter 3',
+                        'Q4' => 'Quarter 4',
+                    ])
+                    ->required(),
+
                 Textarea::make('notes')
+                    ->label('Notes')
                     ->columnSpanFull(),
-                TextInput::make('report_files'),
+
+                FileUpload::make('report_files')
+                    ->label('Report Files')
+                    ->disk('public') // Change to S3 or other disk if needed
+                    ->directory('reports/narratives')
+                    ->multiple()
+                    ->downloadable()
+                    ->previewable()
+                    ->maxSize(10240), // 10MB
             ]);
     }
 }

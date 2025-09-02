@@ -6,18 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-// Correct imports based on your existing models
-use App\Models\Beneficiary;
-use App\Models\WaterPoint;
-use App\Models\UserCommittee;
-use App\Models\PublicAudit;
-use App\Models\SanitationMetric;
-use App\Models\Maintenance;
-use App\Models\InstallmentMonitoring;
-use App\Models\StructureInfo;
-use App\Models\Structure;
-use App\Models\Donor;
-
 class Scheme extends Model
 {
     use HasFactory, SoftDeletes;
@@ -86,7 +74,6 @@ class Scheme extends Model
             }
         });
     }
-
 
 
     /**
@@ -161,10 +148,10 @@ class Scheme extends Model
     }
 
     // Scheme.php
-public function subSystems()
-{
-    return $this->hasMany(SchemeSubSystem::class, 'scheme_code', 'scheme_code');
-}
+    public function subSystems()
+    {
+        return $this->hasMany(SchemeSubSystem::class, 'scheme_code', 'scheme_code');
+    }
 
 
 
