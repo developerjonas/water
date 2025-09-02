@@ -22,7 +22,7 @@ class SchemeSelector
         return [
             Select::make('province')
                 ->label('Province')
-                ->options(Province::pluck('name', 'province_code'))
+                ->options(Province::where('is_active', 1)->pluck('name', 'province_code'))
                 ->reactive()
                 ->afterStateUpdated(fn($state, callable $set) => $set('district', null)),
 
@@ -30,7 +30,11 @@ class SchemeSelector
                 ->label('District')
                 ->options(function (callable $get) {
                     $provinceId = $get('province');
-                    return $provinceId ? District::where('province_code', $provinceId)->pluck('name', 'district_code') : [];
+                    return $provinceId 
+                        ? District::where('province_code', $provinceId)
+                            ->where('is_active', 1)
+                            ->pluck('name', 'district_code') 
+                        : [];
                 })
                 ->reactive()
                 ->afterStateUpdated(fn($state, callable $set) => $set('municipality', null)),
@@ -39,7 +43,11 @@ class SchemeSelector
                 ->label('Municipality')
                 ->options(function (callable $get) {
                     $districtId = $get('district');
-                    return $districtId ? Municipality::where('district_code', $districtId)->pluck('name', 'municipality_code') : [];
+                    return $districtId 
+                        ? Municipality::where('district_code', $districtId)
+                            ->where('is_active', 1)
+                            ->pluck('name', 'municipality_code') 
+                        : [];
                 })
                 ->reactive(),
 
@@ -58,6 +66,7 @@ class SchemeSelector
                     $donor = $get('donor');
 
                     $query = Scheme::query();
+
                     if ($province) $query->where('province', $province);
                     if ($district) $query->where('district', $district);
                     if ($mun) $query->where('mun', $mun);

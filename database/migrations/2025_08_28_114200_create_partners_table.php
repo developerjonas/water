@@ -12,8 +12,7 @@ return new class extends Migration {
     {
         Schema::create('partners', function (Blueprint $table) {
             $table->id();
-                $table->string('partner_code')->unique();
-
+            $table->string('partner_code')->unique();
             $table->string('name');
             $table->string('email');
             $table->string('address')->nullable();
@@ -21,7 +20,6 @@ return new class extends Migration {
             $table->string('contact_person')->nullable();
             $table->timestamps();
         });
-
     }
 
     /**
