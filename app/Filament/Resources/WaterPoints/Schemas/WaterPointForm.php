@@ -22,26 +22,15 @@ class WaterPointForm
                 Wizard::make([
                     // Step 1: Scheme & Formation
                     Step::make('Scheme & Formation')
-                    ->schema(SchemeSelector::make()),
+                        ->schema(SchemeSelector::make()),
 
                     Step::make('Water Point Details')
                         ->schema([
                             Section::make('Basic Details')
                                 ->schema([
                                     Grid::make(2)->schema([
-                                        Select::make('water_system_name')
-                                            ->label('Water System Name')
-                                            ->required()
-                                            ->searchable()
-                                            ->options(function ($get) {
-                                                $schemeCode = $get('scheme_code');
-                                                if (!$schemeCode) return [];
-                                                return SchemeSubSystem::where('scheme_code', $schemeCode)
-                                                    ->where('is_active', true)
-                                                    ->orderBy('sequence')
-                                                    ->pluck('name', 'name')
-                                                    ->toArray();
-                                            }),
+                                        TextInput::make('water_system_name')->columnSpan(1),
+
                                         TextInput::make('community_name')->columnSpan(1),
                                         TextInput::make('location_type')->columnSpan(1),
                                         TextInput::make('water_point_name')->columnSpan(1),
