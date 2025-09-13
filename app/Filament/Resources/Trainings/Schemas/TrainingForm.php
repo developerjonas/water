@@ -41,8 +41,7 @@ class TrainingForm
 
         return [
             Wizard::make([
-                Step::make('Scheme & Formation')
-                    ->schema(SchemeSelector::make()),
+                
                 Step::make('Training Details')
                     ->description('Provide the training information.')
                     ->schema([
