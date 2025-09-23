@@ -13,11 +13,10 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Filament\Actions\Action;
-use Filament\Actions\BulkAction;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Facades\Response;
-
-
+use Illuminate\Support\Facades\Storage;
+use App\Actions\Import\IndexClass as Importer;
+use App\Models\Scheme;
 
 class SchemesTable
 {
@@ -121,6 +120,7 @@ class SchemesTable
                             echo $pdf->output();
                         }, 'scheme-' . $record->scheme_code . '.pdf');
                     }),
+
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
@@ -128,6 +128,31 @@ class SchemesTable
                     ForceDeleteBulkAction::make(),
                     RestoreBulkAction::make(),
                 ]),
+                Action::make('import')
+                    ->label('Import CSV')
+                    ->icon('heroicon-o-arrow-up-tray')
+                    ->form([
+                        \Filament\Forms\Components\FileUpload::make('file')
+                            ->required()
+                            ->acceptedFileTypes(['text/csv']),
+                    ])
+                    ->action(function (array $data) {
+                        $file = $data['file'];
+                        $path = Storage::path($file);
+
+                        $importer = new Importer();
+
+                        $importer->fromCsv($path, [Scheme::class, 'importRow'], [
+                            'province' => 'required|string',
+                            'district' => 'required|string',
+                            'mun' => 'required|string',
+                            'ward_no' => 'required|integer',
+                            'scheme_code' => 'required|string',
+                            'scheme_name' => 'required|string',
+                            'scheme_start_year' => 'required|integer',
+                        ]);
+                    })
+                    ->color('success'),
             ]);
 
     }

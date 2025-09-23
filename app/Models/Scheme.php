@@ -134,7 +134,7 @@ class Scheme extends Model
 
     public function structureInfo()
     {
-        return $this->hasOne(StructureInfo::class);
+        return $this->hasOne(Structure::class);
     }
 
     public function structure()
@@ -145,6 +145,38 @@ class Scheme extends Model
     public function subsidies()
     {
         return $this->hasMany(Subsidy::class);
+    }
+
+    public static function importRow(array $row): Scheme
+    {
+        return self::updateOrCreate(
+            ['scheme_code' => $row['scheme_code']], // unique identifier
+            [
+                'province' => $row['province'],
+                'district' => $row['district'],
+                'mun' => $row['mun'],
+                'ward_no' => $row['ward_no'],
+                'scheme_name' => $row['scheme_name'],
+                'scheme_name_np' => $row['scheme_name_np'] ?? null,
+                'collaborator' => $row['collaborator'] ?? null,
+                'sector' => $row['sector'] ?? null,
+                'scheme_technology' => $row['scheme_technology'] ?? null,
+                'scheme_type' => $row['scheme_type'] ?? 'DWS',
+                'scheme_construction_type' => $row['scheme_construction_type'] ?? 'New',
+                'scheme_start_year' => $row['scheme_start_year'],
+                'completion_date' => $row['completion_date'] ?? null,
+                'agreement_signed_date' => $row['agreement_signed_date'] ?? null,
+                'schedule_end_date' => $row['schedule_end_date'] ?? null,
+                'started_date' => $row['started_date'] ?? null,
+                'planned_completion_date' => $row['planned_completion_date'] ?? null,
+                'actual_completed_date' => $row['actual_completed_date'] ?? null,
+                'source_registration_status' => filter_var($row['source_registration_status'] ?? false, FILTER_VALIDATE_BOOLEAN),
+                'source_conservation' => filter_var($row['source_conservation'] ?? false, FILTER_VALIDATE_BOOLEAN),
+                'no_subscheme' => filter_var($row['no_subscheme'] ?? false, FILTER_VALIDATE_BOOLEAN),
+                'progress_status' => $row['progress_status'] ?? null,
+                'justification_for_delay' => $row['justification_for_delay'] ?? null,
+            ]
+        );
     }
 
 
