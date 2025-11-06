@@ -2,7 +2,10 @@
 
 namespace App\Filament\Resources\Schemes;
 
+use App\Filament\Resources\Schemes\Pages\CreateScheme;
+use App\Filament\Resources\Schemes\Pages\EditScheme;
 use App\Filament\Resources\Schemes\Pages\ListSchemes;
+use App\Filament\Resources\Schemes\Pages\ViewScheme;
 use App\Filament\Resources\Schemes\Schemas\SchemeForm;
 use App\Filament\Resources\Schemes\Schemas\SchemeInfolist;
 use App\Filament\Resources\Schemes\Tables\SchemesTable;
@@ -14,16 +17,14 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\Schemes\RelationManagers\BeneficiaryRelationManager;
+
+
 class SchemeResource extends Resource
 {
     protected static ?string $model = Scheme::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::CircleStack;
-
-    protected static ?string $recordTitleAttribute = 'scheme_data';
-
-    protected static ?int $navigationSort = 1;
-    protected static ?string $navigationLabel = "Scheme Info";
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     public static function form(Schema $schema): Schema
     {
@@ -43,16 +44,19 @@ class SchemeResource extends Resource
     public static function getRelations(): array
     {
         return [
+            'beneficiaries' => BeneficiaryRelationManager::class,
         ];
     }
 
     public static function getPages(): array
-{
-    return [
-        'index' => ListSchemes::route('/'),
-    ];
-}
-
+    {
+        return [
+            'index' => ListSchemes::route('/'),
+            'create' => CreateScheme::route('/create'),
+            'view' => ViewScheme::route('/{record}'),
+            'edit' => EditScheme::route('/{record}/edit'),
+        ];
+    }
 
     public static function getRecordRouteBindingEloquentQuery(): Builder
     {

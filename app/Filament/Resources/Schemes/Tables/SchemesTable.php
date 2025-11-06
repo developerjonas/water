@@ -12,11 +12,6 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
-use Filament\Actions\Action;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Facades\Storage;
-use App\Actions\Import\IndexClass as Importer;
-use App\Models\Scheme;
 
 class SchemesTable
 {
@@ -32,8 +27,7 @@ class SchemesTable
                     ->searchable(),
                 TextColumn::make('ward_no')
                     ->numeric()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
                 TextColumn::make('scheme_code')
                     ->searchable(),
                 TextColumn::make('scheme_name')
@@ -41,55 +35,40 @@ class SchemesTable
                 TextColumn::make('scheme_name_np')
                     ->searchable(),
                 TextColumn::make('sector')
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->searchable(),
                 TextColumn::make('scheme_technology')
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->searchable(),
                 TextColumn::make('scheme_type')
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->searchable(),
                 TextColumn::make('scheme_construction_type')
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('scheme_start_year')
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->searchable(),
+                TextColumn::make('scheme_start_year'),
                 TextColumn::make('completion_date')
                     ->date()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
                 TextColumn::make('agreement_signed_date')
                     ->date()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
                 TextColumn::make('schedule_end_date')
                     ->date()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
                 TextColumn::make('started_date')
                     ->date()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
                 TextColumn::make('planned_completion_date')
                     ->date()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
                 TextColumn::make('actual_completed_date')
                     ->date()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
                 IconColumn::make('source_registration_status')
-                    ->boolean()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->boolean(),
                 IconColumn::make('source_conservation')
-                    ->boolean()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->boolean(),
                 IconColumn::make('no_subscheme')
-                    ->boolean()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->boolean(),
                 TextColumn::make('progress_status')
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->searchable(),
                 TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()
@@ -109,18 +88,6 @@ class SchemesTable
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
-                Action::make('download_pdf')
-                    ->label('Download PDF')
-                    ->icon('heroicon-o-document-arrow-down')
-                    ->action(function ($record) {
-                        $pdf = Pdf::loadView('pdf.scheme', ['scheme' => $record])
-                            ->setPaper('A4', 'portrait'); // You can use 'landscape' if needed
-            
-                        return response()->streamDownload(function () use ($pdf) {
-                            echo $pdf->output();
-                        }, 'scheme-' . $record->scheme_code . '.pdf');
-                    }),
-
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
@@ -128,32 +95,6 @@ class SchemesTable
                     ForceDeleteBulkAction::make(),
                     RestoreBulkAction::make(),
                 ]),
-                Action::make('import')
-                    ->label('Import CSV')
-                    ->icon('heroicon-o-arrow-up-tray')
-                    ->form([
-                        \Filament\Forms\Components\FileUpload::make('file')
-                            ->required()
-                            ->acceptedFileTypes(['text/csv']),
-                    ])
-                    ->action(function (array $data) {
-                        $file = $data['file'];
-                        $path = Storage::path($file);
-
-                        $importer = new Importer();
-
-                        $importer->fromCsv($path, [Scheme::class, 'importRow'], [
-                            'province' => 'required|string',
-                            'district' => 'required|string',
-                            'mun' => 'required|string',
-                            'ward_no' => 'required|integer',
-                            'scheme_code' => 'required|string',
-                            'scheme_name' => 'required|string',
-                            'scheme_start_year' => 'required|integer',
-                        ]);
-                    })
-                    ->color('success'),
             ]);
-
     }
 }

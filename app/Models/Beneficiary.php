@@ -70,9 +70,9 @@ class Beneficiary extends Model
      * Relationship: Belongs to a Scheme via scheme_code.
      */
     public function scheme()
-    {
-        return $this->belongsTo(Scheme::class, 'scheme_code', 'scheme_code');
-    }
+{
+    return $this->belongsTo(Scheme::class, 'scheme_code', 'scheme_code');
+}
 
     /**
      * Computed property: total households.

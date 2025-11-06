@@ -97,9 +97,17 @@ class Scheme extends Model
         return $this->belongsToMany(Donor::class, 'pivot_donor_scheme');
     }
 
+    // public function beneficiaries()
+    // {
+    //     return $this->hasMany(Beneficiary::class);
+    // }
+
     public function beneficiaries()
     {
-        return $this->hasMany(Beneficiary::class);
+        // Tell the hasMany relationship to use 'scheme_code' as the
+        // foreign key on the beneficiaries table and 'scheme_code' as the
+        // local key on the schemes table.
+        return $this->hasMany(Beneficiary::class, 'scheme_code', 'scheme_code');
     }
 
     public function waterPoints()
