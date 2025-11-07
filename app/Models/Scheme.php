@@ -150,7 +150,7 @@ class Scheme extends Model
 
     public function structure()
     {
-        return $this->hasOne(Structure::class);
+        return $this->hasOne(Structure::class, 'scheme_code', 'scheme_code');
     }
 
     public function subsidies()
