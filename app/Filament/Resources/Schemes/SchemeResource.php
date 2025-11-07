@@ -6,6 +6,7 @@ use App\Filament\Resources\Schemes\Pages\CreateScheme;
 use App\Filament\Resources\Schemes\Pages\EditScheme;
 use App\Filament\Resources\Schemes\Pages\ListSchemes;
 use App\Filament\Resources\Schemes\Pages\ViewScheme;
+use App\Filament\Resources\Schemes\RelationManagers\UserCommitteeRelationManager;
 use App\Filament\Resources\Schemes\Schemas\SchemeForm;
 use App\Filament\Resources\Schemes\Schemas\SchemeInfolist;
 use App\Filament\Resources\Schemes\Tables\SchemesTable;
@@ -45,6 +46,7 @@ class SchemeResource extends Resource
     {
         return [
             'beneficiaries' => BeneficiaryRelationManager::class,
+            'committees' => UserCommitteeRelationManager::class,
         ];
     }
 

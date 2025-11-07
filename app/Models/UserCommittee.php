@@ -13,6 +13,7 @@ class UserCommittee extends Model
 
     protected $fillable = [
         'scheme_code',
+        'user_committee_name',
         'date_of_formation',
         'user_committee_bank_account_name',
 

@@ -115,9 +115,12 @@ class Scheme extends Model
         return $this->hasMany(WaterPoint::class);
     }
 
-    public function userCommittees()
+    public function wsuc()
     {
-        return $this->hasMany(UserCommittee::class);
+        // Tell the hasMany relationship to use 'scheme_code' as the
+        // foreign key on the beneficiaries table and 'scheme_code' as the
+        // local key on the schemes table.
+        return $this->hasMany(UserCommittee::class, 'scheme_code', 'scheme_code');
     }
 
     public function publicAudits()
