@@ -28,9 +28,9 @@ class SchemeImporter extends Importer
                 ->requiredMapping()
                 ->numeric()
                 ->rules(['required', 'integer']),
-            ImportColumn::make('scheme_code')
-                ->requiredMapping()
-                ->rules(['required', 'max:255']),
+            
+            ImportColumn::make('scheme_code_user')
+                ->rules(['max:255']),
             ImportColumn::make('scheme_name')
                 ->requiredMapping()
                 ->rules(['required', 'max:255']),
@@ -51,26 +51,22 @@ class SchemeImporter extends Importer
                 ->requiredMapping()
                 ->rules(['required']),
             ImportColumn::make('completion_date')
-                ->rules(['nullable','date']),
+                ->rules(['date']),
             ImportColumn::make('agreement_signed_date')
-                ->rules(['nullable','date']),
+                ->rules(['date']),
             ImportColumn::make('schedule_end_date')
-                ->rules(['nullable','date']),
+                ->rules(['date']),
             ImportColumn::make('started_date')
-                ->rules(['nullable','date']),
+                ->rules(['date']),
             ImportColumn::make('planned_completion_date')
-                ->rules(['nullable','date']),
+                ->rules(['date']),
             ImportColumn::make('actual_completed_date')
-                ->rules(['nullable','date']),
+                ->rules(['date']),
             ImportColumn::make('source_registration_status')
                 ->requiredMapping()
                 ->boolean()
                 ->rules(['required', 'boolean']),
             ImportColumn::make('source_conservation')
-                ->requiredMapping()
-                ->boolean()
-                ->rules(['required', 'boolean']),
-            ImportColumn::make('no_subscheme')
                 ->requiredMapping()
                 ->boolean()
                 ->rules(['required', 'boolean']),

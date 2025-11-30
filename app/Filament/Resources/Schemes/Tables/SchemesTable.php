@@ -31,58 +31,56 @@ class SchemesTable
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('scheme_code_user')
-                    ->searchable()->toggleable(isToggledHiddenByDefault: true),
-
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('scheme_name')
                     ->searchable(),
                 TextColumn::make('scheme_name_np')
-                    ->searchable()->toggleable(isToggledHiddenByDefault: true),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('sector')
-                    ->searchable()->toggleable(isToggledHiddenByDefault: true),
-
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('scheme_technology')
-                    ->searchable()->toggleable(isToggledHiddenByDefault: true),
-
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('scheme_type')
-                    ->searchable()->toggleable(isToggledHiddenByDefault: true),
-
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('scheme_construction_type')
-                    ->searchable()->toggleable(isToggledHiddenByDefault: true),
-
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('scheme_start_year'),
                 TextColumn::make('completion_date')
                     ->date()
-                    ->sortable()->toggleable(isToggledHiddenByDefault: true),
-
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('agreement_signed_date')
                     ->date()
-                    ->sortable()->toggleable(isToggledHiddenByDefault: true),
-
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('schedule_end_date')
                     ->date()
-                    ->sortable()->toggleable(isToggledHiddenByDefault: true),
-
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('started_date')
                     ->date()
-                    ->sortable()->toggleable(isToggledHiddenByDefault: true),
-
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('planned_completion_date')
                     ->date()
-                    ->sortable()->toggleable(isToggledHiddenByDefault: true),
-
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('actual_completed_date')
                     ->date()
-                    ->sortable()->toggleable(isToggledHiddenByDefault: true),
-
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 IconColumn::make('source_registration_status')
-                    ->boolean()->toggleable(isToggledHiddenByDefault: true),
-
+                    ->boolean()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 IconColumn::make('source_conservation')
-                    ->boolean()->toggleable(isToggledHiddenByDefault: true),
-
-
-
-
+                    ->boolean()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
