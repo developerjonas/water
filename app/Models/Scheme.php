@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo; // Added this import
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Scheme extends Model
@@ -22,6 +23,7 @@ class Scheme extends Model
 
         // Identification
         'scheme_code',
+        'scheme_code_user',
         'scheme_name',
         'scheme_name_np',
         'collaborator', // New column for collaborator/partner organization
@@ -50,12 +52,17 @@ class Scheme extends Model
     ];
 
     protected $casts = [
-        'collaborator' => 'array', // <-- this will automatically handle array <-> JSON conversion
+        'collaborator' => 'array', // automatically handle array <-> JSON conversion
         'source_registration_status' => 'boolean',
         'source_conservation' => 'boolean',
         'no_subscheme' => 'boolean',
+        'agreement_signed_date' => 'date',
+        'started_date' => 'date',
+        'schedule_end_date' => 'date',
+        'planned_completion_date' => 'date',
+        'actual_completed_date' => 'date',
+        'completion_date' => 'date',
     ];
-
 
     // -------------------
     // Booted model events
@@ -74,7 +81,6 @@ class Scheme extends Model
             }
         });
     }
-
 
     /**
      * Generates a unique scheme code based on location, year, and scheme name.
@@ -97,16 +103,8 @@ class Scheme extends Model
         return $this->belongsToMany(Donor::class, 'pivot_donor_scheme');
     }
 
-    // public function beneficiaries()
-    // {
-    //     return $this->hasMany(Beneficiary::class);
-    // }
-
     public function beneficiaries()
     {
-        // Tell the hasMany relationship to use 'scheme_code' as the
-        // foreign key on the beneficiaries table and 'scheme_code' as the
-        // local key on the schemes table.
         return $this->hasMany(Beneficiary::class, 'scheme_code', 'scheme_code');
     }
 
@@ -117,9 +115,6 @@ class Scheme extends Model
 
     public function wsuc()
     {
-        // Tell the hasMany relationship to use 'scheme_code' as the
-        // foreign key on the beneficiaries table and 'scheme_code' as the
-        // local key on the schemes table.
         return $this->hasMany(UserCommittee::class, 'scheme_code', 'scheme_code');
     }
 
@@ -158,6 +153,27 @@ class Scheme extends Model
         return $this->hasMany(Subsidy::class);
     }
 
+    // --- LOCATION RELATIONSHIPS ---
+
+    public function province(): BelongsTo
+    {
+        return $this->belongsTo(Province::class, 'province', 'province_code');
+    }
+
+    public function district(): BelongsTo
+    {
+        return $this->belongsTo(District::class, 'district', 'district_code');
+    }
+
+    public function municipality(): BelongsTo
+    {
+        return $this->belongsTo(Municipality::class, 'mun', 'municipality_code');
+    }
+
+    // -------------------
+    // Helpers
+    // -------------------
+
     public static function importRow(array $row): Scheme
     {
         return self::updateOrCreate(
@@ -189,9 +205,4 @@ class Scheme extends Model
             ]
         );
     }
-
-
-
-
-
 }

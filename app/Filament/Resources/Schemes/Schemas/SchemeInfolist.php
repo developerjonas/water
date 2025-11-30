@@ -16,45 +16,70 @@ class SchemeInfolist
         return $schema
             ->schema([
                 
-                // --- LEFT COLUMN (Wide - 2/3) ---
+                // --- COLUMN 1: Main Content (2/3 Width) ---
                 Group::make()
                     ->columnSpan(['lg' => 2])
                     ->schema([
                         
-                        // 1. Identity & Location
+                        // 1. Identity & Overview
                         Section::make('Scheme Overview')
-                            ->icon('heroicon-m-information-circle')
+                            ->icon('heroicon-m-identification')
                             ->schema([
+                                // Top Row: Codes
                                 Grid::make(2)->schema([
+                                    TextEntry::make('scheme_code') // System Auto-Generated
+                                        ->label('System Code')
+                                        ->icon('heroicon-m-qr-code')
+                                        ->copyable()
+                                        ->color('gray')
+                                        ->weight('bold'),
+
+                                    TextEntry::make('scheme_code_user') // Manual Input
+                                        ->label('Scheme Code')
+                                        ->copyable(),
+                                ]),
+
+                                // Middle Row: Names
+                                Grid::make(1)->schema([
                                     TextEntry::make('scheme_name')
                                         ->label('Scheme Name (English)')
-                                        ->weight('bold') // String instead of Enum
-                                        ->size('lg'),    // String instead of Enum
-                                    
+                                        ->size('lg')
+                                        ->weight('bold'),
+                                        
                                     TextEntry::make('scheme_name_np')
                                         ->label('Scheme Name (Nepali)'),
                                 ]),
 
-                                Grid::make(4)->schema([
-                                    TextEntry::make('province')
-                                        ->label('Province'),
-                                    TextEntry::make('district')
-                                        ->label('District'),
-                                    TextEntry::make('mun')
-                                        ->label('Municipality'),
-                                    TextEntry::make('ward_no')
-                                        ->label('Ward')
-                                        ->badge(), // Simple badge
-                                ]),
-
-                                TextEntry::make('scheme_code')
-                                    ->label('Scheme Code')
-                                    ->copyable()
-                                    ->color('gray'),
+                                // Bottom Row: Collaborator
+                                TextEntry::make('collaborator')
+                                    ->label('Partner / Collaborator')
+                                    ->icon('heroicon-m-users'),
                             ]),
 
-                        // 2. Dates
-                        Section::make('Timeline')
+                        // 2. Geographic Location
+                        Section::make('Geographic Details')
+                            ->icon('heroicon-m-map')
+                            ->schema([
+                                Grid::make(4)->schema([
+                                    // Assuming you have relationships set up in your Scheme Model 
+                                    // (e.g., public function province() { return $this->belongsTo(Province::class); })
+                                    TextEntry::make('province') 
+                                        ->label('Province'),
+                                        
+                                    TextEntry::make('district')
+                                        ->label('District'),
+                                        
+                                    TextEntry::make('mun') // Or 'mun.name' depending on your relation name
+                                        ->label('Municipality'),
+                                        
+                                    TextEntry::make('ward_no')
+                                        ->label('Ward')
+                                        ->badge(),
+                                ]),
+                            ]),
+
+                        // 3. Timeline & Dates
+                        Section::make('Timeline & Justification')
                             ->icon('heroicon-m-calendar')
                             ->schema([
                                 Grid::make(3)->schema([
@@ -66,49 +91,85 @@ class SchemeInfolist
                                     TextEntry::make('completion_date')
                                         ->label('Final Report')
                                         ->date()
-                                        ->color('success')
-                                        ->weight('bold'),
+                                        ->color('success'),
                                 ]),
+                                
+                                TextEntry::make('scheme_start_year')
+                                    ->label('Fiscal Start Year')
+                                    ->badge()
+                                    ->color('gray'),
+
+                                TextEntry::make('justification_for_delay')
+                                    ->label('Justification for Delay')
+                                    ->markdown() // Renders nicely if they typed a lot
+                                    ->placeholder('No delays recorded.')
+                                    ->columnSpanFull(),
                             ]),
                     ]),
 
-                // --- RIGHT COLUMN (Narrow - 1/3) ---
+                // --- COLUMN 2: Sidebar (1/3 Width) ---
                 Group::make()
                     ->columnSpan(['lg' => 1])
                     ->schema([
                         
-                        // 3. Status & Classifications
-                        Section::make('Status & Type')
+                        // 4. Classification
+                        Section::make('Classification')
+                            ->icon('heroicon-m-tag')
                             ->schema([
                                 TextEntry::make('progress_status')
                                     ->badge()
-                                    ->color('primary'), // Simple string color
+                                    ->color(fn (string $state): string => match ($state) {
+                                        'Completed' => 'success',
+                                        'Ongoing' => 'warning',
+                                        default => 'gray',
+                                    }),
 
-                                TextEntry::make('sector'),
-                                TextEntry::make('scheme_technology'),
-                                TextEntry::make('scheme_type'),
-                                TextEntry::make('scheme_construction_type'),
-                                TextEntry::make('scheme_start_year'),
+                                TextEntry::make('scheme_type') // DWS / MUS
+                                    ->label('Scheme Sector')
+                                    ->badge()
+                                    ->color('info'),
+
+                                TextEntry::make('scheme_technology')
+                                    ->label('Technology')
+                                    ->icon('heroicon-m-cpu-chip'),
+
+                                TextEntry::make('sector')
+                                    ->label('Broad Sector'),
+
+                                TextEntry::make('scheme_construction_type')
+                                    ->label('Construction Type')
+                                    ->badge(),
+
+                                TextEntry::make('no_of_subschemes')
+                                    ->label('Sub-schemes')
+                                    ->numeric(),
                             ]),
 
-                        // 4. Boolean Flags
+                        // 5. Status Flags
                         Section::make('Indicators')
                             ->schema([
                                 IconEntry::make('source_registration_status')
                                     ->label('Source Registered')
                                     ->boolean(),
-                                
+
                                 IconEntry::make('source_conservation')
                                     ->label('Source Conservation')
                                     ->boolean(),
 
                                 IconEntry::make('no_subscheme')
-                                    ->label('Is Standalone')
+                                    ->label('Standalone (No Sub)')
                                     ->boolean(),
                             ]),
+                            
+                        // 6. Metadata (Optional but recommended)
+                        Section::make('System Info')
+                            ->collapsed()
+                            ->schema([
+                                TextEntry::make('created_at')->dateTime(),
+                                TextEntry::make('updated_at')->dateTime(),
+                            ]),
                     ]),
-
             ])
-            ->columns(3); // This enables the 2 + 1 layout
+            ->columns(3);
     }
 }

@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Schemes\Tables;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\Action;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
@@ -12,7 +13,8 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
-
+use App\Models\Scheme;
+use App\Actions\Pdf\SchemeReportGenerator;
 class SchemesTable
 {
     public static function configure(Table $table): Table
@@ -28,51 +30,59 @@ class SchemesTable
                 TextColumn::make('ward_no')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('scheme_code')
-                    ->searchable(),
+                TextColumn::make('scheme_code_user')
+                    ->searchable()->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('scheme_name')
                     ->searchable(),
                 TextColumn::make('scheme_name_np')
-                    ->searchable(),
+                    ->searchable()->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('sector')
-                    ->searchable(),
+                    ->searchable()->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('scheme_technology')
-                    ->searchable(),
+                    ->searchable()->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('scheme_type')
-                    ->searchable(),
+                    ->searchable()->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('scheme_construction_type')
-                    ->searchable(),
+                    ->searchable()->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('scheme_start_year'),
                 TextColumn::make('completion_date')
                     ->date()
-                    ->sortable(),
+                    ->sortable()->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('agreement_signed_date')
                     ->date()
-                    ->sortable(),
+                    ->sortable()->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('schedule_end_date')
                     ->date()
-                    ->sortable(),
+                    ->sortable()->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('started_date')
                     ->date()
-                    ->sortable(),
+                    ->sortable()->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('planned_completion_date')
                     ->date()
-                    ->sortable(),
+                    ->sortable()->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('actual_completed_date')
                     ->date()
-                    ->sortable(),
+                    ->sortable()->toggleable(isToggledHiddenByDefault: true),
+
                 IconColumn::make('source_registration_status')
-                    ->boolean(),
+                    ->boolean()->toggleable(isToggledHiddenByDefault: true),
+
                 IconColumn::make('source_conservation')
-                    ->boolean(),
-                IconColumn::make('no_subscheme')
-                    ->boolean(),
-                TextColumn::make('progress_status')
-                    ->searchable(),
-                TextColumn::make('deleted_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->boolean()->toggleable(isToggledHiddenByDefault: true),
+
+
+
+
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -88,6 +98,13 @@ class SchemesTable
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
+                Action::make('download_report')
+                ->label('Download PDF')
+                ->icon('heroicon-o-arrow-down-tray')
+                ->color('success')
+                ->action(function (Scheme $record) {
+                    return app(SchemeReportGenerator::class, ['scheme' => $record])->streamPdf();
+                }),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
