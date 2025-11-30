@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Structures\Tables;
 
-use App\Filament\Components\SchemeColumns; // <-- reusable scheme columns
+use App\Filament\Components\SchemeColumns;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;

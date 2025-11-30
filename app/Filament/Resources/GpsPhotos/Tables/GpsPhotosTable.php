@@ -6,11 +6,13 @@ use App\Filament\Components\SchemeColumns; // <-- reusable scheme columns
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-
+use App\Models\GpsPhoto;
+use App\Actions\Pdf\GpsPhotoReportGenerator;
 class GpsPhotosTable
 {
     public static function configure(Table $table): Table
@@ -22,17 +24,22 @@ class GpsPhotosTable
                     TextColumn::make('water_system_name')
                         ->searchable(),
                     TextColumn::make('location_type')
+                        ->toggleable(isToggledHiddenByDefault: true)
                         ->searchable(),
                     TextColumn::make('source_type')
+                        ->toggleable(isToggledHiddenByDefault: true)
                         ->searchable(),
                     TextColumn::make('hardware_type')
+                        ->toggleable(isToggledHiddenByDefault: true)
                         ->searchable(),
                     TextColumn::make('latitude')
                         ->numeric()
-                        ->sortable(),
+                        ->sortable()
+                        ->toggleable(isToggledHiddenByDefault: true),
                     TextColumn::make('longitude')
                         ->numeric()
-                        ->sortable(),
+                        ->sortable()
+                        ->toggleable(isToggledHiddenByDefault: true),
                     TextColumn::make('created_at')
                         ->dateTime()
                         ->sortable()
@@ -49,7 +56,14 @@ class GpsPhotosTable
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
-                DeleteAction::make(), // <-- added Delete action
+                DeleteAction::make(),
+                Action::make('download_report')
+                    ->label('Download PDF')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('success')
+                    ->action(function (GpsPhoto $record) {
+                        return app(GpsPhotoReportGenerator::class, ['record' => $record])->streamPdf();
+                    }),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
