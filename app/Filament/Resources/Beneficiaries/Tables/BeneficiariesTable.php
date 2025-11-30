@@ -10,6 +10,9 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Actions\Action;
+use App\Models\Beneficiary;
+use App\Actions\Pdf\BeneficiaryReportGenerator;
 
 class BeneficiariesTable
 {
@@ -19,54 +22,6 @@ class BeneficiariesTable
             ->columns(array_merge(
                 SchemeColumns::make(), // <-- replace scheme_code with Province/District/Municipality/Scheme Name
                 [
-                    TextColumn::make('dalit_hh_poor')
-                        ->numeric()
-                        ->sortable(),
-                    TextColumn::make('dalit_hh_nonpoor')
-                        ->numeric()
-                        ->sortable(),
-                    TextColumn::make('aj_hh_poor')
-                        ->numeric()
-                        ->sortable(),
-                    TextColumn::make('aj_hh_nonpoor')
-                        ->numeric()
-                        ->sortable(),
-                    TextColumn::make('other_hh_poor')
-                        ->numeric()
-                        ->sortable(),
-                    TextColumn::make('other_hh_nonpoor')
-                        ->numeric()
-                        ->sortable(),
-                    TextColumn::make('dalit_female')
-                        ->numeric()
-                        ->sortable(),
-                    TextColumn::make('dalit_male')
-                        ->numeric()
-                        ->sortable(),
-                    TextColumn::make('aj_female')
-                        ->numeric()
-                        ->sortable(),
-                    TextColumn::make('aj_male')
-                        ->numeric()
-                        ->sortable(),
-                    TextColumn::make('others_female')
-                        ->numeric()
-                        ->sortable(),
-                    TextColumn::make('others_male')
-                        ->numeric()
-                        ->sortable(),
-                    TextColumn::make('base_population')
-                        ->numeric()
-                        ->sortable(),
-                    TextColumn::make('boys_student')
-                        ->numeric()
-                        ->sortable(),
-                    TextColumn::make('girls_student')
-                        ->numeric()
-                        ->sortable(),
-                    TextColumn::make('teachers_staff')
-                        ->numeric()
-                        ->sortable(),
                     TextColumn::make('created_at')
                         ->dateTime()
                         ->sortable()
@@ -83,7 +38,14 @@ class BeneficiariesTable
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
-                DeleteAction::make(), // <-- added Delete action
+                DeleteAction::make(),
+                Action::make('download_report')
+                    ->label('Download PDF')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('success')
+                    ->action(function (Beneficiary $record) {
+                        return app(BeneficiaryReportGenerator::class, ['beneficiary' => $record])->streamPdf();
+                    }),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

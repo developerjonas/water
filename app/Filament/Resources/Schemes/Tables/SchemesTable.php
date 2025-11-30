@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Schemes\Tables;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\Action;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
@@ -97,12 +98,14 @@ class SchemesTable
                 ViewAction::make(),
                 EditAction::make(),
                 Action::make('download_report')
-                ->label('Download PDF')
-                ->icon('heroicon-o-arrow-down-tray')
-                ->color('success')
-                ->action(function (Scheme $record) {
-                    return app(SchemeReportGenerator::class, ['scheme' => $record])->streamPdf();
-                }),
+                    ->label('Download PDF')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('success')
+                    ->action(function (Scheme $record) {
+                        return app(SchemeReportGenerator::class, ['scheme' => $record])->streamPdf();
+                    }),
+                DeleteAction::make(), // <-- added Delete action
+
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

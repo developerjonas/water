@@ -2,13 +2,13 @@
 
 namespace App\Filament\Resources\Structures\Schemas;
 
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
-use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Wizard;
-use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Wizard\Step;
 use App\Filament\Components\SchemeSelector;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Group;
+use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Schema;
 
 class StructureForm
 {
@@ -16,67 +16,85 @@ class StructureForm
     {
         return $schema
             ->components([
-                Wizard::make([
+                
+                // --- Scheme Context ---
+                Section::make('Scheme Association')
+                    ->icon('heroicon-m-link')
+                    ->compact()
+                    ->columns(3)
+                    ->schema(
+                        SchemeSelector::make() 
+                    )
+                    ->columnSpanFull(),
 
-                    Step::make('Scheme')->columns(3)->schema(SchemeSelector::make()),
+                // --- 1. Source & Transmission (6 Cols = 3 Pairs side-by-side) ---
+                Section::make('Source & Transmission')
+                    ->icon('heroicon-m-arrow-down-on-square-stack')
+                    ->columns(2) // Responsive high density
+                    ->schema([
+                        // Pair 1: Intakes
+                        TextInput::make('intakes_planned')->label('Intakes (Plan)')->numeric()->default(0),
+                        TextInput::make('intakes_constructed')->label('Intakes (Const)')->numeric()->default(0),
 
-                    Step::make('Structure Data')->columns(1) // Step has 2 columns → 2 sections side by side
-                        ->schema([
-                            Section::make('Intakes & RVTs')->columns(3) // Section has 3 columns → fields arranged in 3 columns
-                                ->schema([
-                                    TextInput::make('intakes_planned')->label('Intakes Planned')->numeric()->default(0)->required(),
-                                    TextInput::make('intakes_constructed')->label('Intakes Constructed')->numeric()->default(0)->required(),
-                                    TextInput::make('intakes_remaining')->label('Intakes Remaining')->numeric()->default(0)->required(),
-                                    TextInput::make('rvts_planned')->label('RVTs Planned')->numeric()->default(0)->required(),
-                                    TextInput::make('rvts_constructed')->label('RVTs Constructed')->numeric()->default(0)->required(),
-                                    TextInput::make('rvts_remaining')->label('RVTs Remaining')->numeric()->default(0)->required(),
-                                ]),
+                        // Pair 2: RVTs
+                        TextInput::make('rvts_planned')->label('RVTs (Plan)')->numeric()->default(0),
+                        TextInput::make('rvts_constructed')->label('RVTs (Const)')->numeric()->default(0),
 
-                            Section::make('Structures')->columns(3) // Another Section side by side
-                                ->schema([
-                                    TextInput::make('cc_dc_bpt_planned')->label('CC/DC/BPT/IC/Valvebox Planned')->numeric()->default(0)->required(),
-                                    TextInput::make('cc_dc_bpt_constructed')->label('CC/DC/BPT/IC/Valvebox Constructed')->numeric()->default(0)->required(),
-                                    TextInput::make('cc_dc_bpt_remaining')->label('CC/DC/BPT/IC/Valvebox Remaining')->numeric()->default(0)->required(),
-                                    TextInput::make('other_structures_planned')->label('Other Structures Planned')->numeric()->default(0)->required(),
-                                    TextInput::make('other_structures_constructed')->label('Other Structures Constructed')->numeric()->default(0)->required(),
-                                    TextInput::make('other_structures_remaining')->label('Other Structures Remaining')->numeric()->default(0)->required(),
-                                ]),
+                        // Pair 3: Transmission
+                        TextInput::make('transmission_line_planned')->label('Trans. Line (Plan)')->numeric()->default(0),
+                        TextInput::make('transmission_line_constructed')->label('Trans. Line (Const)')->numeric()->default(0),
+                    ]),
 
-                            Section::make('Taps')->columns(3)
-                                ->schema([
-                                    TextInput::make('public_taps_planned')->label('Public Taps Planned')->numeric()->default(0)->required(),
-                                    TextInput::make('public_taps_constructed')->label('Public Taps Constructed')->numeric()->default(0)->required(),
-                                    TextInput::make('public_taps_remaining')->label('Public Taps Remaining')->numeric()->default(0)->required(),
-                                    TextInput::make('school_taps_planned')->label('School Taps Planned')->numeric()->default(0)->required(),
-                                    TextInput::make('school_taps_constructed')->label('School Taps Constructed')->numeric()->default(0)->required(),
-                                    TextInput::make('school_taps_remaining')->label('School Taps Remaining')->numeric()->default(0)->required(),
-                                    TextInput::make('private_taps_planned')->label('Private Taps Planned')->numeric()->default(0)->required(),
-                                    TextInput::make('private_taps_constructed')->label('Private Taps Constructed')->numeric()->default(0)->required(),
-                                    TextInput::make('private_taps_remaining')->label('Private Taps Remaining')->numeric()->default(0)->required(),
-                                ]),
+                // --- 2. Storage & Distribution (6 Cols = 3 Pairs side-by-side) ---
+                Section::make('Storage & Distribution')
+                    ->icon('heroicon-m-circle-stack')
+                    ->columns(2)
+                    ->schema([
+                        // Pair 1: CC/DC/BPT
+                        TextInput::make('cc_dc_bpt_planned')->label('CC/DC/BPT (Plan)')->numeric()->default(0),
+                        TextInput::make('cc_dc_bpt_constructed')->label('CC/DC/BPT (Const)')->numeric()->default(0),
 
-                            Section::make('Lines')->columns(3)
-                                ->schema([
-                                    TextInput::make('transmission_line_planned')->label('Transmission Line Planned')->numeric()->default(0)->required(),
-                                    TextInput::make('transmission_line_constructed')->label('Transmission Line Constructed')->numeric()->default(0)->required(),
-                                    TextInput::make('transmission_line_remaining')->label('Transmission Line Remaining')->numeric()->default(0)->required(),
-                                    TextInput::make('distribution_line_planned')->label('Distribution Line Planned')->numeric()->default(0)->required(),
-                                    TextInput::make('distribution_line_constructed')->label('Distribution Line Constructed')->numeric()->default(0)->required(),
-                                    TextInput::make('distribution_line_remaining')->label('Distribution Line Remaining')->numeric()->default(0)->required(),
-                                    TextInput::make('private_line_planned')->label('Private Line Planned')->numeric()->default(0)->required(),
-                                    TextInput::make('private_line_constructed')->label('Private Line Constructed')->numeric()->default(0)->required(),
-                                    TextInput::make('private_line_remaining')->label('Private Line Remaining')->numeric()->default(0)->required(),
-                                ]),
-                        ]),
+                        // Pair 2: Distribution Line
+                        TextInput::make('distribution_line_planned')->label('Dist. Line (Plan)')->numeric()->default(0),
+                        TextInput::make('distribution_line_constructed')->label('Dist. Line (Const)')->numeric()->default(0),
 
-                    Step::make('Remarks')
-                        ->schema([
-                            Textarea::make('remarks')
-                                ->label('Remarks')
-                                ->columnSpanFull(),
-                        ]),
+                        // Pair 3: Other Structures
+                        TextInput::make('other_structures_planned')->label('Other (Plan)')->numeric()->default(0),
+                        TextInput::make('other_structures_constructed')->label('Other (Const)')->numeric()->default(0),
+                    ]),
 
-                ])->columnSpanFull(),
+                // --- 3. Taps & Private Lines (8 Cols = 4 Pairs side-by-side) ---
+                Section::make('Tap Connections & Private Lines')
+                    ->icon('heroicon-m-home-modern')
+                    ->columns(2) // Very high density
+                    ->schema([
+                        // Pair 1: Public Taps
+                        TextInput::make('public_taps_planned')->label('Public (Plan)')->numeric()->default(0),
+                        TextInput::make('public_taps_constructed')->label('Public (Const)')->numeric()->default(0),
+
+                        // Pair 2: School Taps
+                        TextInput::make('school_taps_planned')->label('School (Plan)')->numeric()->default(0),
+                        TextInput::make('school_taps_constructed')->label('School (Const)')->numeric()->default(0),
+
+                        // Pair 3: Private Taps
+                        TextInput::make('private_taps_planned')->label('Pvt Taps (Plan)')->numeric()->default(0),
+                        TextInput::make('private_taps_constructed')->label('Pvt Taps (Const)')->numeric()->default(0),
+
+                        // Pair 4: Private Lines
+                        TextInput::make('private_line_planned')->label('Pvt Line (Plan)')->numeric()->default(0),
+                        TextInput::make('private_line_constructed')->label('Pvt Line (Const)')->numeric()->default(0),
+                    ]),
+
+                // --- 4. Notes ---
+                Section::make('Additional Information')
+                    ->icon('heroicon-m-document-text')
+                    ->schema([
+                        Textarea::make('remarks')
+                            ->label('Remarks / Observations')
+                            ->rows(3)
+                            ->columnSpanFull(),
+                    ])
+                    ->collapsible(),
             ]);
     }
 }

@@ -28,7 +28,6 @@ class SchemeImporter extends Importer
                 ->requiredMapping()
                 ->numeric()
                 ->rules(['required', 'integer']),
-            
             ImportColumn::make('scheme_code_user')
                 ->rules(['max:255']),
             ImportColumn::make('scheme_name')

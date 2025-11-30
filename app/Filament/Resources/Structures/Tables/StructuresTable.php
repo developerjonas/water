@@ -11,6 +11,9 @@ use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Actions\Action;
+use App\Models\Structure;
+use App\Actions\Pdf\StructureReportGenerator;
 
 class StructuresTable
 {
@@ -20,73 +23,6 @@ class StructuresTable
             ->columns(array_merge(
                 SchemeColumns::make(), // <-- replaces scheme_code
                 [
-                    TextColumn::make('intakes_constructed')
-                        ->numeric()
-                        ->sortable(),
-                    TextColumn::make('intakes_remaining')
-                        ->numeric()
-                        ->sortable(),
-                    TextColumn::make('rvts_constructed')
-                        ->numeric()
-                        ->sortable(),
-                    TextColumn::make('rvts_remaining')
-                        ->numeric()
-                        ->sortable(),
-                    TextColumn::make('cc_dc_bpt_constructed')
-                        ->numeric()
-                        ->sortable(),
-                    TextColumn::make('cc_dc_bpt_remaining')
-                        ->numeric()
-                        ->sortable(),
-                    TextColumn::make('other_structures_constructed')
-                        ->numeric()
-                        ->sortable(),
-                    TextColumn::make('other_structures_remaining')
-                        ->numeric()
-                        ->sortable(),
-                    TextColumn::make('public_taps')
-                        ->numeric()
-                        ->sortable(),
-                    TextColumn::make('school_taps')
-                        ->numeric()
-                        ->sortable(),
-                    TextColumn::make('private_taps')
-                        ->numeric()
-                        ->sortable(),
-                    TextColumn::make('taps_constructed_progress')
-                        ->numeric()
-                        ->sortable(),
-                    TextColumn::make('taps_remaining')
-                        ->numeric()
-                        ->sortable(),
-                    TextColumn::make('transmission_line_progress')
-                        ->numeric()
-                        ->sortable(),
-                    TextColumn::make('transmission_line_remaining')
-                        ->numeric()
-                        ->sortable(),
-                    TextColumn::make('distribution_line_progress')
-                        ->numeric()
-                        ->sortable(),
-                    TextColumn::make('distribution_line_remaining')
-                        ->numeric()
-                        ->sortable(),
-                    TextColumn::make('private_line_progress')
-                        ->numeric()
-                        ->sortable(),
-                    TextColumn::make('private_line_remaining')
-                        ->numeric()
-                        ->sortable(),
-                    IconColumn::make('mb_submitted_to_municipality')
-                        ->boolean(),
-                    IconColumn::make('municipality_contribution_transferred')
-                        ->boolean(),
-                    IconColumn::make('public_hearing_done')
-                        ->boolean(),
-                    IconColumn::make('public_review_done')
-                        ->boolean(),
-                    IconColumn::make('final_public_audit_done')
-                        ->boolean(),
                     TextColumn::make('created_at')
                         ->dateTime()
                         ->sortable()
@@ -103,7 +39,14 @@ class StructuresTable
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
-                DeleteAction::make(), // <-- added Delete action
+                DeleteAction::make(),
+                Action::make('download_report')
+                    ->label('Download PDF')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('success')
+                    ->action(function (Structure $record) {
+                        return app(StructureReportGenerator::class, ['structure' => $record])->streamPdf();
+                    }),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
