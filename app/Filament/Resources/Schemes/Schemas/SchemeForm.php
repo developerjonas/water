@@ -80,7 +80,6 @@ class SchemeForm
 
                                     TextInput::make('ward_no')
                                         ->label('Ward No')
-                                        ->numeric()
                                         ->required(),
                                 ]),
                             ]),
@@ -90,7 +89,7 @@ class SchemeForm
                             ->icon('heroicon-m-identification')
                             ->columns(2)
                             ->schema([
-                                TextInput::make('scheme_code')
+                                TextInput::make('scheme_code_user')
                                     ->required()
                                     ->maxLength(255),
                                 
@@ -106,9 +105,7 @@ class SchemeForm
                                     ->label('Name (Nepali)')
                                     ->columnSpanFull(),
 
-                                Textarea::make('justification_for_delay')
-                                    ->rows(3)
-                                    ->columnSpanFull(),
+                                
                             ]),
 
                         // 3. Dates / Timeline Section
@@ -122,7 +119,13 @@ class SchemeForm
                                     DatePicker::make('schedule_end_date')->native(false),
                                     DatePicker::make('planned_completion_date')->native(false),
                                     DatePicker::make('actual_completed_date')->native(false),
-                                    DatePicker::make('completion_date')->native(false)->label('Final Report Date'),
+                                    DatePicker::make('completion_date')->native(false),
+                                    TextInput::make('scheme_start_year')
+                                    ->numeric()
+                                    ->required(),
+                                    Textarea::make('justification_for_delay')
+                                    ->rows(3)
+                                    ->columnSpanFull(),
                                 ]),
                             ]),
                     ]),
@@ -135,18 +138,39 @@ class SchemeForm
                         Section::make('Classification')
                             ->icon('heroicon-m-tag')
                             ->schema([
-                                TextInput::make('sector'),
-                                TextInput::make('scheme_technology'),
-                                TextInput::make('scheme_type')
-                                    ->required()
-                                    ->default('DWS'),
-                                TextInput::make('scheme_construction_type')
-                                    ->required()
-                                    ->default('New'),
-                                TextInput::make('scheme_start_year')
-                                    ->numeric()
+                                TextInput::make('no_of_subschemes')
                                     ->required(),
-                                TextInput::make('progress_status'),
+                                Select::make('scheme_type')
+                                    ->label('Sector')
+                                    ->options([
+                                        'DWS' => 'DWS',
+                                        'MUS' => 'MUS',
+                                    ]),
+                                Select::make('scheme_technology')
+                                    ->label('Technology')
+                                    ->options([
+                                        'Solar Lift' => 'Solar Lift',
+                                        'Gravity' => 'Gravity',
+                                    ]),
+                                TextInput::make('sector')
+                                    ->required(),
+                                Select::make('scheme_construction_type')
+                                    ->required()
+                                    ->label('Scheme Construction')
+                                    ->default('New')
+                                    ->options([
+                                        'New'=>'New',
+                                        'Rehab'=>'Rehab',
+                                    ]),
+                                
+                                Select::make('progress_status')
+                                    ->required()
+                                    ->label('Progress Status')
+                                    ->default('Completed')
+                                    ->options([
+                                        'Completed'=>'Completed',
+                                        'Ongoing'=>'Ongoing',
+                                    ]),
                             ]),
 
                         Section::make('Status Flags')
