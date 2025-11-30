@@ -113,7 +113,7 @@ class Scheme extends Model
         return $this->hasMany(WaterPoint::class);
     }
 
-    public function wsuc()
+    public function userCommittee()
     {
         return $this->hasMany(UserCommittee::class, 'scheme_code', 'scheme_code');
     }

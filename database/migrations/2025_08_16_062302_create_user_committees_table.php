@@ -46,7 +46,7 @@ return new class extends Migration {
             $table->integer('others_male_member')->default(0);
 
             // Registration & Contract
-            $table->string('wusc_registration_status')->nullable();
+            $table->string('registration_status')->nullable();
             $table->string('registration_number')->nullable();
             $table->date('contract_date')->nullable();
             $table->date('contract_expiry_date')->nullable();
