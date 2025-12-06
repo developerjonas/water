@@ -21,10 +21,6 @@ class UsersTable
                 TextColumn::make('email')
                     ->label('Email address')
                     ->searchable(),
-                TextColumn::make('role')
-                    ->searchable(),
-                IconColumn::make('is_active')
-                    ->boolean(),
                 TextColumn::make('email_verified_at')
                     ->dateTime()
                     ->sortable(),
@@ -36,6 +32,10 @@ class UsersTable
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('role')
+                    ->searchable(),
+                IconColumn::make('is_active')
+                    ->boolean(),
             ])
             ->filters([
                 //

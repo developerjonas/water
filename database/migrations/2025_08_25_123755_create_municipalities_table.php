@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('municipalities', function (Blueprint $table) {
             $table->id(); // internal PK
             $table->string('district_code', 10); // FK to districts.code
-            $table->string('municipality_code', 50)->nullable(); // optional municipality code
+            $table->string('municipality_code', 50)->unique(); // optional municipality code
             $table->string('name'); // municipality name
             $table->boolean('is_active')->default(false); // active flag
             $table->timestamps();
