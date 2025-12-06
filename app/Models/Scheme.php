@@ -70,6 +70,8 @@ class Scheme extends Model
 
     protected static function booted(): void
     {
+        static::addGlobalScope(new \App\Models\Scopes\SchemeAccessScope);
+
         static::creating(function (Scheme $scheme) {
             $scheme->scheme_code = self::generateSchemeCode($scheme);
         });
@@ -80,7 +82,10 @@ class Scheme extends Model
                 $scheme->donors()->sync($scheme->collaborator);
             }
         });
+
     }
+
+
 
     /**
      * Generates a unique scheme code based on location, year, and scheme name.

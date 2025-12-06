@@ -13,8 +13,6 @@ use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Infolists\Components\Grid as InfolistGrid;
-use Filament\Infolists\Components\Section as InfolistSection;
 use Filament\Infolists\Components\TextEntry;
 
 // Table Components
@@ -31,7 +29,7 @@ use Filament\Actions\BulkActionGroup;
 
 class UserCommitteeRelationManager extends RelationManager
 {
-    protected static string $relationship = 'wsuc';
+    protected static string $relationship = 'userCommittee';
     protected static ?string $title = 'WUSCs';
     protected static ?string $recordTitleAttribute = 'user_committee_name';
 
