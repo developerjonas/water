@@ -36,14 +36,14 @@ class SchemeInfolist
 
                                     TextEntry::make('scheme_code_user') // Manual Input
                                         ->label('Scheme Code')
-                                        ->copyable(),
+                                        ->copyable()->badge(),
+
                                 ]),
 
                                 // Middle Row: Names
                                 Grid::make(1)->schema([
                                     TextEntry::make('scheme_name')
                                         ->label('Scheme Name (English)')
-                                        ->size('lg')
                                         ->weight('bold'),
                                         
                                     TextEntry::make('scheme_name_np')
@@ -61,15 +61,13 @@ class SchemeInfolist
                             ->icon('heroicon-m-map')
                             ->schema([
                                 Grid::make(4)->schema([
-                                    // Assuming you have relationships set up in your Scheme Model 
-                                    // (e.g., public function province() { return $this->belongsTo(Province::class); })
                                     TextEntry::make('province') 
                                         ->label('Province'),
                                         
                                     TextEntry::make('district')
                                         ->label('District'),
                                         
-                                    TextEntry::make('mun') // Or 'mun.name' depending on your relation name
+                                    TextEntry::make('mun')
                                         ->label('Municipality'),
                                         
                                     TextEntry::make('ward_no')
@@ -83,25 +81,14 @@ class SchemeInfolist
                             ->icon('heroicon-m-calendar')
                             ->schema([
                                 Grid::make(3)->schema([
-                                    TextEntry::make('agreement_signed_date')->date(),
                                     TextEntry::make('started_date')->date(),
-                                    TextEntry::make('schedule_end_date')->date(),
                                     TextEntry::make('planned_completion_date')->date(),
                                     TextEntry::make('actual_completed_date')->date(),
-                                    TextEntry::make('completion_date')
-                                        ->label('Final Report')
-                                        ->date()
-                                        ->color('success'),
                                 ]),
                                 
-                                TextEntry::make('scheme_start_year')
-                                    ->label('Fiscal Start Year')
-                                    ->badge()
-                                    ->color('gray'),
-
                                 TextEntry::make('justification_for_delay')
                                     ->label('Justification for Delay')
-                                    ->markdown() // Renders nicely if they typed a lot
+                                    ->markdown()
                                     ->placeholder('No delays recorded.')
                                     ->columnSpanFull(),
                             ]),
@@ -121,10 +108,11 @@ class SchemeInfolist
                                     ->color(fn (string $state): string => match ($state) {
                                         'Completed' => 'success',
                                         'Ongoing' => 'warning',
+                                        'Dropout' => 'danger',
                                         default => 'gray',
                                     }),
 
-                                TextEntry::make('scheme_type') // DWS / MUS
+                                TextEntry::make('scheme_sector') // Renamed from sector
                                     ->label('Scheme Sector')
                                     ->badge()
                                     ->color('info'),
@@ -133,14 +121,11 @@ class SchemeInfolist
                                     ->label('Technology')
                                     ->icon('heroicon-m-cpu-chip'),
 
-                                TextEntry::make('sector')
-                                    ->label('Broad Sector'),
-
                                 TextEntry::make('scheme_construction_type')
                                     ->label('Construction Type')
                                     ->badge(),
 
-                                TextEntry::make('no_of_subschemes')
+                                TextEntry::make('no_of_sub_schemes') // Renamed
                                     ->label('Sub-schemes')
                                     ->numeric(),
                             ]),
@@ -155,13 +140,9 @@ class SchemeInfolist
                                 IconEntry::make('source_conservation')
                                     ->label('Source Conservation')
                                     ->boolean(),
-
-                                IconEntry::make('no_subscheme')
-                                    ->label('Standalone (No Sub)')
-                                    ->boolean(),
                             ]),
                             
-                        // 6. Metadata (Optional but recommended)
+                        // 6. Metadata
                         Section::make('System Info')
                             ->collapsed()
                             ->schema([

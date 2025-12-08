@@ -4,7 +4,9 @@ namespace App\Filament\Resources\WaterPoints\Pages;
 
 use App\Filament\Resources\WaterPoints\WaterPointResource;
 use Filament\Actions\CreateAction;
+use Filament\Actions\ImportAction;
 use Filament\Resources\Pages\ListRecords;
+use App\Filament\Imports\WaterPointImporter;
 
 class ListWaterPoints extends ListRecords
 {
@@ -14,6 +16,7 @@ class ListWaterPoints extends ListRecords
     {
         return [
             CreateAction::make(),
+            ImportAction::make()->importer(WaterPointImporter::class),
         ];
     }
 }

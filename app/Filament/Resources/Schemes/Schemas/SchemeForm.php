@@ -21,13 +21,10 @@ class SchemeForm
     {
         return $schema
             ->components([
-                
-                // --- COLUMN 1: Main Info ---
+
                 Group::make()
                     ->columnSpan(['lg' => 2])
                     ->schema([
-                        
-                        // 1. Location Section (Cascading Logic)
                         Section::make('Geographic Details')
                             ->icon('heroicon-m-map')
                             ->schema([
@@ -37,7 +34,7 @@ class SchemeForm
                                         ->options(Province::where('is_active', 1)->pluck('name', 'province_code'))
                                         ->searchable()
                                         ->preload()
-                                        ->live() // v3/v4 replacement for reactive()
+                                        ->live()
                                         ->afterStateUpdated(function ($set) {
                                             $set('district', null);
                                             $set('mun', null);
@@ -92,20 +89,16 @@ class SchemeForm
                                 TextInput::make('scheme_code_user')
                                     ->required()
                                     ->maxLength(255),
-                                
-                                TextInput::make('collaborator')
-                                    ->placeholder('Partner Organization'),
-                                    
+                                TextInput::make('colaborator')
+                                    ->maxLength(255),
                                 TextInput::make('scheme_name')
                                     ->label('Name (English)')
                                     ->required()
                                     ->columnSpanFull(),
-                                    
                                 TextInput::make('scheme_name_np')
                                     ->label('Name (Nepali)')
                                     ->columnSpanFull(),
-
-                                
+                               
                             ]),
 
                         // 3. Dates / Timeline Section
@@ -114,62 +107,44 @@ class SchemeForm
                             ->collapsed()
                             ->schema([
                                 Grid::make(3)->schema([
-                                    DatePicker::make('agreement_signed_date')->native(false),
                                     DatePicker::make('started_date')->native(false),
-                                    DatePicker::make('schedule_end_date')->native(false),
                                     DatePicker::make('planned_completion_date')->native(false),
                                     DatePicker::make('actual_completed_date')->native(false),
-                                    DatePicker::make('completion_date')->native(false),
-                                    TextInput::make('scheme_start_year')
-                                    ->numeric()
-                                    ->required(),
                                     Textarea::make('justification_for_delay')
-                                    ->rows(3)
-                                    ->columnSpanFull(),
+                                        ->rows(3)
+                                        ->columnSpanFull(),
                                 ]),
                             ]),
                     ]),
 
-                // --- COLUMN 2: Sidebar (Settings & Status) ---
                 Group::make()
                     ->columnSpan(['lg' => 1])
                     ->schema([
-                        
+
                         Section::make('Classification')
                             ->icon('heroicon-m-tag')
                             ->schema([
-                                TextInput::make('no_of_subschemes')
+                                TextInput::make('no_of_sub_schemes')
                                     ->required(),
-                                Select::make('scheme_type')
+                                Select::make('sector')
                                     ->label('Sector')
                                     ->options([
                                         'DWS' => 'DWS',
                                         'MUS' => 'MUS',
+                                    ]),
+                                Select::make('scheme_construction_type')
+                                    ->required()
+                                    ->label('Scheme Construction')
+                                    ->default('New')
+                                    ->options([
+                                        'New' => 'New',
+                                        'Rehab' => 'Rehab',
                                     ]),
                                 Select::make('scheme_technology')
                                     ->label('Technology')
                                     ->options([
                                         'Solar Lift' => 'Solar Lift',
                                         'Gravity' => 'Gravity',
-                                    ]),
-                                TextInput::make('sector')
-                                    ->required(),
-                                Select::make('scheme_construction_type')
-                                    ->required()
-                                    ->label('Scheme Construction')
-                                    ->default('New')
-                                    ->options([
-                                        'New'=>'New',
-                                        'Rehab'=>'Rehab',
-                                    ]),
-                                
-                                Select::make('progress_status')
-                                    ->required()
-                                    ->label('Progress Status')
-                                    ->default('Completed')
-                                    ->options([
-                                        'Completed'=>'Completed',
-                                        'Ongoing'=>'Ongoing',
                                     ]),
                             ]),
 
@@ -180,12 +155,18 @@ class SchemeForm
                                     ->onColor('success'),
                                 Toggle::make('source_conservation')
                                     ->onColor('success'),
-                                Toggle::make('no_subscheme')
-                                    ->label('Is Standalone Scheme')
-                                    ->onColor('primary'),
+                                Select::make('progress_status')
+                                    ->required()
+                                    ->label('Progress Status')
+                                    ->default('Completed')
+                                    ->options([
+                                        'Completed' => 'Completed',
+                                        'Ongoing' => 'Ongoing',
+                                    ]),
+
                             ]),
                     ]),
             ])
-            ->columns(3); // Creates a 2/3 + 1/3 layout
+            ->columns(3);
     }
 }

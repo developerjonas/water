@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo; // Added this import
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Scheme extends Model
@@ -26,19 +26,19 @@ class Scheme extends Model
         'scheme_code_user',
         'scheme_name',
         'scheme_name_np',
-        'collaborator', // New column for collaborator/partner organization
+        
+        // Sub Schemes
+        'no_of_sub_schemes', // Renamed from no_subscheme
+
+        // Collaborator
+        'collaborator', 
 
         // Type & Classification
-        'sector',
-        'scheme_technology',
-        'scheme_type',
+        'scheme_sector', // Renamed from sector
         'scheme_construction_type',
+        'scheme_technology',
 
         // Timing & Dates
-        'scheme_start_year',
-        'completion_date',
-        'agreement_signed_date',
-        'schedule_end_date',
         'started_date',
         'planned_completion_date',
         'actual_completed_date',
@@ -46,22 +46,19 @@ class Scheme extends Model
         // Status Flags
         'source_registration_status',
         'source_conservation',
-        'no_subscheme',
         'progress_status',
         'justification_for_delay',
     ];
 
     protected $casts = [
-        'collaborator' => 'array', // automatically handle array <-> JSON conversion
+        'collaborator' => 'array', // JSON to Array
         'source_registration_status' => 'boolean',
         'source_conservation' => 'boolean',
-        'no_subscheme' => 'boolean',
-        'agreement_signed_date' => 'date',
+        // 'no_of_sub_schemes' is a string in migration, no boolean cast needed unless you want integer.
+        
         'started_date' => 'date',
-        'schedule_end_date' => 'date',
         'planned_completion_date' => 'date',
         'actual_completed_date' => 'date',
-        'completion_date' => 'date',
     ];
 
     // -------------------
@@ -73,7 +70,9 @@ class Scheme extends Model
         static::addGlobalScope(new \App\Models\Scopes\SchemeAccessScope);
 
         static::creating(function (Scheme $scheme) {
-            $scheme->scheme_code = self::generateSchemeCode($scheme);
+            if (empty($scheme->scheme_code)) {
+                $scheme->scheme_code = self::generateSchemeCode($scheme);
+            }
         });
 
         static::saved(function (Scheme $scheme) {
@@ -82,10 +81,7 @@ class Scheme extends Model
                 $scheme->donors()->sync($scheme->collaborator);
             }
         });
-
     }
-
-
 
     /**
      * Generates a unique scheme code based on location, year, and scheme name.
@@ -96,6 +92,7 @@ class Scheme extends Model
         $count = self::where('scheme_name', $scheme->scheme_name)->count() + 1;
         $schemeNameFormatted = str_replace(' ', '_', $scheme->scheme_name);
 
+        // Example: BAG_KTM_2025_SchemeName_1
         return strtoupper("{$scheme->province}_{$scheme->district}_{$year}_{$schemeNameFormatted}_{$count}");
     }
 
@@ -115,7 +112,7 @@ class Scheme extends Model
 
     public function waterPoints()
     {
-        return $this->hasMany(WaterPoint::class);
+        return $this->hasMany(WaterPoint::class, 'scheme_code', 'scheme_code');
     }
 
     public function userCommittee()
@@ -125,27 +122,22 @@ class Scheme extends Model
 
     public function publicAudits()
     {
-        return $this->hasMany(PublicAudit::class);
+        return $this->hasMany(PublicAudit::class, 'scheme_code', 'scheme_code');
     }
 
     public function sanitationMetrics()
     {
-        return $this->hasMany(SanitationMetric::class);
+        return $this->hasMany(SanitationMetric::class, 'scheme_code', 'scheme_code');
     }
 
     public function maintenances()
     {
-        return $this->hasMany(Maintenance::class);
+        return $this->hasMany(Maintenance::class, 'scheme_code', 'scheme_code');
     }
 
     public function installmentMonitorings()
     {
-        return $this->hasMany(InstallmentMonitoring::class);
-    }
-
-    public function structureInfo()
-    {
-        return $this->hasOne(Structure::class);
+        return $this->hasMany(InstallmentMonitoring::class, 'scheme_code', 'scheme_code');
     }
 
     public function structure()
@@ -153,61 +145,25 @@ class Scheme extends Model
         return $this->hasOne(Structure::class, 'scheme_code', 'scheme_code');
     }
 
-    public function subsidies()
+    public function budgets()
     {
-        return $this->hasMany(Subsidy::class);
+        return $this->hasMany(Budget::class, 'scheme_code', 'scheme_code');
     }
 
     // --- LOCATION RELATIONSHIPS ---
 
-    public function province(): BelongsTo
+    public function provinceRelation(): BelongsTo
     {
         return $this->belongsTo(Province::class, 'province', 'province_code');
     }
 
-    public function district(): BelongsTo
+    public function districtRelation(): BelongsTo
     {
         return $this->belongsTo(District::class, 'district', 'district_code');
     }
 
-    public function municipality(): BelongsTo
+    public function municipalityRelation(): BelongsTo
     {
         return $this->belongsTo(Municipality::class, 'mun', 'municipality_code');
-    }
-
-    // -------------------
-    // Helpers
-    // -------------------
-
-    public static function importRow(array $row): Scheme
-    {
-        return self::updateOrCreate(
-            ['scheme_code' => $row['scheme_code']], // unique identifier
-            [
-                'province' => $row['province'],
-                'district' => $row['district'],
-                'mun' => $row['mun'],
-                'ward_no' => $row['ward_no'],
-                'scheme_name' => $row['scheme_name'],
-                'scheme_name_np' => $row['scheme_name_np'] ?? null,
-                'collaborator' => $row['collaborator'] ?? null,
-                'sector' => $row['sector'] ?? null,
-                'scheme_technology' => $row['scheme_technology'] ?? null,
-                'scheme_type' => $row['scheme_type'] ?? 'DWS',
-                'scheme_construction_type' => $row['scheme_construction_type'] ?? 'New',
-                'scheme_start_year' => $row['scheme_start_year'],
-                'completion_date' => $row['completion_date'] ?? null,
-                'agreement_signed_date' => $row['agreement_signed_date'] ?? null,
-                'schedule_end_date' => $row['schedule_end_date'] ?? null,
-                'started_date' => $row['started_date'] ?? null,
-                'planned_completion_date' => $row['planned_completion_date'] ?? null,
-                'actual_completed_date' => $row['actual_completed_date'] ?? null,
-                'source_registration_status' => filter_var($row['source_registration_status'] ?? false, FILTER_VALIDATE_BOOLEAN),
-                'source_conservation' => filter_var($row['source_conservation'] ?? false, FILTER_VALIDATE_BOOLEAN),
-                'no_subscheme' => filter_var($row['no_subscheme'] ?? false, FILTER_VALIDATE_BOOLEAN),
-                'progress_status' => $row['progress_status'] ?? null,
-                'justification_for_delay' => $row['justification_for_delay'] ?? null,
-            ]
-        );
     }
 }

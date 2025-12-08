@@ -3,8 +3,11 @@
 namespace App\Filament\Resources\WaterPoints\Schemas;
 
 use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Group;
+use Filament\Support\Enums\FontWeight;
 use Filament\Schemas\Schema;
-use Illuminate\Support\Facades\Storage;
 
 class WaterPointInfolist
 {
@@ -12,50 +15,112 @@ class WaterPointInfolist
     {
         return $schema
             ->components([
-                // -------------------
-                // Basic References
-                // -------------------
-                TextEntry::make('scheme_code')->label('Scheme Code'),
-                TextEntry::make('water_system_name')->label('Water System / Scheme Name'),
-                TextEntry::make('sub_system_name')->label('Water Sub-System / Sub-Scheme Name'),
-                TextEntry::make('location_type')->label('Location Type'),
-                TextEntry::make('water_point_name')->label('Water Point Name'),
+                Group::make()
+                    ->schema([
+                        
+                        // --- SECTION 1: LINKING (Scheme) ---
+                        Section::make('Scheme Association')
+                            ->schema([
+                                Grid::make(2)->schema([
+                                    TextEntry::make('scheme_code')
+                                        ->label('Scheme Code')
+                                        ->icon('heroicon-m-hashtag')
+                                        ->copyable(),
+                                    
+                                    // Assuming relationship exists, showing name is helpful
+                                    TextEntry::make('scheme.scheme_name')
+                                        ->label('Scheme Name')
+                                        ->icon('heroicon-m-identification')
+                                        ->placeholder('No Scheme Linked'),
+                                ]),
+                            ]),
 
-                // -------------------
-                // User Counts
-                // -------------------
-                TextEntry::make('woman')->label('Female Users'),
-                TextEntry::make('man')->label('Male Users'),
-                TextEntry::make('total_water_users')->label('Total Water Users')->formatStateUsing(fn($state, $record) => $record->woman + $record->man),
-                
-                // -------------------
-                // Tap Construction
-                // -------------------
-                TextEntry::make('tap_construction_status')->label('Tap Construction Status'),
+                        // --- SECTION 2: IDENTIFICATION ---
+                        Section::make('General Information')
+                            ->schema([
+                                Grid::make(3)->schema([
+                                    TextEntry::make('water_point_name')
+                                        ->label('Water Point / Owner')
+                                        ->weight(FontWeight::Bold)
+                                        ->columnSpan(2),
 
-                // -------------------
-                // Remarks / Details
-                // -------------------
-                TextEntry::make('remarks')->label('Remarks')->wrap(),
+                                    TextEntry::make('location_type')
+                                        ->badge()
+                                        ->color('info'),
 
-                // -------------------
-                // Coordinates / Photo
-                // -------------------
-                TextEntry::make('latitude')->numeric(),
-                TextEntry::make('longitude')->numeric(),
-                TextEntry::make('photo_url')
-                    ->label('Photo')
-                    ->formatStateUsing(fn($state) => blank($state) 
-                        ? '<span class="text-gray-500">No photo uploaded</span>' 
-                        : '<img src="' . Storage::url($state) . '" class="w-32 h-32 object-cover rounded" />'
-                    )
-                    ->html(),
+                                    TextEntry::make('tole')
+                                        ->label('Tole / Cluster')
+                                        ->icon('heroicon-m-map-pin'),
 
-                // -------------------
-                // Timestamps
-                // -------------------
-                TextEntry::make('created_at')->label('Created At')->dateTime(),
-                TextEntry::make('updated_at')->label('Updated At')->dateTime(),
+                                    TextEntry::make('ward_no')
+                                        ->label('Ward No')
+                                        ->badge()
+                                        ->color('gray'),
+
+                                    TextEntry::make('tap_construction_status')
+                                        ->label('Construction Complete?')
+                                        ->badge()
+                                        ->color(fn (string $state): string => match (strtolower($state)) {
+                                            'yes' => 'success',
+                                            'no' => 'danger',
+                                            default => 'warning',
+                                        }),
+                                ]),
+                            ]),
+
+                        // --- SECTION 3: SOCIO-ECONOMIC DATA ---
+                        Section::make('Socio-Economic Profile')
+                            ->schema([
+                                Grid::make(3)->schema([
+                                    TextEntry::make('households_count')
+                                        ->label('HH Count')
+                                        ->icon('heroicon-m-home'),
+
+                                    TextEntry::make('ethnicity')
+                                        ->label('Ethnicity')
+                                        ->badge()
+                                        ->color('warning'),
+
+                                    TextEntry::make('economic_status')
+                                        ->label('Economic Status')
+                                        ->badge()
+                                        ->color(fn (string $state): string => match ($state) {
+                                            'Poor', 'Ultra-Poor' => 'danger',
+                                            'Non-Poor' => 'success',
+                                            default => 'gray',
+                                        }),
+                                ]),
+                            ]),
+
+                        // --- SECTION 4: DEMOGRAPHICS ---
+                        Section::make('User Demographics')
+                            ->schema([
+                                Grid::make(3)->schema([
+                                    TextEntry::make('woman')
+                                        ->label('Women')
+                                        ->icon('heroicon-m-user'),
+
+                                    TextEntry::make('man')
+                                        ->label('Men')
+                                        ->icon('heroicon-m-user'),
+
+                                    TextEntry::make('total_users')
+                                        ->label('Total Users')
+                                        ->weight(FontWeight::Bold),
+                                ]),
+                            ]),
+
+                        // --- SECTION 5: NOTES ---
+                        Section::make('Additional Info')
+                            ->collapsed()
+                            ->schema([
+                                TextEntry::make('remarks')
+                                    ->markdown()
+                                    ->prose()
+                                    ->placeholder('No remarks provided.'),
+                            ]),
+
+                    ])->columnSpanFull(),
             ]);
     }
 }

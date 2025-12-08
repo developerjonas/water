@@ -21,7 +21,7 @@ class LocationSeeder extends Seeder
             'ChamundaBindrasaini', 'Dullu', 'Narayan', 'Dungeshwor', 'Gurans', 'Mahabu', // DAI
             'Barekot', 'Bheri', 'Chhedagad', 'Shivalaya', // JAJ
             'Khadachakral', 'Narharinath', 'Raskot', 'SanniTriveni', 'Shubhakalika', 'Kalikot', 'Palata', // KAL
-            'Aathbiskot', 'Musikot', 'Rukum', // RUK_W
+            'Aathbiskot', 'Musikot', 'Rukum', // WRU
             'Salyan', 'Bagchaur', 'Kalimati', // SAL
             'Mangalsen', 'Kamalbazar', 'Panchadewal' // AAC
         ];

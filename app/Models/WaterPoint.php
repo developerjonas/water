@@ -4,36 +4,64 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class WaterPoint extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'scheme_code',           // Foreign key to schemes
-        'sub_system_name',       // Water Sub-System / Sub-Scheme Name
-        'water_point_name',      // Water Point Name
-        'location_type',         // Location type: community, school, health_center, public_institution, other
-        'woman',                 // Number of female users
-        'man',                   // Number of male users
-        'total_water_users',     // Calculated: woman + man
-        'tap_construction_status', // yes / no
-        'remarks',               // Optional remarks
+        // 1. Linking
+        'scheme_code',
+
+        // 2. Identification
+        'water_point_name',
+        'location_type', // Community, School, etc.
+        'tole',
+        'ward_no', // Kept as string (e.g., "1,2")
+        'tap_construction_status', // Yes/No
+
+        // 3. Socio-Economic
+        'households_count',
+        'ethnicity',      // Dalit, Janjati, etc.
+        'economic_status', // Poor, Non-Poor
+
+        // 4. Demographics
+        'woman',
+        'man',
+        'total_users', // Calculated
+
+        // 5. Meta
+        'remarks',
+    ];
+
+    protected $casts = [
+        'households_count' => 'integer',
+        'woman' => 'integer',
+        'man' => 'integer',
+        'total_users' => 'integer',
     ];
 
     /**
-     * Relationship: WaterPoint belongs to a Scheme
+     * Relationship to the Master Scheme
      */
-    public function scheme()
+    public function scheme(): BelongsTo
     {
         return $this->belongsTo(Scheme::class, 'scheme_code', 'scheme_code');
     }
 
     /**
-     * Automatically calculate total water users
+     * Auto-calculate total users before saving.
      */
-    public function setTotalWaterUsersAttribute($value)
+    protected static function booted(): void
     {
-        $this->attributes['total_water_users'] = $this->woman + $this->man;
+        static::saving(function (WaterPoint $waterPoint) {
+            // Ensure integers for calculation
+            $man = (int) $waterPoint->man;
+            $woman = (int) $waterPoint->woman;
+            
+            // Auto-update total
+            $waterPoint->total_users = $man + $woman;
+        });
     }
 }

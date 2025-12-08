@@ -15,79 +15,99 @@ class SchemeImporter extends Importer
     public static function getColumns(): array
     {
         return [
+            // -------------------
+            // Location / Address
+            // -------------------
             ImportColumn::make('province')
                 ->requiredMapping()
                 ->rules(['required', 'max:255']),
+
             ImportColumn::make('district')
                 ->requiredMapping()
                 ->rules(['required', 'max:255']),
+
             ImportColumn::make('mun')
+                ->label('Municipality')
                 ->requiredMapping()
                 ->rules(['required', 'max:255']),
+
             ImportColumn::make('ward_no')
                 ->requiredMapping()
                 ->numeric()
                 ->rules(['required', 'integer']),
+
+            // -------------------
+            // Identification
+            // -------------------
+
             ImportColumn::make('scheme_code_user')
+                ->label('User Code')
                 ->rules(['max:255']),
+
             ImportColumn::make('scheme_name')
                 ->requiredMapping()
                 ->rules(['required', 'max:255']),
-            ImportColumn::make('scheme_name_np')
-                ->rules(['max:255']),
-            ImportColumn::make('collaborator'),
-            ImportColumn::make('sector')
-                ->rules(['max:255']),
-            ImportColumn::make('scheme_technology')
-                ->rules(['max:255']),
-            ImportColumn::make('scheme_type')
-                ->requiredMapping()
-                ->rules(['required', 'max:255']),
+
+            ImportColumn::make('scheme_name_np')->rules(['nullable', 'max:255']),
+
+            // -------------------
+            // Sub Schemes
+            // -------------------
+            ImportColumn::make('no_of_sub_schemes')
+                ->numeric()
+                ->rules(['integer', 'min:0', 'nullable']),
+
+            // -------------------
+            // Collaborator
+            // -------------------
+            ImportColumn::make('collaborator')
+                ->label('Collaborator (JSON/Text)'),
+
+            // -------------------
+            // Type & Classification
+            // -------------------
+            ImportColumn::make('scheme_sector')->rules(['nullable', 'max:255']),
+
             ImportColumn::make('scheme_construction_type')
                 ->requiredMapping()
                 ->rules(['required', 'max:255']),
-            ImportColumn::make('scheme_start_year')
-                ->requiredMapping()
-                ->rules(['required']),
-            ImportColumn::make('completion_date')
-                ->rules(['date']),
-            ImportColumn::make('agreement_signed_date')
-                ->rules(['date']),
-            ImportColumn::make('schedule_end_date')
-                ->rules(['date']),
-            ImportColumn::make('started_date')
-                ->rules(['date']),
-            ImportColumn::make('planned_completion_date')
-                ->rules(['date']),
-            ImportColumn::make('actual_completed_date')
-                ->rules(['date']),
+
+            ImportColumn::make('scheme_technology')->rules(['nullable', 'max:255']),
+
+            // -------------------
+            // Timing & Dates
+            // -------------------
+            ImportColumn::make('started_date')->rules(['nullable', 'date']),
+            ImportColumn::make('planned_completion_date')->rules(['nullable', 'date']),
+            ImportColumn::make('actual_completed_date')->rules(['nullable', 'date']),
+
+            // -------------------
+            // Status Flags
+            // -------------------
             ImportColumn::make('source_registration_status')
-                ->requiredMapping()
                 ->boolean()
-                ->rules(['required', 'boolean']),
+                ->rules(['boolean']),
+
             ImportColumn::make('source_conservation')
-                ->requiredMapping()
                 ->boolean()
-                ->rules(['required', 'boolean']),
-            ImportColumn::make('progress_status')
-                ->rules(['max:255']),
+                ->rules(['boolean']),
+
+            ImportColumn::make('progress_status')->rules(['nullable', 'max:255']),
+
             ImportColumn::make('justification_for_delay'),
         ];
     }
 
-    public function resolveRecord(): Scheme
+    public function resolveRecord(): ?Scheme
     {
+     
+
+        // 2. Otherwise, create a NEW record (Model handles ID generation).
         return new Scheme();
     }
 
     public static function getCompletedNotificationBody(Import $import): string
     {
-        $body = 'Your scheme import has completed and ' . Number::format($import->successful_rows) . ' ' . str('row')->plural($import->successful_rows) . ' imported.';
-
-        if ($failedRowsCount = $import->getFailedRowsCount()) {
-            $body .= ' ' . Number::format($failedRowsCount) . ' ' . str('row')->plural($failedRowsCount) . ' failed to import.';
-        }
-
-        return $body;
+        return 'Import completed. ' . Number::format($import->successful_rows) . ' rows processed.';
     }
 }

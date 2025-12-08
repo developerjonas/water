@@ -51,7 +51,6 @@ class SchemesTable
                 TextColumn::make('scheme_construction_type')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('scheme_start_year'),
                 TextColumn::make('completion_date')
                     ->date()
                     ->sortable()
@@ -104,7 +103,7 @@ class SchemesTable
                     ->action(function (Scheme $record) {
                         return app(SchemeReportGenerator::class, ['scheme' => $record])->streamPdf();
                     }),
-                DeleteAction::make(), // <-- added Delete action
+                DeleteAction::make(),
 
             ])
             ->toolbarActions([

@@ -24,23 +24,29 @@ class SanitationMetricsTable
                         ->sortable(),
                     TextColumn::make('households_with_toilet')
                         ->numeric()
-                        ->sortable(),
+                        ->sortable()
+                        ->toggleable(isToggledHiddenByDefault: true),
                     TextColumn::make('households_with_drying_rack')
                         ->numeric()
-                        ->sortable(),
+                        ->sortable()
+                        ->toggleable(isToggledHiddenByDefault: true),
                     TextColumn::make('households_with_handwashing_station')
                         ->numeric()
-                        ->sortable(),
+                        ->sortable()
+                        ->toggleable(isToggledHiddenByDefault: true),
                     TextColumn::make('households_using_filter')
                         ->numeric()
-                        ->sortable(),
+                        ->sortable()
+                        ->toggleable(isToggledHiddenByDefault: true),
                     TextColumn::make('households_with_waste_disposal_pit')
                         ->numeric()
-                        ->sortable(),
+                        ->sortable()
+                        ->toggleable(isToggledHiddenByDefault: true),
                     TextColumn::make('total_sanitation_status')
                         ->searchable(),
                     TextColumn::make('remarks')
-                        ->searchable(),
+                        ->searchable()
+                        ->toggleable(isToggledHiddenByDefault: true),
                     TextColumn::make('created_at')
                         ->dateTime()
                         ->sortable()

@@ -6,7 +6,6 @@ use App\Filament\Resources\Schemes\SchemeResource;
 use Filament\Actions\CreateAction;
 use Filament\Actions\ImportAction;
 use Filament\Resources\Pages\ListRecords;
-
 use App\Filament\Imports\SchemeImporter;
 
 class ListSchemes extends ListRecords
@@ -17,8 +16,7 @@ class ListSchemes extends ListRecords
     {
         return [
             CreateAction::make(),
-            ImportAction::make()  // Default import action
-                ->importer(SchemeImporter::class),
+            ImportAction::make()->importer(SchemeImporter::class),
         ];
     }
 }
