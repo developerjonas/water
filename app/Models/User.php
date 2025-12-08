@@ -13,14 +13,6 @@ class User extends Authenticatable implements FilamentUser
 {
     use HasFactory, Notifiable;
 
-    /**
-     * Allow any user to access the Filament admin panel (for demo purposes)
-     */
-
-
-    /**
-     * The attributes that are mass assignable.
-     */
     protected $fillable = [
         'name',
         'email',
@@ -31,30 +23,27 @@ class User extends Authenticatable implements FilamentUser
         'is_active',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
-        'is_active' => 'boolean', // cast to boolean
+        'is_active' => 'boolean',
+        'role' => UserRole::class,
     ];
 
-    /**
-     * Scope: only active users
-     */
-    // public function scopeActive($query)
-    // {
-    //     return $query->where('is_active', true);
-    // }
+    public function hasRole(UserRole $role): bool
+    {
+        return $this->role === $role;
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
 
     public function district()
     {
@@ -66,18 +55,13 @@ class User extends Authenticatable implements FilamentUser
         return $this->belongsTo(Municipality::class, 'municipality_code','municipality_code');
     }
 
-    // --- HELPER METHODS ---
-
     public function isAdmin(): bool
     {
         return $this->role === UserRole::ADMIN;
     }
 
-    // --- FILAMENT ACCESS ---
-
     public function canAccessPanel(Panel $panel): bool
     {
-        // Only allow access if they have a role assigned
         return !is_null($this->role);
     }
 }

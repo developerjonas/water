@@ -16,6 +16,8 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
+use App\Enums\UserRole;
 
 class UserResource extends Resource
 {
@@ -57,5 +59,15 @@ class UserResource extends Resource
             'view' => ViewUser::route('/{record}'),
             'edit' => EditUser::route('/{record}/edit'),
         ];
+    }
+
+    public static function canAccess(): bool
+    {
+        $user = Auth::user();
+
+        return $user->hasRole(UserRole::ADMIN);
+
+        // Checking multiple roles
+        // return in_array($user->role, [UserRole::SUPER_ADMIN, UserRole::ADMIN]);
     }
 }

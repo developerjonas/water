@@ -17,7 +17,9 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use UnitEnum;
-use Illuminate\Database\Eloquent\Model; // <-- important!
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use App\Enums\UserRole;
 
 class DistrictResource extends Resource
 {
@@ -76,5 +78,11 @@ class DistrictResource extends Resource
             'index' => ListDistricts::route('/'),
             'view' => ViewDistrict::route('/{record}'),
         ];
+    }
+
+      public static function canAccess(): bool
+    {
+        $user = Auth::user();
+        return $user->hasRole(UserRole::ADMIN);
     }
 }

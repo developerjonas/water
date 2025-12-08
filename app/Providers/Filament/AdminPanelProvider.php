@@ -34,7 +34,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandName('HELVETAS WSMIS')
             ->userMenuItems([
                 Action::make('settings')
-                    ->icon('heroicon-o-cog-6-tooth'),
+                    ->icon('heroicon-o-cog-6-tooth')->url('/admin/settings'),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')

@@ -16,6 +16,8 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
+use App\Enums\UserRole;
 
 class TrainingTypeResource extends Resource
 {
@@ -59,5 +61,11 @@ class TrainingTypeResource extends Resource
             'view' => ViewTrainingType::route('/{record}'),
             'edit' => EditTrainingType::route('/{record}/edit'),
         ];
+    }
+
+    public static function canAccess(): bool
+    {
+        $user = Auth::user();
+        return $user->hasRole(UserRole::ADMIN);
     }
 }

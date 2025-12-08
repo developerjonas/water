@@ -98,7 +98,7 @@ class SchemesTable
                 ViewAction::make(),
                 EditAction::make(),
                 Action::make('download_report')
-                    ->label('Download PDF')
+                    ->label('PDF')
                     ->icon('heroicon-o-arrow-down-tray')
                     ->color('success')
                     ->action(function (Scheme $record) {

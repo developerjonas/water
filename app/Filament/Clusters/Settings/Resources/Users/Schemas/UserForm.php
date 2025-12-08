@@ -55,7 +55,7 @@ class UserForm
                         // 2. District Selection (Always Visible)
                         Select::make('district_code')
                             ->label('District')
-                            ->options(District::pluck('name', 'district_code'))
+                            ->options(District::where('is_active',true)->pluck('name', 'district_code'))
                             ->searchable()
                             ->preload()
                             ->live(), // Kept live only to update Municipality options
@@ -70,7 +70,7 @@ class UserForm
                                     return [];
                                 }
 
-                                return Municipality::where('district_code', $districtCode)
+                                return Municipality::where('district_code', $districtCode)->where('is_active', true)
                                     ->pluck('name', 'municipality_code');
                             })
                             ->searchable()
