@@ -35,6 +35,11 @@ class User extends Authenticatable implements FilamentUser
         'role' => UserRole::class,
     ];
 
+    public function getFilamentName(): string
+    {
+        return "{$this->name} (" . ucfirst($this->role->value) . ")";
+    }
+
     public function hasRole(UserRole $role): bool
     {
         return $this->role === $role;

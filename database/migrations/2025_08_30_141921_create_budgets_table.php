@@ -10,39 +10,29 @@ return new class extends Migration {
         Schema::create('budgets', function (Blueprint $table) {
             $table->id();
 
-            // Reference to scheme
-            $table->string('scheme_code'); // FK to schemes table
-            $table->string('budget_code')->unique(); // unique budget identifier
+            // Identifiers
+            $table->string('scheme_code'); // Foreign Key to schemes
+            $table->string('budget_code')->unique()->nullable(); // Unique identifier (nullable if not in csv)
 
-            // Hardcoded budget columns
-            $table->decimal('helvetas_cash_estimated', 15, 2)->default(0);
-            $table->decimal('helvetas_cash_actual', 15, 2)->default(0);
+            // 1. Helvetas Data
+            $table->decimal('helvetas_estimated_cash', 15, 2)->default(0);
+            $table->decimal('helvetas_estimated_kind', 15, 2)->default(0);
+            $table->decimal('helvetas_estimated_total', 15, 2)->default(0); // Sum of Cash + Kind
 
-            $table->decimal('helvetas_kind_estimated', 15, 2)->default(0);
-            $table->decimal('helvetas_kind_actual', 15, 2)->default(0);
+            // 2. Other Contributions
+            $table->decimal('community_contribution', 15, 2)->default(0); // "Community Contribution"
+            $table->decimal('palika_estimated', 15, 2)->default(0);       // "Palika Estimated"
 
-            $table->decimal('helvetas_total_estimated', 15, 2)->default(0);
-            $table->decimal('helvetas_total_actual', 15, 2)->default(0);
+            // 3. Grand Total
+            $table->decimal('total_estimated', 15, 2)->default(0);        // "Total Estimated"
 
-            $table->decimal('users_estimated', 15, 2)->default(0);
-            $table->decimal('users_actual', 15, 2)->default(0);
-
-            $table->decimal('individual_private_tap_estimated', 15, 2)->default(0);
-            $table->decimal('individual_private_tap_actual', 15, 2)->default(0);
-
-            $table->decimal('palika_estimated', 15, 2)->default(0);
-            $table->decimal('palika_actual', 15, 2)->default(0);
-
-            $table->decimal('total_estimated', 15, 2)->default(0);
-            $table->decimal('total_actual', 15, 2)->default(0);
-
-            // Remarks and status
+            // Meta Data
             $table->text('remarks')->nullable();
-            $table->string('budget_status')->default('draft'); // draft, finalized, verified
+            $table->string('budget_status')->default('draft'); // draft, finalized
 
             $table->timestamps();
 
-            // Foreign key constraint
+            // Constraints
             $table->foreign('scheme_code')
                   ->references('scheme_code')
                   ->on('schemes')

@@ -25,7 +25,7 @@ class BudgetResource extends Resource
 
     protected static ?string $cluster = BudgetCluster::class;
 
-    protected static ?string $recordTitleAttribute = 'budet_data';
+    protected static ?string $recordTitleAttribute = 'budget';
 
     public static function form(Schema $schema): Schema
     {

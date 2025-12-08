@@ -49,7 +49,7 @@ class UserForm
                         // 1. Role Selection (Logic Removed)
                         Select::make('role')
                             ->options(UserRole::class)
-                            ->default(UserRole::VIEW_ONLY)
+                            ->default(UserRole::VIEWER)
                             ->required(),
 
                         // 2. District Selection (Always Visible)
