@@ -26,7 +26,7 @@ class SchemeResource extends Resource
 {
     protected static ?string $model = Scheme::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::BuildingLibrary;
 
     public static function form(Schema $schema): Schema
     {

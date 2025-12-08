@@ -8,10 +8,13 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\Action;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter; // Added Filters
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use App\Actions\Pdf\WaterPointReportGenerator;
+use App\Models\WaterPoint;
 
 class WaterPointsTable
 {
@@ -19,14 +22,14 @@ class WaterPointsTable
     {
         return $table
             ->columns(array_merge(
-                SchemeColumns::make(), 
+                SchemeColumns::make(),
                 [
                     // --- Identity ---
                     TextColumn::make('water_point_name')
                         ->searchable()
                         ->weight('bold')
                         ->label('Water Point Name'),
-                        
+
                     TextColumn::make('sub_system_name')
                         ->searchable()
                         ->toggleable(isToggledHiddenByDefault: true)
@@ -55,7 +58,7 @@ class WaterPointsTable
                     TextColumn::make('economic_status')
                         ->label('Eco Status')
                         ->badge()
-                        ->color(fn (string $state): string => match ($state) {
+                        ->color(fn(string $state): string => match ($state) {
                             'Poor' => 'danger',
                             'Non-Poor' => 'success',
                             default => 'gray',
@@ -72,7 +75,7 @@ class WaterPointsTable
                         ->label('F')
                         ->numeric()
                         ->toggleable(isToggledHiddenByDefault: true),
-                        
+
                     TextColumn::make('man')
                         ->label('M')
                         ->numeric()
@@ -82,7 +85,7 @@ class WaterPointsTable
                     TextColumn::make('tap_construction_status')
                         ->label('Built?')
                         ->badge()
-                        ->color(fn (string $state): string => $state === 'Yes' || $state === 'yes' ? 'success' : 'warning'),
+                        ->color(fn(string $state): string => $state === 'Yes' || $state === 'yes' ? 'success' : 'warning'),
 
                     ImageColumn::make('photo_url')
                         ->label('Photo')
@@ -115,6 +118,13 @@ class WaterPointsTable
                 ViewAction::make(),
                 EditAction::make(),
                 DeleteAction::make(),
+
+                Action::make('download_report')
+                    ->label('Download PDF')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->action(function (WaterPoint $record) {
+                        return (new WaterPointReportGenerator($record))->streamPdf();
+                    })
             ])
             ->bulkActions([
                 BulkActionGroup::make([
