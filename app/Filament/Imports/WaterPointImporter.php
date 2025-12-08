@@ -3,10 +3,13 @@
 namespace App\Filament\Imports;
 
 use App\Models\WaterPoint;
+use App\Models\Scheme;
 use Filament\Actions\Imports\ImportColumn;
 use Filament\Actions\Imports\Importer;
 use Filament\Actions\Imports\Models\Import;
 use Illuminate\Support\Number;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 class WaterPointImporter extends Importer
 {
@@ -15,42 +18,63 @@ class WaterPointImporter extends Importer
     public static function getColumns(): array
     {
         return [
-            ImportColumn::make('scheme_code')
+            // ---------------------------------------------------------
+            // 1. THE ROBUST LOOKUP
+            // ---------------------------------------------------------
+            ImportColumn::make('scheme_code_user') // This is the identifier in the Importer
+                ->label('Scheme Code (Map to CSV "Scheme Code")') 
                 ->requiredMapping()
-                ->rules(['required', 'max:255']),
-            ImportColumn::make('water_point_name')
-                ->requiredMapping()
-                ->rules(['required', 'max:255']),
-            ImportColumn::make('location_type')
-                ->requiredMapping()
-                ->rules(['required', 'max:255']),
-            ImportColumn::make('tole')
-                ->rules(['max:255']),
-            ImportColumn::make('ward_no')
-                ->rules(['max:255']),
-            ImportColumn::make('tap_construction_status')
-                ->requiredMapping()
-                ->rules(['required', 'max:255']),
-            ImportColumn::make('households_count')
-                ->requiredMapping()
-                ->numeric()
-                ->rules(['required', 'integer']),
-            ImportColumn::make('ethnicity')
-                ->rules(['max:255']),
-            ImportColumn::make('economic_status')
-                ->rules(['max:255']),
-            ImportColumn::make('woman')
-                ->requiredMapping()
-                ->numeric()
-                ->rules(['required', 'integer']),
-            ImportColumn::make('man')
-                ->requiredMapping()
-                ->numeric()
-                ->rules(['required', 'integer']),
+                ->fillRecordUsing(function ($record, $state) {
+                    
+                    // 1. Clean the CSV value
+                    $searchCode = Str::squish(trim((string) $state));
+
+                    // 2. Log what we are looking for (Check storage/logs/laravel.log)
+                    Log::info("Importing Row: Searching for Scheme with User Code: [{$searchCode}]");
+
+                    // 3. Robust Database Search (Case insensitive + ignores spaces)
+                    // We use 'LIKE' to find it even if the DB has hidden spaces
+                    $scheme = Scheme::query()
+                        ->where('scheme_code_user', 'LIKE', $searchCode)
+                        ->orWhere('scheme_code_user', 'LIKE', "%{$searchCode}%")
+                        ->first();
+
+                    // 4. Handle Result
+                    if ($scheme) {
+                        Log::info("FOUND: Linked to System Code: [{$scheme->scheme_code}]");
+                        $record->scheme_code = $scheme->scheme_code;
+                    } else {
+                        Log::error("FAILED: Could not find Scheme for code: [{$searchCode}]");
+                        // This specific error message should appear in your failed rows file
+                        throw new \Exception("Code '{$searchCode}' not found in Schemes table.");
+                    }
+                }),
+
+            // ---------------------------------------------------------
+            // 2. OTHER COLUMNS
+            // ---------------------------------------------------------
+            ImportColumn::make('water_point_name')->requiredMapping(),
+            ImportColumn::make('location_type'),
+            ImportColumn::make('tole'),
+            ImportColumn::make('tap_construction_status'),
+            
+            ImportColumn::make('households_count')->numeric(),
+            ImportColumn::make('ethnicity'),
+            ImportColumn::make('economic_status'),
+
+            ImportColumn::make('woman')->numeric(),
+            ImportColumn::make('man')->numeric(),
+            
             ImportColumn::make('total_users')
-                ->requiredMapping()
                 ->numeric()
-                ->rules(['required', 'integer']),
+                ->fillRecordUsing(function ($record, $state) {
+                    if (is_numeric($state) && $state > 0) {
+                        $record->total_users = $state;
+                    } else {
+                        $record->total_users = (int)$record->man + (int)$record->woman;
+                    }
+                }),
+
             ImportColumn::make('remarks'),
         ];
     }
@@ -62,12 +86,6 @@ class WaterPointImporter extends Importer
 
     public static function getCompletedNotificationBody(Import $import): string
     {
-        $body = 'Your water point import has completed and ' . Number::format($import->successful_rows) . ' ' . str('row')->plural($import->successful_rows) . ' imported.';
-
-        if ($failedRowsCount = $import->getFailedRowsCount()) {
-            $body .= ' ' . Number::format($failedRowsCount) . ' ' . str('row')->plural($failedRowsCount) . ' failed to import.';
-        }
-
-        return $body;
+        return 'Import completed. ' . Number::format($import->successful_rows) . ' rows processed.';
     }
 }
