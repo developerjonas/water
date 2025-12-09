@@ -2,7 +2,8 @@
 
 namespace App\Filament\Resources\PublicAudits\Tables;
 
-use App\Filament\Components\SchemeColumns; // <-- reusable scheme columns
+use App\Filament\Components\SchemeColumns;
+use App\Actions\Pdf\PublicAuditReportGenerator; // Import Generator
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -10,6 +11,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Actions\Action; // Import Action
 
 class PublicAuditsTable
 {
@@ -17,42 +19,30 @@ class PublicAuditsTable
     {
         return $table
             ->columns(array_merge(
-                SchemeColumns::make(), // <-- replaces scheme_code
+                SchemeColumns::make(), 
                 [
-                    TextColumn::make('audit_type'),
-                    TextColumn::make('dalit_female')
+                    TextColumn::make('audit_type')
+                        ->searchable()
+                        ->badge()
+                        ->color('info'),
+
+                    TextColumn::make('audit_date')
+                        ->date()
+                        ->sortable(),
+
+                    // Aggregated Total Column (Calculated on the fly for the table view)
+                    TextColumn::make('total_participants')
+                        ->label('Total Participants')
+                        ->state(function ($record) {
+                            $counts = $record->participant_counts ?? [];
+                            $sum = 0;
+                            foreach($counts as $val) { $sum += (int)$val; }
+                            return $sum;
+                        })
                         ->numeric()
-                        ->sortable()
-                        ->toggleable(isToggledHiddenByDefault: true),
-                    TextColumn::make('dalit_male')
-                        ->numeric()
-                        ->sortable()
-                        ->toggleable(isToggledHiddenByDefault: true),
-                    TextColumn::make('janjati_female')
-                        ->numeric()
-                        ->sortable()
-                        ->toggleable(isToggledHiddenByDefault: true),
-                    TextColumn::make('janjati_male')
-                        ->numeric()
-                        ->sortable()
-                        ->toggleable(isToggledHiddenByDefault: true),
-                    TextColumn::make('other_female')
-                        ->numeric()
-                        ->sortable()
-                        ->toggleable(isToggledHiddenByDefault: true),
-                    TextColumn::make('other_male')
-                        ->numeric()
-                        ->sortable()
-                        ->toggleable(isToggledHiddenByDefault: true),
-                    TextColumn::make('total')
-                        ->numeric()
-                        ->sortable()
-                        ->toggleable(isToggledHiddenByDefault: true),
+                        ->sortable(false),
+
                     TextColumn::make('created_at')
-                        ->dateTime()
-                        ->sortable()
-                        ->toggleable(isToggledHiddenByDefault: true),
-                    TextColumn::make('updated_at')
                         ->dateTime()
                         ->sortable()
                         ->toggleable(isToggledHiddenByDefault: true),
@@ -64,7 +54,17 @@ class PublicAuditsTable
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
-                DeleteAction::make(), // <-- added Delete action
+                
+                // --- PDF Action ---
+                Action::make('download_pdf')
+                    ->label('PDF')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('success')
+                    ->action(function ($record) {
+                        return (new PublicAuditReportGenerator($record))->streamPdf();
+                    }),
+
+                DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
