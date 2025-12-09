@@ -21,7 +21,7 @@ class SanitationMetricForm
                     ->schema([
                         
                         // --- SECTION 1: SCHEME SELECTION ---
-                        Section::make('Scheme Details')
+                        Section::make('Scheme Details')->columns(3)
                             ->description('Select the scheme this metric belongs to.')->columnSpan(3)
                             ->schema([
                                 ...SchemeSelector::make(),
