@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\Scopes\SchemeAccessScope;
 
 class WaterPoint extends Model
 {
@@ -55,6 +56,9 @@ class WaterPoint extends Model
      */
     protected static function booted(): void
     {
+
+        static::addGlobalScope(new SchemeAccessScope);
+
         static::saving(function (WaterPoint $waterPoint) {
             // Ensure integers for calculation
             $man = (int) $waterPoint->man;

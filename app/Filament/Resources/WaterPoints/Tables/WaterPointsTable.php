@@ -35,40 +35,33 @@ class WaterPointsTable
                         ->toggleable(isToggledHiddenByDefault: true)
                         ->label('Sub-System'),
 
-                    // --- Location ---
-                    TextColumn::make('ward_no')
-                        ->label('Ward')
-                        ->sortable()
-                        ->badge(),
-
                     TextColumn::make('tole')
                         ->searchable()
-                        ->toggleable(),
-
+                        ->toggleable(isToggledHiddenByDefault: true),
+                        
                     TextColumn::make('location_type')
                         ->badge()
                         ->color('info')
                         ->searchable(),
 
-                    // --- Social Data (New) ---
                     TextColumn::make('ethnicity')
-                        ->toggleable()
-                        ->sortable(),
+                        ->sortable()
+                        ->toggleable(isToggledHiddenByDefault: true),
 
                     TextColumn::make('economic_status')
                         ->label('Eco Status')
-                        ->badge()
+                        ->badge()->toggleable(isToggledHiddenByDefault: true)
                         ->color(fn(string $state): string => match ($state) {
                             'Poor' => 'danger',
                             'Non-Poor' => 'success',
                             default => 'gray',
-                        })
-                        ->toggleable(),
+                        }),
 
                     // --- Counts ---
                     TextColumn::make('households_count')
                         ->label('HHs')
                         ->numeric()
+                        ->toggleable(isToggledHiddenByDefault: true)
                         ->sortable(),
 
                     TextColumn::make('woman')
@@ -85,13 +78,8 @@ class WaterPointsTable
                     TextColumn::make('tap_construction_status')
                         ->label('Built?')
                         ->badge()
-                        ->color(fn(string $state): string => $state === 'Yes' || $state === 'yes' ? 'success' : 'warning'),
+                        ->color(fn(string $state): string => $state === 'Yes' || $state === 'yes' ? 'success' : 'warning')->toggleable(isToggledHiddenByDefault: true),
 
-                    ImageColumn::make('photo_url')
-                        ->label('Photo')
-                        ->disk('public')
-                        ->circular()
-                        ->toggleable(),
                 ]
             ))
             ->filters([
@@ -112,19 +100,20 @@ class WaterPointsTable
                     ->options([
                         'Poor' => 'Poor',
                         'Non-Poor' => 'Non-Poor',
-                    ]),
+                    ])
+
             ])
             ->actions([
                 ViewAction::make(),
                 EditAction::make(),
-                DeleteAction::make(),
-
                 Action::make('download_report')
-                    ->label('Download PDF')
+                    ->color('success')
+                    ->label('PDF')
                     ->icon('heroicon-o-arrow-down-tray')
                     ->action(function (WaterPoint $record) {
                         return (new WaterPointReportGenerator($record))->streamPdf();
-                    })
+                    }),
+                DeleteAction::make()
             ])
             ->bulkActions([
                 BulkActionGroup::make([

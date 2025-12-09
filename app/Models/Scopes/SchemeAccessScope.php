@@ -45,11 +45,76 @@
 
 
 
+// namespace App\Models\Scopes;
+
+// use App\Enums\UserRole;
+// use App\Models\District;      // Import this
+// use App\Models\Municipality;  // Import this
+// use Illuminate\Database\Eloquent\Builder;
+// use Illuminate\Database\Eloquent\Model;
+// use Illuminate\Database\Eloquent\Scope;
+
+// class SchemeAccessScope implements Scope
+// {
+//     public function apply(Builder $builder, Model $model): void
+//     {
+//         // 1. Skip if console or guest
+//         if (app()->runningInConsole() || !auth()->check()) {
+//             return;
+//         }
+
+//         /** @var \App\Models\User $user */
+//         $user = auth()->user();
+
+//         // 2. ADMIN & SUPER_ADMIN: See everything
+//         if (in_array($user->role, [UserRole::ADMIN, UserRole::ADMIN])) {
+//             return;
+//         }
+
+//         // 3. DISTRICT USER: Filter by Code OR Name
+//         if ($user->role === UserRole::DISTRICT) {
+//             $userCode = $user->district_code; // e.g., "ACH"
+            
+//             // Look up the full name from the Districts table (e.g., "Achham")
+//             $districtName = District::where('district_code', $userCode)->value('name');
+
+//             $builder->where(function (Builder $query) use ($userCode, $districtName) {
+//                 // Check if the column matches the Code ("ACH")
+//                 $query->where('district', $userCode);
+                
+//                 // OR check if it matches the Name ("Achham")
+//                 if ($districtName) {
+//                     $query->orWhere('district', $districtName);
+//                 }
+//             });
+//         }
+
+//         // 4. MUNICIPAL USER: Filter by Code OR Name
+//         elseif ($user->role === UserRole::MUNICIPAL) {
+//             $userCode = $user->municipality_code; // e.g., "KML"
+            
+//             // Look up the full name (e.g., "Kamalbazar Municipality")
+//             $munName = Municipality::where('municipality_code', $userCode)->value('name');
+
+//             $builder->where(function (Builder $query) use ($userCode, $munName) {
+//                 // Check Code
+//                 $query->where('mun', $userCode);
+                
+//                 // OR Check Name
+//                 if ($munName) {
+//                     $query->orWhere('mun', $munName);
+//                 }
+//             });
+//         }
+//     }
+
+
 namespace App\Models\Scopes;
 
 use App\Enums\UserRole;
-use App\Models\District;      // Import this
-use App\Models\Municipality;  // Import this
+use App\Models\District;
+use App\Models\Municipality;
+use App\Models\Scheme;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
@@ -58,7 +123,7 @@ class SchemeAccessScope implements Scope
 {
     public function apply(Builder $builder, Model $model): void
     {
-        // 1. Skip if console or guest
+        // 1. Skip for Admins, Console, or Guests
         if (app()->runningInConsole() || !auth()->check()) {
             return;
         }
@@ -66,45 +131,51 @@ class SchemeAccessScope implements Scope
         /** @var \App\Models\User $user */
         $user = auth()->user();
 
-        // 2. ADMIN & SUPER_ADMIN: See everything
         if (in_array($user->role, [UserRole::ADMIN, UserRole::ADMIN])) {
             return;
         }
 
-        // 3. DISTRICT USER: Filter by Code OR Name
-        if ($user->role === UserRole::DISTRICT) {
-            $userCode = $user->district_code; // e.g., "ACH"
+        // 2. Define the filtering logic (The "Robust" Logic)
+        // We put this in a closure so we can reuse it for both cases
+        $filterLogic = function (Builder $query) use ($user) {
             
-            // Look up the full name from the Districts table (e.g., "Achham")
-            $districtName = District::where('district_code', $userCode)->value('name');
+            // DISTRICT USER
+            if ($user->role === UserRole::DISTRICT) {
+                $userCode = $user->district_code; 
+                $districtName = District::where('district_code', $userCode)->value('name');
 
-            $builder->where(function (Builder $query) use ($userCode, $districtName) {
-                // Check if the column matches the Code ("ACH")
-                $query->where('district', $userCode);
-                
-                // OR check if it matches the Name ("Achham")
-                if ($districtName) {
-                    $query->orWhere('district', $districtName);
-                }
-            });
-        }
+                $query->where(function ($q) use ($userCode, $districtName) {
+                    $q->where('district', $userCode);
+                    if ($districtName) {
+                        $q->orWhere('district', $districtName);
+                    }
+                });
+            }
 
-        // 4. MUNICIPAL USER: Filter by Code OR Name
-        elseif ($user->role === UserRole::MUNICIPAL) {
-            $userCode = $user->municipality_code; // e.g., "KML"
-            
-            // Look up the full name (e.g., "Kamalbazar Municipality")
-            $munName = Municipality::where('municipality_code', $userCode)->value('name');
+            // MUNICIPAL USER
+            elseif ($user->role === UserRole::MUNICIPAL) {
+                $userCode = $user->municipality_code;
+                $munName = Municipality::where('municipality_code', $userCode)->value('name');
 
-            $builder->where(function (Builder $query) use ($userCode, $munName) {
-                // Check Code
-                $query->where('mun', $userCode);
-                
-                // OR Check Name
-                if ($munName) {
-                    $query->orWhere('mun', $munName);
-                }
-            });
+                $query->where(function ($q) use ($userCode, $munName) {
+                    $q->where('mun', $userCode);
+                    if ($munName) {
+                        $q->orWhere('mun', $munName);
+                    }
+                });
+            }
+        };
+
+        // 3. APPLY THE LOGIC
+        
+        // Case A: We are querying the 'schemes' table directly
+        if ($model instanceof Scheme) {
+            $filterLogic($builder);
+        } 
+        // Case B: We are querying a Child (WaterPoint, Structure, etc.)
+        // We assume the child has a 'scheme()' relationship defined.
+        else {
+            $builder->whereHas('scheme', $filterLogic);
         }
     }
 }
