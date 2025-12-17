@@ -23,5 +23,6 @@ class DatabaseSeeder extends Seeder
 
         // Seed provinces, districts, and municipalities
         $this->call(LocationSeeder::class);
+        $this->call(UserSeeder::class);
     }
 }
