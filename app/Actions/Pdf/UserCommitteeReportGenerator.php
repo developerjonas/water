@@ -12,7 +12,7 @@ class UserCommitteeReportGenerator
     public function __construct(UserCommittee $committee)
     {
         // Eager load Scheme + Location relationships
-        $this->committee = $committee->load(['scheme.province', 'scheme.district', 'scheme.municipality']);
+        $this->committee = $committee->load(['scheme.provinceRelation', 'scheme.districtRelation', 'scheme.municipalityRelation']);
     }
 
     public function generatePdf(): \Barryvdh\DomPDF\PDF

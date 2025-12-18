@@ -12,7 +12,7 @@ class StructureReportGenerator
     public function __construct(Structure $structure)
     {
         // Eager load the Scheme and its location relationships for the report header
-        $this->structure = $structure->load(['scheme.province', 'scheme.district', 'scheme.municipality']);
+        $this->structure = $structure->load(['scheme.provinceRelation', 'scheme.districtRelation', 'scheme.municipalityRelation']);
     }
 
     public function generatePdf(): \Barryvdh\DomPDF\PDF

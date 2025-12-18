@@ -12,7 +12,7 @@ class BeneficiaryReportGenerator
     public function __construct(Beneficiary $beneficiary)
     {
         // Eager load Scheme and location context
-        $this->beneficiary = $beneficiary->load(['scheme.province', 'scheme.district', 'scheme.municipality']);
+        $this->beneficiary = $beneficiary->load(['scheme.provinceRelation', 'scheme.districtRelation', 'scheme.municipalityRelation']);
     }
 
     public function generatePdf(): \Barryvdh\DomPDF\PDF

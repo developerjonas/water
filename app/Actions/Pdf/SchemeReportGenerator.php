@@ -8,11 +8,10 @@ use App\Models\Scheme;
 class SchemeReportGenerator
 {
     protected Scheme $scheme;
-
     public function __construct(Scheme $scheme)
     {
         // Eager load relationships required for the new report layout
-        $this->scheme = $scheme->load(['province', 'district', 'municipality']);
+        $this->scheme = $scheme->load(['provinceRelation', 'districtRelation', 'municipalityRelation']);
     }
 
     public function generatePdf(): \Barryvdh\DomPDF\PDF

@@ -10,7 +10,7 @@ class Training extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'scheme_id',
+        'scheme_code',
         'training_type',
         'training_name',
         'training_start_date',
