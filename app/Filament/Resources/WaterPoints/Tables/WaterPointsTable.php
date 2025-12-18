@@ -109,7 +109,7 @@ class WaterPointsTable
                 Action::make('download_report')
                     ->color('success')
                     ->label('PDF')
-                    ->icon('heroicon-o-arrow-down-tray')
+                    ->icon('heroicon-o-arrow-down')
                     ->action(function (WaterPoint $record) {
                         return (new WaterPointReportGenerator($record))->streamPdf();
                     }),

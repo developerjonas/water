@@ -110,7 +110,7 @@ class TrainingsTable
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
-                DeleteAction::make(), // <-- added Delete action
+                DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

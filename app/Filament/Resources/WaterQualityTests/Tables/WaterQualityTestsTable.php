@@ -87,7 +87,7 @@ class WaterQualityTestsTable
 
                 Action::make('download_report')
                     ->label('PDF')
-                    ->icon('heroicon-o-arrow-down')
+                    ->icon('heroicon-o-arrow')
                     ->color('success')
                     ->action(function ($record) {
                         return (new WaterQualityReportGenerator($record))->streamPdf();

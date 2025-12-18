@@ -98,7 +98,7 @@ class SchemesTable
                 EditAction::make(),
                 Action::make('download_report')
                     ->label('PDF')
-                    ->icon('heroicon-o-arrow-down-tray')
+                    ->icon('heroicon-o-arrow-down')
                     ->color('success')
                     ->action(function (Scheme $record) {
                         return app(SchemeReportGenerator::class, ['scheme' => $record])->streamPdf();

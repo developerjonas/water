@@ -58,7 +58,7 @@ class PublicAuditsTable
                 // --- PDF Action ---
                 Action::make('download_pdf')
                     ->label('PDF')
-                    ->icon('heroicon-o-arrow-down-tray')
+                    ->icon('heroicon-o-arrow-down')
                     ->color('success')
                     ->action(function ($record) {
                         return (new PublicAuditReportGenerator($record))->streamPdf();

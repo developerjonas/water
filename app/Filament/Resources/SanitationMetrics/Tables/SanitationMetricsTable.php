@@ -64,7 +64,7 @@ class SanitationMetricsTable
                 EditAction::make(),
                 DeleteAction::make(),
                 ViewAction::make(),
-            ]) // <-- reusable actions: view, edit, delete
+            ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),

@@ -40,8 +40,8 @@ class UserCommitteesTable
                 EditAction::make(),
                 DeleteAction::make(),
                 Action::make('download_report')
-                    ->label('Download PDF')
-                    ->icon('heroicon-o-arrow-down-tray')
+                    ->label('PDF')
+                    ->icon('heroicon-o-arrow-down')
                     ->color('success')
                     ->action(function (UserCommittee $record) {
                         return app(UserCommitteeReportGenerator::class, ['committee' => $record])->streamPdf();
